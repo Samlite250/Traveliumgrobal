@@ -1,6 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Calendar, GraduationCap, Star, CheckCircle, Send } from 'lucide-react'
+
+// Hero background slideshow images — Dubai, visas, scholarships, campuses
+const heroBgImages = [
+    'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1400&q=80&auto=format&fit=crop',  // Dubai skyline
+    'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=1400&q=80&auto=format&fit=crop',  // University campus
+    'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=1400&q=80&auto=format&fit=crop',  // Graduation
+    'https://images.unsplash.com/photo-1583037189850-1921ae7c6c22?w=1400&q=80&auto=format&fit=crop',  // Dubai city
+]
 
 const marqueeImages = [
     { src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=480&q=75&auto=format&fit=crop', alt: 'Student Life' },
@@ -21,6 +29,7 @@ const proofAvatars = [
 ]
 
 export default function Hero() {
+    const [activeBg, setActiveBg] = useState(0)
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -28,6 +37,14 @@ export default function Hero() {
         service: ''
     });
     const [submitted, setSubmitted] = useState(false);
+
+    // Cycle background image every 60 seconds
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setActiveBg(prev => (prev + 1) % heroBgImages.length)
+        }, 60000)
+        return () => clearInterval(timer)
+    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -40,7 +57,19 @@ export default function Hero() {
 
     return (
         <section className="hero">
-            <div className="hero-bg"></div>
+            <div className="hero-bg" aria-hidden="true">
+                {heroBgImages.map((src, i) => (
+                    <img
+                        key={i}
+                        src={src}
+                        alt=""
+                        className={`hero-bg-img${activeBg === i ? ' hero-bg-img--active' : ''}`}
+                        loading={i === 0 ? 'eager' : 'lazy'}
+                    />
+                ))}
+                {/* Frosted overlay */}
+                <div className="hero-bg-overlay" />
+            </div>
 
             {/* ── Main content (Two Column) ── */}
             <div className="hero-inner">

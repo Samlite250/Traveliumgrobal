@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import {
     Mail, Phone, Clock, Globe, Send, Play,
     Plane, GraduationCap, Landmark, Award, Info, PhoneCall,
-    User, ArrowRight, Menu, X, ChevronDown,
+    User, ArrowRight, Menu, X, ChevronDown, Home,
     BookOpen, Building2, FileText, Briefcase, MapPin, Star
 } from 'lucide-react'
 
@@ -67,6 +67,8 @@ function DropdownLink({ label, icon, items }) {
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
+    const [studyAbroadOpen, setStudyAbroadOpen] = useState(false)
+    const [visaServicesOpen, setVisaServicesOpen] = useState(false)
     const location = useLocation()
 
     useEffect(() => {
@@ -76,6 +78,20 @@ export default function Navbar() {
     }, [])
 
     useEffect(() => { setMenuOpen(false) }, [location])
+
+    useEffect(() => {
+        if (menuOpen) {
+            document.documentElement.style.overflow = 'hidden'
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.documentElement.style.overflow = ''
+            document.body.style.overflow = ''
+        }
+        return () => {
+            document.documentElement.style.overflow = ''
+            document.body.style.overflow = ''
+        }
+    }, [menuOpen])
 
     return (
         <>
@@ -101,6 +117,11 @@ export default function Navbar() {
                         TRAVELIUM
                     </Link>
                     <ul className="nav-links">
+                        <li>
+                            <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
+                                <Home size={16} /> Home
+                            </Link>
+                        </li>
                         <DropdownLink label="Study Abroad" icon={<GraduationCap size={16} />} items={studyAbroadDropdown} />
                         <DropdownLink label="Visa Services" icon={<Landmark size={16} />} items={visaServicesDropdown} />
                         {staticLinks.map(l => (
@@ -120,15 +141,20 @@ export default function Navbar() {
                             Apply Now <ArrowRight size={16} />
                         </Link>
                     </div>
-                    <button className="hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
-                        <Menu size={24} />
-                    </button>
+                    <div className="nav-mobile-btns">
+                        <Link to="/" className="mobile-home-btn" aria-label="Go to Home">
+                            <Home size={20} />
+                        </Link>
+                        <button className="hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+                            <Menu size={24} />
+                        </button>
+                    </div>
                 </div>
             </nav>
 
             <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
                 <div className="mobile-menu-header">
-                    <Link to="/" className="nav-logo">
+                    <Link to="/" className="nav-logo" onClick={() => setMenuOpen(false)}>
                         <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
                         TRAVELIUM
                     </Link>
@@ -137,16 +163,64 @@ export default function Navbar() {
                     </button>
                 </div>
                 <ul className="mobile-nav-links">
-                    <li><Link to="/study-abroad"><GraduationCap size={16} /> Study Abroad</Link></li>
-                    <li><Link to="/visa-services"><Landmark size={16} /> Visa Services</Link></li>
+                    <li>
+                        <Link to="/" className={location.pathname === '/' ? 'active' : ''} onClick={() => setMenuOpen(false)}>
+                            <Home size={16} /> <span className="mobile-link-text">Home</span>
+                        </Link>
+                    </li>
+
+                    <li className={`mobile-accordion ${studyAbroadOpen ? 'open' : ''}`}>
+                        <button className="mobile-accordion-trigger" onClick={() => setStudyAbroadOpen(!studyAbroadOpen)}>
+                            <span className="trigger-label">
+                                <GraduationCap size={16} /> <span className="mobile-link-text">Study Abroad</span>
+                            </span>
+                            <ChevronDown size={14} className="chevron" />
+                        </button>
+                        <ul className="mobile-accordion-menu">
+                            {studyAbroadDropdown.map(item => (
+                                <li key={item.label}>
+                                    <Link to={item.href} onClick={() => setMenuOpen(false)}>
+                                        {item.icon} <span className="mobile-link-text">{item.label}</span>
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </li>
+
+                    <li className={`mobile-accordion ${visaServicesOpen ? 'open' : ''}`}>
+                        <button className="mobile-accordion-trigger" onClick={() => setVisaServicesOpen(!visaServicesOpen)}>
+                            <span className="trigger-label">
+                                <Landmark size={16} /> <span className="mobile-link-text">Visa Services</span>
+                            </span>
+                            <ChevronDown size={14} className="chevron" />
+                        </button>
+                        <ul className="mobile-accordion-menu">
+                            {visaServicesDropdown.map(item => (
+                                <li key={item.label}>
+                                    <Link to={item.href} onClick={() => setMenuOpen(false)}>
+                                        {item.icon} <span className="mobile-link-text">{item.label}</span>
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </li>
+
                     {staticLinks.map(l => (
-                        <li key={l.href}><Link to={l.href}>{l.icon}{l.label}</Link></li>
+                        <li key={l.href}>
+                            <Link to={l.href} className={location.pathname === l.href ? 'active' : ''} onClick={() => setMenuOpen(false)}>
+                                {l.icon} <span className="mobile-link-text">{l.label}</span>
+                            </Link>
+                        </li>
                     ))}
-                    <li><Link to="/dashboard"><User size={16} /> My Dashboard</Link></li>
+                    <li>
+                        <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''} onClick={() => setMenuOpen(false)}>
+                            <User size={16} /> <span className="mobile-link-text">My Dashboard</span>
+                        </Link>
+                    </li>
                 </ul>
                 <div className="mobile-actions">
-                    <Link to="/login" className="btn btn-navy">Login</Link>
-                    <Link to="/apply" className="btn btn-primary">Apply Now <ArrowRight size={16} /></Link>
+                    <Link to="/login" className="btn btn-navy" onClick={() => setMenuOpen(false)}>Login</Link>
+                    <Link to="/apply" className="btn btn-primary" onClick={() => setMenuOpen(false)}>Apply Now <ArrowRight size={16} /></Link>
                 </div>
             </div>
         </>
