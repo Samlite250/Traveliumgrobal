@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Calendar, GraduationCap, Users, Star } from 'lucide-react'
+import { ArrowRight, Calendar, GraduationCap, Star, CheckCircle, Send } from 'lucide-react'
 
 const marqueeImages = [
     { src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=480&q=75&auto=format&fit=crop', alt: 'Student Life' },
@@ -20,15 +21,33 @@ const proofAvatars = [
 ]
 
 export default function Hero() {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        destination: '',
+        service: ''
+    });
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (formData.name && formData.email) {
+            setSubmitted(true);
+            setTimeout(() => setSubmitted(false), 5000);
+            setFormData({ name: '', email: '', destination: '', service: '' });
+        }
+    };
+
     return (
         <section className="hero">
             <div className="hero-bg"></div>
 
-            {/* ── Main content ── */}
+            {/* ── Main content (Two Column) ── */}
             <div className="hero-inner">
-                <div className="container">
+                <div className="container hero-grid">
+                    
+                    {/* Left Column: Copy */}
                     <div className="hero-content reveal">
-
                         <div className="hero-badge">
                             <GraduationCap size={14} />
                             Your Future, Our Mission
@@ -43,6 +62,22 @@ export default function Hero() {
                             Join thousands of students building their future with the world's
                             best universities. Expert guidance from application to arrival.
                         </p>
+
+                        {/* Bullet benefits */}
+                        <div className="hero-benefits">
+                            <div className="benefit-item">
+                                <CheckCircle size={16} className="benefit-icon" />
+                                <span>98% Visa Success Rate</span>
+                            </div>
+                            <div className="benefit-item">
+                                <CheckCircle size={16} className="benefit-icon" />
+                                <span>200+ Partner Universities</span>
+                            </div>
+                            <div className="benefit-item">
+                                <CheckCircle size={16} className="benefit-icon" />
+                                <span>Complete Scholarship Guidance</span>
+                            </div>
+                        </div>
 
                         <div className="hero-actions">
                             <Link to="/apply" className="btn btn-primary">
@@ -67,8 +102,84 @@ export default function Hero() {
                                 <span><strong>15,000+</strong> students placed worldwide</span>
                             </div>
                         </div>
-
                     </div>
+
+                    {/* Right Column: Assessment Form */}
+                    <div className="hero-form-wrapper reveal">
+                        <div className="hero-form-card">
+                            <div className="form-card-header">
+                                <h3>Check Your Eligibility</h3>
+                                <p>Get a response within 24 hours</p>
+                            </div>
+                            
+                            {submitted ? (
+                                <div className="form-success-msg">
+                                    <CheckCircle size={40} className="success-icon" />
+                                    <h4>Application Received!</h4>
+                                    <p>Our global education expert will contact you shortly.</p>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="hero-form">
+                                    <div className="form-group-custom">
+                                        <label htmlFor="hero-name">Full Name</label>
+                                        <input 
+                                            type="text" 
+                                            id="hero-name" 
+                                            placeholder="John Doe" 
+                                            required 
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="form-group-custom">
+                                        <label htmlFor="hero-email">Email Address</label>
+                                        <input 
+                                            type="email" 
+                                            id="hero-email" 
+                                            placeholder="john@example.com" 
+                                            required 
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="form-group-custom">
+                                        <label htmlFor="hero-dest">Preferred Destination</label>
+                                        <select 
+                                            id="hero-dest"
+                                            value={formData.destination}
+                                            onChange={(e) => setFormData({...formData, destination: e.target.value})}
+                                            required
+                                        >
+                                            <option value="">Select country...</option>
+                                            <option value="UK">United Kingdom</option>
+                                            <option value="USA">United States</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="Australia">Australia</option>
+                                            <option value="Germany">Germany</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group-custom">
+                                        <label htmlFor="hero-service">Service Needed</label>
+                                        <select 
+                                            id="hero-service"
+                                            value={formData.service}
+                                            onChange={(e) => setFormData({...formData, service: e.target.value})}
+                                            required
+                                        >
+                                            <option value="">Select service...</option>
+                                            <option value="Study">Study Abroad Visa</option>
+                                            <option value="Work">Work Visa / Permit</option>
+                                            <option value="Tourist">Tourist / Visitor Visa</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" className="btn btn-primary btn-block btn-icon">
+                                        Submit Inquiry <Send size={16} />
+                                    </button>
+                                </form>
+                            )}
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
