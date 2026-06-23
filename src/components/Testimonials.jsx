@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const testimonials = [
@@ -31,11 +31,33 @@ const testimonials = [
 
 export default function Testimonials() {
     const [index, setIndex] = useState(0)
-    const visible = 3
-    const max = testimonials.length - visible
+    const [visible, setVisible] = useState(3)
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 768) {
+                setVisible(1)
+            } else if (window.innerWidth <= 1024) {
+                setVisible(2)
+            } else {
+                setVisible(3)
+            }
+        }
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    const max = Math.max(0, testimonials.length - visible)
+
+    useEffect(() => {
+        if (index > max) setIndex(max)
+    }, [index, max])
 
     const prev = () => setIndex(i => Math.max(0, i - 1))
     const next = () => setIndex(i => Math.min(max, i + 1))
+
+    const offsetPx = visible === 1 ? 24 : visible === 2 ? 12 : 8 // gap is 1.5rem (24px)
 
     return (
         <section className="testimonials section">
@@ -50,7 +72,7 @@ export default function Testimonials() {
                 <div className="testimonials-slider">
                     <div
                         className="testimonials-track"
-                        style={{ transform: `translateX(calc(-${index * (100 / visible)}% - ${index * 12}px))` }}
+                        style={{ transform: `translateX(calc(-${index * (100 / visible)}% - ${index * offsetPx}px))` }}
                     >
                         {testimonials.map((t, i) => (
                             <div key={i} className="testimonial-card reveal">

@@ -834,15 +834,18 @@ button {
 
 .form-group-custom input,
 .form-group-custom select {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.30);
   border-radius: var(--radius-sm);
   padding: .55rem .9rem;
   font-size: .85rem;
   color: var(--white);
+  -webkit-text-fill-color: var(--white);
   transition: border-color .3s ease, background-color .3s ease;
   width: 100%;
   outline: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .form-group-custom select option {
@@ -851,13 +854,20 @@ button {
 }
 
 .form-group-custom input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.65);
+    opacity: 1; /* Firefox lowers opacity by default */
+}
+
+/* For select elements to not look faded on mobile iOS */
+.form-group-custom select {
+    color: rgba(255, 255, 255, 0.9);
+    opacity: 1;
 }
 
 .form-group-custom input:focus,
 .form-group-custom select:focus {
   border-color: var(--gold);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .form-success-msg {
@@ -3043,10 +3053,10 @@ tr:hover td {
 
   /* ── Stats ── */
   .stats-bar .container {
-    gap: 1.25rem;
-    flex-direction: column;
-    align-items: center;
-    padding: 1.75rem 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1.5rem 1rem;
   }
 
   .stat-divider {
@@ -3054,8 +3064,21 @@ tr:hover td {
   }
 
   .stat-item {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius);
+    gap: 0.5rem;
     width: 100%;
-    justify-content: center;
+    min-width: 0;
+  }
+
+  .stat-item:last-child {
+    grid-column: span 2;
+    max-width: 280px;
+    margin: 0 auto;
   }
 
   /* ── Services ── */
@@ -3234,13 +3257,66 @@ tr:hover td {
     width: 100%;
   }
 
-  .stats-bar .container {
-    flex-direction: column;
-    align-items: center;
-  }
+
 
   .footer-bottom {
     flex-direction: column;
     text-align: center;
   }
+}
+
+/* ===== MOBILE FIXES ===== */
+#root {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .cta-banner .cta-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cta-banner .cta-actions .btn {
+    width: 100%;
+  }
+
+  .container {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .hero-form-wrapper {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .testimonial-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .testimonials-track .testimonial-card {
+    min-width: calc(50% - 0.75rem);
+  }
+}
+
+/* iOS Form Opacity & Readability Fixes */
+.form-group-custom input,
+.form-group-custom select,
+.form-group-custom input:invalid,
+.form-group-custom select:invalid {
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.95) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  opacity: 1 !important;
+}
+
+.form-group-custom input::-webkit-input-placeholder,
+.form-group-custom input::-moz-placeholder,
+.form-group-custom input:-ms-input-placeholder,
+.form-group-custom input::placeholder {
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.75) !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  opacity: 1 !important;
 }
