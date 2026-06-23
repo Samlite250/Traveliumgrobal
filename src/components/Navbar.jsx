@@ -4,7 +4,7 @@ import {
     Mail, Phone, Clock, Globe, Send, Play,
     Plane, GraduationCap, Landmark, Award, Info, PhoneCall,
     User, ArrowRight, Menu, X, ChevronDown, Home,
-    BookOpen, Building2, FileText, Briefcase, MapPin, Star
+    BookOpen, Building2, FileText, Briefcase, MapPin, Star, Suitcase
 } from 'lucide-react'
 
 const studyAbroadDropdown = [
@@ -21,13 +21,43 @@ const visaServicesDropdown = [
     { label: 'Document Assistance', href: '/visa-services', icon: <FileText size={15} /> },
 ]
 
+const workAbroadDropdown = [
+    {
+        label: 'Dubai',
+        href: '/visa-services',
+        icon: <MapPin size={15} />,
+        tag: 'Hot',
+        sub: 'UAE Work Visa'
+    },
+    {
+        label: 'Tokyo',
+        href: '/visa-services',
+        icon: <MapPin size={15} />,
+        tag: 'New',
+        sub: 'Japan Work Permit'
+    },
+    {
+        label: 'Germany',
+        href: '/visa-services',
+        icon: <MapPin size={15} />,
+        tag: null,
+        sub: 'EU Blue Card'
+    },
+    {
+        label: 'France',
+        href: '/visa-services',
+        icon: <MapPin size={15} />,
+        tag: null,
+        sub: 'Talent Passport Visa'
+    },
+]
+
 const staticLinks = [
-    { label: 'Scholarships', href: '/scholarships', icon: <Award size={16} /> },
     { label: 'About Us', href: '/about', icon: <Info size={16} /> },
     { label: 'Contact Us', href: '/contact', icon: <PhoneCall size={16} /> },
 ]
 
-function DropdownLink({ label, icon, items }) {
+function DropdownLink({ label, icon, items, megaHint }) {
     const [open, setOpen] = useState(false)
     const ref = useRef(null)
 
@@ -64,11 +94,64 @@ function DropdownLink({ label, icon, items }) {
     )
 }
 
+function WorkAbroadDropdown() {
+    const [open, setOpen] = useState(false)
+    const ref = useRef(null)
+
+    useEffect(() => {
+        const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+        document.addEventListener('mousedown', handler)
+        return () => document.removeEventListener('mousedown', handler)
+    }, [])
+
+    return (
+        <li className="dropdown work-abroad-dropdown" ref={ref}>
+            <button
+                className="dropdown-trigger work-abroad-trigger"
+                onClick={() => setOpen(o => !o)}
+                aria-expanded={open}
+            >
+                <Briefcase size={16} />
+                Work Abroad
+                <ChevronDown size={14} className={`chevron${open ? ' open' : ''}`} />
+            </button>
+            {open && (
+                <div className="work-abroad-mega">
+                    <div className="work-abroad-mega-header">
+                        <h4>Work Abroad Destinations</h4>
+                        <p>Find the right work visa for your dream destination</p>
+                    </div>
+                    <ul className="work-abroad-list">
+                        {workAbroadDropdown.map(item => (
+                            <li key={item.label}>
+                                <Link to={item.href} onClick={() => setOpen(false)} className="work-abroad-item">
+                                    <span className="work-abroad-flag">{item.icon}</span>
+                                    <span className="work-abroad-info">
+                                        <strong>{item.label} {item.tag && <span className="work-tag">{item.tag}</span>}</strong>
+                                        <small>{item.sub}</small>
+                                    </span>
+                                    <ArrowRight size={13} className="work-abroad-arrow" />
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                    <div className="work-abroad-mega-footer">
+                        <Link to="/visa-services" onClick={() => setOpen(false)} className="work-mega-cta">
+                            View All Work Visas <ArrowRight size={13} />
+                        </Link>
+                    </div>
+                </div>
+            )}
+        </li>
+    )
+}
+
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
     const [studyAbroadOpen, setStudyAbroadOpen] = useState(false)
     const [visaServicesOpen, setVisaServicesOpen] = useState(false)
+    const [workAbroadOpen, setWorkAbroadOpen] = useState(false)
     const location = useLocation()
 
     useEffect(() => {
@@ -124,6 +207,7 @@ export default function Navbar() {
                         </li>
                         <DropdownLink label="Study Abroad" icon={<GraduationCap size={16} />} items={studyAbroadDropdown} />
                         <DropdownLink label="Visa Services" icon={<Landmark size={16} />} items={visaServicesDropdown} />
+                        <WorkAbroadDropdown />
                         {staticLinks.map(l => (
                             <li key={l.href}>
                                 <Link to={l.href} className={location.pathname === l.href ? 'active' : ''}>
@@ -202,6 +286,34 @@ export default function Navbar() {
                                     </Link>
                                 </li>
                             ))}
+                        </ul>
+                    </li>
+
+                    {/* Work Abroad accordion - shares Visa Services page */}
+                    <li className={`mobile-accordion ${workAbroadOpen ? 'open' : ''}`}>
+                        <button className="mobile-accordion-trigger" onClick={() => setWorkAbroadOpen(!workAbroadOpen)}>
+                            <span className="trigger-label">
+                                <Briefcase size={16} /> <span className="mobile-link-text">Work Abroad</span>
+                            </span>
+                            <ChevronDown size={14} className="chevron" />
+                        </button>
+                        <ul className="mobile-accordion-menu">
+                            {workAbroadDropdown.map(item => (
+                                <li key={item.label}>
+                                    <Link to={item.href} onClick={() => setMenuOpen(false)}>
+                                        {item.icon}
+                                        <span className="mobile-link-text">
+                                            {item.label}
+                                            {item.tag && <span className="work-tag-mobile">{item.tag}</span>}
+                                        </span>
+                                    </Link>
+                                </li>
+                            ))}
+                            <li>
+                                <Link to="/visa-services" onClick={() => setMenuOpen(false)} className="mobile-visa-link">
+                                    <FileText size={15} /> <span className="mobile-link-text">View All Work Visas</span>
+                                </Link>
+                            </li>
                         </ul>
                     </li>
 

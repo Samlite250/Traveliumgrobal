@@ -3324,7 +3324,7 @@ tr:hover td {
 /* ===== DESTINATION SHOWCASE GRID ===== */
 .hero-dest-grid-wrap {
   background: var(--off-white);
-  padding: 2.5rem 0 3rem;
+  padding: 2.5rem 0 3.5rem;
   border-top: 1px solid var(--gray-200);
 }
 
@@ -3332,6 +3332,285 @@ tr:hover td {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 1.25rem;
+}
+
+.hero-dest-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(10, 18, 45, 0.08);
+  border: 1px solid var(--gray-200);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-dest-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(10, 18, 45, 0.15);
+}
+
+.hero-dest-img {
+  position: relative;
+  height: 160px;
+  overflow: hidden;
+}
+
+.hero-dest-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.hero-dest-card:hover .hero-dest-img img {
+  transform: scale(1.07);
+}
+
+.hero-dest-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 18, 45, 0.50), transparent 60%);
+}
+
+.hero-dest-body {
+  padding: 0.85rem 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.hero-dest-label {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.hero-dest-desc {
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* Strong directive CTA button */
+.hero-dest-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--white);
+  background: var(--navy);
+  text-decoration: none;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease, gap 0.2s ease, transform 0.2s ease;
+  letter-spacing: 0.02em;
+  width: 100%;
+}
+
+.hero-dest-cta-btn:hover {
+  background: var(--gold-dark);
+  gap: 0.65rem;
+  transform: translateY(-1px);
+}
+
+/* Responsive: large screens show all 5 columns */
+@media (min-width: 1200px) {
+  .hero-dest-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Responsive: tablet — 3 cols, 2 rows */
+@media (max-width: 1024px) {
+  .hero-dest-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Responsive: small tablet */
+@media (max-width: 768px) {
+  .hero-dest-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+  }
+
+  .hero-dest-img {
+    height: 130px;
+  }
+
+  .hero-dest-grid-wrap {
+    padding: 1.5rem 0 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-dest-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* ===== WORK ABROAD MEGA DROPDOWN ===== */
+.work-abroad-dropdown {
+  position: relative;
+}
+
+.work-abroad-trigger {
+  color: var(--navy) !important;
+  font-weight: 700;
+}
+
+.work-abroad-mega {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 40px rgba(10, 18, 45, 0.14);
+  z-index: 300;
+  overflow: hidden;
+  animation: dropFadeIn 0.18s ease forwards;
+}
+
+@keyframes dropFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.work-abroad-mega-header {
+  background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+  padding: 0.9rem 1.1rem;
+}
+
+.work-abroad-mega-header h4 {
+  color: var(--white);
+  font-size: 0.88rem;
+  font-weight: 800;
+  margin: 0 0 0.2rem;
+}
+
+.work-abroad-mega-header p {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.73rem;
+  margin: 0;
+}
+
+.work-abroad-list {
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+}
+
+.work-abroad-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.1rem;
+  text-decoration: none;
+  color: var(--navy);
+  transition: background 0.15s ease;
+}
+
+.work-abroad-item:hover {
+  background: var(--gray-100);
+}
+
+.work-abroad-flag {
+  color: var(--gold-dark);
+  flex-shrink: 0;
+}
+
+.work-abroad-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.work-abroad-info strong {
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.work-abroad-info small {
+  font-size: 0.72rem;
+  color: var(--gray-600);
+}
+
+.work-tag {
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+}
+
+.work-abroad-arrow {
+  color: var(--gray-400);
+  flex-shrink: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.work-abroad-item:hover .work-abroad-arrow {
+  transform: translateX(3px);
+  color: var(--gold-dark);
+}
+
+.work-abroad-mega-footer {
+  padding: 0.65rem 1.1rem 0.85rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.work-mega-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: none;
+  transition: gap 0.15s ease, color 0.15s ease;
+}
+
+.work-mega-cta:hover {
+  color: var(--gold-dark);
+  gap: 0.65rem;
+}
+
+/* Mobile work abroad tag */
+.work-tag-mobile {
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+}
+
+.mobile-visa-link {
+  color: var(--gold-dark) !important;
+  font-weight: 700;
 }
 
 .hero-dest-card {

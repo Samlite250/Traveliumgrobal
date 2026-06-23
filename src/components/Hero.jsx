@@ -16,13 +16,15 @@ const marqueeImages = [
         alt: 'Study Group',
         label: 'Study Abroad',
         desc: 'Join top-ranked universities across the UK, USA & Europe with expert guidance.',
-        link: '/programs'
+        cta: 'Apply Now',
+        link: '/apply'
     },
     {
         src: 'https://images.unsplash.com/photo-1513635269975-59663e0ca1ad?w=600&q=80&auto=format&fit=crop',
         alt: 'London',
         label: 'United Kingdom',
         desc: 'Russell Group universities, post-study work visas & scholarship opportunities.',
+        cta: 'Explore UK',
         link: '/destinations'
     },
     {
@@ -30,13 +32,15 @@ const marqueeImages = [
         alt: 'Travel & Visas',
         label: 'Visa Assistance',
         desc: '98% success rate. We handle every step of your student or work visa application.',
-        link: '/services'
+        cta: 'Get Your Visa',
+        link: '/visa-services'
     },
     {
         src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80&auto=format&fit=crop',
         alt: 'International Students',
         label: 'Global Community',
         desc: 'Connect with 15,000+ alumni from 50+ countries sharing your global ambitions.',
+        cta: 'Join Us',
         link: '/about'
     },
     {
@@ -44,9 +48,51 @@ const marqueeImages = [
         alt: 'Campus Library',
         label: 'Scholarships',
         desc: 'Access curated scholarships worth millions — fully supported applications.',
+        cta: 'Find Scholarships',
         link: '/scholarships'
     },
+    {
+        src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80&auto=format&fit=crop',
+        alt: 'Collaborative Study',
+        label: 'Work Abroad — Dubai',
+        desc: 'Land a high-paying role in the UAE. We manage your work visa from start to finish.',
+        cta: 'Apply for Dubai',
+        link: '/visa-services'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1503917988258-f87a78e3c995?w=600&q=80&auto=format&fit=crop',
+        alt: 'Germany',
+        label: 'Work Abroad — Germany',
+        desc: 'EU Blue Card & skilled worker visas. Relocate to Europe\'s biggest economy.',
+        cta: 'Get Germany Visa',
+        link: '/visa-services'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80&auto=format&fit=crop',
+        alt: 'Tokyo Japan',
+        label: 'Work Abroad — Tokyo',
+        desc: 'Japan\'s booming tech & hospitality sectors are hiring internationally right now.',
+        cta: 'Apply for Japan',
+        link: '/visa-services'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1431274172761-fca41d930114?w=600&q=80&auto=format&fit=crop',
+        alt: 'Paris France',
+        label: 'Work Abroad — France',
+        desc: 'France Talent Passport Visa: fast-track work authorization for skilled professionals.',
+        cta: 'Apply for France',
+        link: '/visa-services'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&q=80&auto=format&fit=crop',
+        alt: 'Career Coaching',
+        label: 'Career Support',
+        desc: 'CV writing, interview prep & job placement support — we don\'t stop at the visa.',
+        cta: 'Register Free',
+        link: '/apply'
+    },
 ]
+
 
 const proofAvatars = [
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop&crop=faces&q=80',
@@ -252,8 +298,8 @@ export default function Hero() {
                                 <div className="hero-dest-body">
                                     <h4 className="hero-dest-label">{img.label}</h4>
                                     <p className="hero-dest-desc">{img.desc}</p>
-                                    <Link to={img.link} className="hero-dest-cta">
-                                        Explore <ArrowRight size={14} />
+                                    <Link to={img.link} className="hero-dest-cta-btn">
+                                        {img.cta} <ArrowRight size={14} />
                                     </Link>
                                 </div>
                             </div>
