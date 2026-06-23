@@ -1,0 +1,131 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
+import { Send, CheckCircle, ArrowRight, Globe, Info } from 'lucide-react'
+
+export default function Apply() {
+    const [form, setForm] = useState({
+        full_name: '', email: '', phone: '', nationality: '',
+        destination: '', program_type: '', education_level: '', message: ''
+    })
+    const [status, setStatus] = useState(null)
+    const [loading, setLoading] = useState(false)
+
+    const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+
+    const handleSubmit = async e => {
+        e.preventDefault()
+        setLoading(true)
+        setStatus(null)
+        const { error } = await supabase.from('applications').insert([form])
+        setLoading(false)
+        if (error) {
+            setStatus({ type: 'error', msg: 'Submission failed. Please try again or contact us.' })
+        } else {
+            setStatus({ type: 'success', msg: 'Application submitted successfully! Our team will reach out within 2 business days.' })
+            setForm({ full_name: '', email: '', phone: '', nationality: '', destination: '', program_type: '', education_level: '', message: '' })
+        }
+    }
+
+    return (
+        <main>
+            <div className="page-hero">
+                <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop)' }} />
+                <div className="container page-hero-content">
+                    <div className="breadcrumb">
+                        <Link to="/">Home</Link><span className="sep">›</span><span>Apply Now</span>
+                    </div>
+                    <h1>Start Your Application</h1>
+                    <p>Fill in your details and our expert team will guide you to the right program and destination.</p>
+                </div>
+            </div>
+
+            <section className="form-page">
+                <div className="container">
+                    <form className="form-card animate-fadeIn" onSubmit={handleSubmit}>
+                        <div className="form-header">
+                            <h2>Application Form</h2>
+                            <p className="sub">All fields marked * are required. We'll respond within 2 business days.</p>
+                        </div>
+                        <div className="form-grid">
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Full Name *</label>
+                                    <input name="full_name" value={form.full_name} onChange={set} required placeholder="First and last name" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Email Address *</label>
+                                    <input type="email" name="email" value={form.email} onChange={set} required placeholder="you@email.com" />
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Phone Number *</label>
+                                    <input name="phone" value={form.phone} onChange={set} required placeholder="+1 (999) 000-0000" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Nationality *</label>
+                                    <input name="nationality" value={form.nationality} onChange={set} required placeholder="e.g. Nigerian, Indian..." />
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label>Preferred Destination *</label>
+                                    <div className="select-wrap">
+                                        <Globe size={16} className="select-icon" />
+                                        <select name="destination" value={form.destination} onChange={set} required>
+                                            <option value="">Select country</option>
+                                            {['Canada', 'United States', 'United Kingdom', 'Australia', 'Germany', 'New Zealand', 'France', 'Netherlands'].map(c => (
+                                                <option key={c}>{c}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Service Type *</label>
+                                    <div className="select-wrap">
+                                        <Info size={16} className="select-icon" />
+                                        <select name="program_type" value={form.program_type} onChange={set} required>
+                                            <option value="">Select service</option>
+                                            <option value="study">Study Abroad</option>
+                                            <option value="student_visa">Student Visa</option>
+                                            <option value="tourist">Tourist Visa</option>
+                                            <option value="work">Work Visa</option>
+                                            <option value="scholarship">Scholarship Application</option>
+                                            <option value="residency">Permanent Residency</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>Highest Education Level *</label>
+                                <select name="education_level" value={form.education_level} onChange={set} required>
+                                    <option value="">Select level</option>
+                                    <option>High School</option>
+                                    <option>Bachelor's Degree</option>
+                                    <option>Master's Degree</option>
+                                    <option>PhD</option>
+                                    <option>Professional Certification</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Additional Information</label>
+                                <textarea name="message" value={form.message} onChange={set} placeholder="Tell us about your goals, timeline, budget, or any specific requirements..." />
+                            </div>
+                            <button type="submit" className="form-submit" disabled={loading}>
+                                {loading ? 'Submitting...' : 'Submit Application'}
+                                {!loading && <Send size={18} style={{ marginLeft: '.75rem' }} />}
+                            </button>
+                            {status && (
+                                <div className={`form-msg ${status.type}`}>
+                                    {status.type === 'success' && <CheckCircle size={18} style={{ marginRight: '.5rem' }} />}
+                                    {status.msg}
+                                </div>
+                            )}
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    )
+}
