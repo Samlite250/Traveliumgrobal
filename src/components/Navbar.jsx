@@ -4,7 +4,7 @@ import {
     Mail, Phone, Clock, Globe, Send, Play,
     Plane, GraduationCap, Landmark, Award, Info, PhoneCall,
     User, ArrowRight, Menu, X, ChevronDown, Home,
-    BookOpen, Building2, FileText, Briefcase, MapPin, Star, Suitcase
+    BookOpen, Building2, FileText, Briefcase, MapPin, Star
 } from 'lucide-react'
 
 const studyAbroadDropdown = [

@@ -285,26 +285,24 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* ── Destination Showcase Grid ── */}
-            <div className="hero-dest-grid-wrap">
-                <div className="container">
-                    <div className="hero-dest-grid">
-                        {marqueeImages.map((img, i) => (
-                            <div className="hero-dest-card" key={i}>
-                                <div className="hero-dest-img">
-                                    <img src={img.src} alt={img.alt} loading="lazy" />
-                                    <div className="hero-dest-img-overlay" />
-                                </div>
-                                <div className="hero-dest-body">
-                                    <h4 className="hero-dest-label">{img.label}</h4>
-                                    <p className="hero-dest-desc">{img.desc}</p>
-                                    <Link to={img.link} className="hero-dest-cta-btn">
-                                        {img.cta} <ArrowRight size={14} />
-                                    </Link>
-                                </div>
+            {/* ── Destination Showcase Scroll Strip ── */}
+            <div className="hero-dest-strip-wrap">
+                <div className="hero-dest-scroll">
+                    {marqueeImages.map((img, i) => (
+                        <div className="hero-dest-card" key={i}>
+                            <div className="hero-dest-img">
+                                <img src={img.src} alt={img.alt} loading="lazy" />
+                                <div className="hero-dest-img-overlay" />
+                                <span className="hero-dest-img-label">{img.label}</span>
                             </div>
-                        ))}
-                    </div>
+                            <div className="hero-dest-body">
+                                <p className="hero-dest-desc">{img.desc}</p>
+                                <Link to={img.link} className="hero-dest-cta-btn">
+                                    {img.cta} <ArrowRight size={14} />
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
