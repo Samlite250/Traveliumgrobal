@@ -11,14 +11,41 @@ const heroBgImages = [
 ]
 
 const marqueeImages = [
-    { src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=480&q=75&auto=format&fit=crop', alt: 'Student Life' },
-    { src: 'https://images.unsplash.com/photo-1513635269975-59663e0ca1ad?w=480&q=75&auto=format&fit=crop', alt: 'London Study' },
-    { src: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=480&q=75&auto=format&fit=crop', alt: 'Travel Airport' },
-    { src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=480&q=75&auto=format&fit=crop', alt: 'International Students' },
-    { src: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=480&q=75&auto=format&fit=crop', alt: 'Campus Library' },
-    { src: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=480&q=75&auto=format&fit=crop', alt: 'Graduation' },
-    { src: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=480&q=75&auto=format&fit=crop', alt: 'University Campus' },
-    { src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=480&q=75&auto=format&fit=crop', alt: 'Study Group' },
+    {
+        src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80&auto=format&fit=crop',
+        alt: 'Study Group',
+        label: 'Study Abroad',
+        desc: 'Join top-ranked universities across the UK, USA & Europe with expert guidance.',
+        link: '/programs'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1513635269975-59663e0ca1ad?w=600&q=80&auto=format&fit=crop',
+        alt: 'London',
+        label: 'United Kingdom',
+        desc: 'Russell Group universities, post-study work visas & scholarship opportunities.',
+        link: '/destinations'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=600&q=80&auto=format&fit=crop',
+        alt: 'Travel & Visas',
+        label: 'Visa Assistance',
+        desc: '98% success rate. We handle every step of your student or work visa application.',
+        link: '/services'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80&auto=format&fit=crop',
+        alt: 'International Students',
+        label: 'Global Community',
+        desc: 'Connect with 15,000+ alumni from 50+ countries sharing your global ambitions.',
+        link: '/about'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=600&q=80&auto=format&fit=crop',
+        alt: 'Campus Library',
+        label: 'Scholarships',
+        desc: 'Access curated scholarships worth millions — fully supported applications.',
+        link: '/scholarships'
+    },
 ]
 
 const proofAvatars = [
@@ -212,13 +239,23 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* ── Horizontal marquee ── */}
-            <div className="hero-marquee-wrap">
-                <div className="hero-marquee">
-                    <div className="hero-marquee-track">
-                        {[...marqueeImages, ...marqueeImages].map((img, i) => (
-                            <div className="hero-marquee-card" key={i}>
-                                <img src={img.src} alt={img.alt} loading={i < 8 ? 'eager' : 'lazy'} />
+            {/* ── Destination Showcase Grid ── */}
+            <div className="hero-dest-grid-wrap">
+                <div className="container">
+                    <div className="hero-dest-grid">
+                        {marqueeImages.map((img, i) => (
+                            <div className="hero-dest-card" key={i}>
+                                <div className="hero-dest-img">
+                                    <img src={img.src} alt={img.alt} loading="lazy" />
+                                    <div className="hero-dest-img-overlay" />
+                                </div>
+                                <div className="hero-dest-body">
+                                    <h4 className="hero-dest-label">{img.label}</h4>
+                                    <p className="hero-dest-desc">{img.desc}</p>
+                                    <Link to={img.link} className="hero-dest-cta">
+                                        Explore <ArrowRight size={14} />
+                                    </Link>
+                                </div>
                             </div>
                         ))}
                     </div>
