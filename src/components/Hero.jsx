@@ -29,15 +29,64 @@ export default function Hero() {
                         </Link>
                     </div>
                 </div>
-                <div className="hero-visual reveal">
-                    <div className="hero-visual-card main">
-                        <img src="https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=1200&auto=format&fit=crop" alt="University Students" />
+                <div className="hero-scroller reveal">
+                    <div className="hero-scroller-col col-up">
+                        <div className="hero-scroller-inner">
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=75&auto=format&fit=crop" alt="Student Life" loading="eager" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1513635269975-59663e0ca1ad?w=600&q=75&auto=format&fit=crop" alt="United Kingdom Study" loading="eager" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=600&q=75&auto=format&fit=crop" alt="Travel Airport" loading="eager" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=75&auto=format&fit=crop" alt="International Students" loading="eager" />
+                            </div>
+                            {/* Duplicate for infinite loop */}
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=75&auto=format&fit=crop" alt="Student Life" loading="lazy" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1513635269975-59663e0ca1ad?w=600&q=75&auto=format&fit=crop" alt="United Kingdom Study" loading="lazy" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=600&q=75&auto=format&fit=crop" alt="Travel Airport" loading="lazy" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=75&auto=format&fit=crop" alt="International Students" loading="lazy" />
+                            </div>
+                        </div>
                     </div>
-                    <div className="hero-visual-card small">
-                        <img src="https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=800&auto=format&fit=crop" alt="Travel" />
-                    </div>
-                    <div className="hero-visual-card small">
-                        <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?q=80&w=800&auto=format&fit=crop" alt="Campus Life" />
+                    <div className="hero-scroller-col col-down">
+                        <div className="hero-scroller-inner">
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=600&q=75&auto=format&fit=crop" alt="Campus Library" loading="eager" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=600&q=75&auto=format&fit=crop" alt="Graduation Ceremony" loading="eager" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=600&q=75&auto=format&fit=crop" alt="University Campus" loading="eager" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=75&auto=format&fit=crop" alt="Student Group Studying" loading="eager" />
+                            </div>
+                            {/* Duplicate for infinite loop */}
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=600&q=75&auto=format&fit=crop" alt="Campus Library" loading="lazy" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=600&q=75&auto=format&fit=crop" alt="Graduation Ceremony" loading="lazy" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=600&q=75&auto=format&fit=crop" alt="University Campus" loading="lazy" />
+                            </div>
+                            <div className="hero-scroller-card">
+                                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=75&auto=format&fit=crop" alt="Student Group Studying" loading="lazy" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -499,15 +499,23 @@ button {
   display: inline-flex;
   align-items: center;
   gap: .5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(200, 168, 75, 0.12);
+  border: 1px solid rgba(200, 168, 75, 0.4);
   color: var(--gold-light);
-  font-size: .8rem;
+  font-size: .78rem;
   font-weight: 700;
-  padding: .45rem 1.2rem;
+  padding: .5rem 1.4rem;
   border-radius: 100px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
   text-transform: uppercase;
+  letter-spacing: .08em;
+  animation: badgePulse 3s ease-in-out infinite;
+  box-shadow: 0 0 18px rgba(200, 168, 75, 0.2);
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 18px rgba(200, 168, 75, 0.15); }
+  50% { box-shadow: 0 0 32px rgba(200, 168, 75, 0.4); }
 }
 
 .hero-title {
@@ -535,39 +543,87 @@ button {
   max-width: 540px;
 }
 
-.hero-visual {
+.hero-scroller {
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
-  transform: translateY(2rem);
+  height: 480px;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
-.hero-visual-card {
+.hero-scroller-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hero-scroller-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.col-up .hero-scroller-inner {
+  animation: scrollUpVertical 28s linear infinite;
+}
+
+.col-down .hero-scroller-inner {
+  animation: scrollDownVertical 28s linear infinite;
+}
+
+.hero-scroller:hover .col-up .hero-scroller-inner,
+.hero-scroller:hover .col-down .hero-scroller-inner {
+  animation-play-state: paused;
+}
+
+.hero-scroller-card {
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  border: 4px solid var(--white);
+  height: 180px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   transition: var(--transition);
+  background: var(--navy-dark);
 }
 
-.hero-visual-card.main {
-  grid-column: 1 / -1;
-  height: 300px;
-}
-
-.hero-visual-card.small {
-  height: 200px;
-}
-
-.hero-visual-card:hover {
-  transform: translateY(-10px) scale(1.02);
-}
-
-.hero-visual-card img {
+.hero-scroller-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
+  filter: brightness(0.92) saturate(1.1);
+}
+
+.hero-scroller-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--gold);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(200, 168, 75, 0.3);
+}
+
+.hero-scroller-card:hover img {
+  transform: scale(1.1);
+  filter: brightness(1.05) saturate(1.15);
+}
+
+@keyframes scrollUpVertical {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(calc(-50% - 0.75rem));
+  }
+}
+
+@keyframes scrollDownVertical {
+  0% {
+    transform: translateY(calc(-50% - 0.75rem));
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /* ===== STATS BAR ===== */
@@ -639,22 +695,57 @@ button {
   border: 1px solid var(--gray-200);
   transition: var(--transition);
   overflow: hidden;
+  position: relative;
+}
+
+.service-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--navy), var(--gold));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover::after {
+  transform: scaleX(1);
+}
+
+.service-card:hover {
+  box-shadow: 0 20px 48px rgba(26, 43, 94, 0.12);
+  border-color: transparent;
+  transform: translateY(-4px);
 }
 
 .service-img {
-  height: 180px;
+  height: 190px;
   overflow: hidden;
+  position: relative;
+}
+
+.service-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(15, 26, 61, 0.3) 100%);
+  pointer-events: none;
 }
 
 .service-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: var(--transition);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
+  filter: brightness(0.95) saturate(1.05);
 }
 
 .service-card:hover .service-img img {
-  transform: scale(1.05);
+  transform: scale(1.08);
+  filter: brightness(1.05) saturate(1.1);
 }
 
 .service-content {
@@ -662,8 +753,8 @@ button {
 }
 
 .service-icon {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   border-radius: 12px;
   background: var(--gray-100);
   color: var(--navy);
@@ -671,24 +762,32 @@ button {
   place-items: center;
   margin-bottom: 1rem;
   transition: var(--transition);
+  border: 1px solid var(--gray-200);
 }
 
 .service-card:hover .service-icon {
   background: var(--navy);
   color: var(--white);
+  border-color: var(--navy);
+  box-shadow: 0 4px 12px rgba(26, 43, 94, 0.2);
 }
 
 .service-card h3 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--navy);
-  margin-bottom: .6rem;
+  margin-bottom: .5rem;
+  transition: color .2s ease;
+}
+
+.service-card:hover h3 {
+  color: var(--navy-dark);
 }
 
 .service-card p {
   font-size: .875rem;
   color: var(--text-light);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .service-link {
@@ -918,40 +1017,55 @@ button {
   border: 1px solid var(--gray-200);
   transition: var(--transition);
   cursor: pointer;
+  background: var(--white);
 }
 
 .destination-card:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 20px 48px rgba(26, 43, 94, 0.15);
   transform: translateY(-6px);
   border-color: transparent;
 }
 
 .destination-img {
-  height: 200px;
+  height: 210px;
   position: relative;
   overflow: hidden;
 }
 
-.destination-img img {
+.destination-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(15, 26, 61, 0.55) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.destination-img img:first-child {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: var(--transition);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
+  display: block;
+  filter: brightness(0.9) saturate(1.1);
 }
 
-.destination-card:hover .destination-img img {
+.destination-card:hover .destination-img img:first-child {
   transform: scale(1.1);
+  filter: brightness(1.0) saturate(1.15);
 }
 
 .destination-flag {
-  position: absolute;
-  top: .75rem;
-  left: .75rem;
-  width: 28px;
-  height: 18px;
-  object-fit: cover;
-  border-radius: 2px;
-  z-index: 2;
+  position: absolute !important;
+  top: .75rem !important;
+  left: .75rem !important;
+  width: 40px !important;
+  height: 26px !important;
+  object-fit: cover !important;
+  border-radius: 4px !important;
+  z-index: 3 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+  border: 1.5px solid rgba(255,255,255,0.6) !important;
 }
 
 .destination-info {
@@ -2395,10 +2509,52 @@ tr:hover td {
     display: none;
   }
 
-  .hero-visual {
-    margin-top: 0;
-    transform: none;
-    padding-bottom: 4rem;
+  .hero-scroller {
+    display: flex;
+    flex-direction: row;
+    height: 150px;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    overflow: hidden;
+    padding: 0 1rem 2rem;
+    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  }
+
+  .hero-scroller-col.col-down {
+    display: none;
+  }
+
+  .hero-scroller-col.col-up {
+    flex-direction: row;
+    width: max-content;
+  }
+
+  .col-up .hero-scroller-inner {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    animation: scrollLeftHorizontal 25s linear infinite;
+  }
+
+  .hero-scroller-card {
+    width: 170px;
+    height: 120px;
+    flex-shrink: 0;
+    border-width: 3px;
+  }
+
+  @keyframes scrollLeftHorizontal {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-50% - 0.5rem));
+    }
   }
 
   .stats-bar .container {
