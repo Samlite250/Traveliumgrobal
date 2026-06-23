@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Calendar, GraduationCap, Star, CheckCircle, Send } from 'lucide-react'
+import { ArrowRight, Calendar, GraduationCap, Star, CheckCircle, Send, ChevronLeft, ChevronRight } from 'lucide-react'
 
 // Hero background slideshow images — Dubai, visas, scholarships, campuses
 const heroBgImages = [
@@ -110,6 +110,60 @@ export default function Hero() {
         service: ''
     });
     const [submitted, setSubmitted] = useState(false);
+    const scrollRef = useRef(null);
+    const scrollPosRef = useRef(0);
+    const requestRef = useRef();
+
+    useEffect(() => {
+        const play = () => {
+            if (scrollRef.current) {
+                scrollPosRef.current += 0.15;
+                
+                // loop back when scrolling past original content
+                // card width is approx 240px + 1.1rem gap (approx 257px)
+                // 10 items * 257.6px = 2576px
+                if (scrollPosRef.current >= 2576) {
+                    scrollPosRef.current = 0;
+                }
+                
+                scrollRef.current.scrollLeft = scrollPosRef.current;
+            }
+            requestRef.current = requestAnimationFrame(play);
+        };
+        requestRef.current = requestAnimationFrame(play);
+        return () => cancelAnimationFrame(requestRef.current);
+    }, []);
+
+    const handleMouseEnter = () => cancelAnimationFrame(requestRef.current);
+    const handleMouseLeave = () => {
+        // sync pos before restarting
+        if (scrollRef.current) scrollPosRef.current = scrollRef.current.scrollLeft;
+        const play = () => {
+            if (scrollRef.current) {
+                scrollPosRef.current += 0.15;
+                if (scrollPosRef.current >= 2576) {
+                    scrollPosRef.current = 0;
+                }
+                scrollRef.current.scrollLeft = scrollPosRef.current;
+            }
+            requestRef.current = requestAnimationFrame(play);
+        };
+        requestRef.current = requestAnimationFrame(play);
+    };
+
+    const scrollLeft = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+            scrollPosRef.current = scrollRef.current.scrollLeft - 300;
+        }
+    };
+
+    const scrollRight = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+            scrollPosRef.current = scrollRef.current.scrollLeft + 300;
+        }
+    };
 
     // Cycle background image every 60 seconds
     useEffect(() => {
@@ -287,8 +341,23 @@ export default function Hero() {
 
             {/* ── Destination Showcase Scroll Strip ── */}
             <div className="hero-dest-strip-wrap">
-                <div className="hero-dest-scroll">
-                    {marqueeImages.map((img, i) => (
+                <div className="hero-dest-controls">
+                    <button className="dest-scroll-btn left" onClick={scrollLeft} aria-label="Scroll left">
+                        <ChevronLeft size={20} />
+                    </button>
+                    <button className="dest-scroll-btn right" onClick={scrollRight} aria-label="Scroll right">
+                        <ChevronRight size={20} />
+                    </button>
+                </div>
+                <div 
+                    className="hero-dest-scroll" 
+                    ref={scrollRef}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onTouchStart={handleMouseEnter}
+                    onTouchEnd={handleMouseLeave}
+                >
+                    {[...marqueeImages, ...marqueeImages].map((img, i) => (
                         <div className="hero-dest-card" key={i}>
                             <div className="hero-dest-img">
                                 <img src={img.src} alt={img.alt} loading="lazy" />
