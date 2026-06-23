@@ -182,7 +182,7 @@ export default function Navbar() {
                 <div className="container">
                     <div className="topbar-left">
                         <span><Mail size={12} /> info@traveliumglobal.com</span>
-                        <span><Phone size={12} /> +1 (999) 123-4567</span>
+                        <span><Phone size={12} /> +250 788207455</span>
                         <span><Clock size={12} /> Mon–Sat: 9AM – 7PM</span>
                     </div>
                     <div className="topbar-right">

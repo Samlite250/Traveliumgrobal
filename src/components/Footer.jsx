@@ -83,7 +83,7 @@ export default function Footer() {
                                 </div>
                                 <div className="footer-contact-item">
                                     <Phone size={16} className="icon" />
-                                    <a href="tel:+19991234567">+1 (999) 123-4567</a>
+                                    <a href="tel:+19991234567">+250 788207455</a>
                                 </div>
                                 <div className="footer-contact-item">
                                     <Mail size={16} className="icon" />

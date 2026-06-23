@@ -56,7 +56,7 @@ export default function Contact() {
                                     <div className="contact-item-icon"><Phone size={20} /></div>
                                     <div>
                                         <h4>Phone Number</h4>
-                                        <p>+1 (999) 123-4567</p>
+                                        <p>+250 788207455</p>
                                     </div>
                                 </div>
                                 <div className="contact-item">
