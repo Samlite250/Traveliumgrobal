@@ -340,7 +340,14 @@ export default function Hero() {
             </div>
 
             {/* ── Destination Showcase Scroll Strip ── */}
-            <div className="hero-dest-strip-wrap">
+            <div 
+                className="hero-dest-strip-wrap"
+                ref={scrollRef}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onTouchStart={handleMouseEnter}
+                onTouchEnd={handleMouseLeave}
+            >
                 <div className="hero-dest-controls">
                     <button className="dest-scroll-btn left" onClick={scrollLeft} aria-label="Scroll left">
                         <ChevronLeft size={20} />
@@ -349,14 +356,7 @@ export default function Hero() {
                         <ChevronRight size={20} />
                     </button>
                 </div>
-                <div 
-                    className="hero-dest-scroll" 
-                    ref={scrollRef}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                    onTouchStart={handleMouseEnter}
-                    onTouchEnd={handleMouseLeave}
-                >
+                <div className="hero-dest-scroll">
                     {[...marqueeImages, ...marqueeImages].map((img, i) => (
                         <div className="hero-dest-card" key={i}>
                             <div className="hero-dest-img">

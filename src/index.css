@@ -2964,8 +2964,28 @@ tr:hover td {
     overflow-x: hidden;
   }
 
+  .topbar .container {
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.4rem 1rem;
+    align-items: center;
+  }
+
   .topbar-left {
-    display: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .topbar-left span {
+    font-size: 0.72rem;
+  }
+
+  .topbar-right {
+    justify-content: center;
+    gap: 0.5rem;
   }
 
   .nav-links,
@@ -3673,4 +3693,98 @@ tr:hover td {
 .mobile-visa-link {
   color: var(--gold-dark) !important;
   font-weight: 700;
-}
+}
+
+/* ===== LOADING SCREEN & PAGE TRANSITIONS ===== */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--navy-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  gap: 1.5rem;
+}
+
+.loading-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.spinner-ring {
+  width: 100%;
+  height: 100%;
+  border: 4px solid rgba(200, 168, 75, 0.15);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin-loader 1.2s cubic-bezier(.5, 0, .5, 1) infinite;
+}
+
+.spinner-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plane-spin {
+  animation: float-loader 2.5s ease-in-out infinite;
+}
+
+.loading-text {
+  color: var(--white);
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 700;
+  animation: pulse-glow-loader 1.8s ease-in-out infinite;
+}
+
+main {
+  animation: pageFadeIn 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes spin-loader {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float-loader {
+  0%, 100% {
+    transform: translate(0, 0) rotate(45deg);
+  }
+  50% {
+    transform: translate(0, -6px) rotate(45deg);
+  }
+}
+
+@keyframes pulse-glow-loader {
+  0%, 100% {
+    opacity: 0.5;
+    text-shadow: 0 0 4px rgba(200, 168, 75, 0);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 8px rgba(200, 168, 75, 0.45);
+  }
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
