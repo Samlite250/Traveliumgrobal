@@ -181,9 +181,9 @@ export default function Navbar() {
             <div className="topbar">
                 <div className="container">
                     <div className="topbar-left">
-                        <span><Mail size={12} /> info@traveliumglobal.com</span>
-                        <span><Phone size={12} /> +250 788207455</span>
-                        <span><Clock size={12} /> Mon–Sat: 9AM – 7PM</span>
+                        <a href="mailto:info@traveliumglobal.com" className="topbar-link"><Mail size={12} /> info@traveliumglobal.com</a>
+                        <a href="tel:+250788207455" className="topbar-link"><Phone size={12} /> +250 788207455</a>
+                        <span className="topbar-hours"><Clock size={12} /> Mon–Sat: 9AM – 7PM</span>
                     </div>
                     <div className="topbar-right">
                         <a href="#" aria-label="LinkedIn"><Globe size={12} /></a>
@@ -197,7 +197,10 @@ export default function Navbar() {
                 <div className="container">
                     <Link to="/" className="nav-logo">
                         <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
-                        TRAVELIUM
+                        <div className="logo-text-stack">
+                            <span className="logo-name">TRAVELIUM</span>
+                            <span className="logo-tagline">Grobal</span>
+                        </div>
                     </Link>
                     <ul className="nav-links">
                         <li>
@@ -240,7 +243,10 @@ export default function Navbar() {
                 <div className="mobile-menu-header">
                     <Link to="/" className="nav-logo" onClick={() => setMenuOpen(false)}>
                         <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
-                        TRAVELIUM
+                        <div className="logo-text-stack">
+                            <span className="logo-name">TRAVELIUM</span>
+                            <span className="logo-tagline">Grobal</span>
+                        </div>
                     </Link>
                     <button className="mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close">
                         <X size={24} />

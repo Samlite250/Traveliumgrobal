@@ -54,7 +54,10 @@ export default function Footer() {
                             <div className="footer-brand">
                                 <Link to="/" className="nav-logo">
                                     <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
-                                    TRAVELIUM
+                                    <div className="logo-text-stack">
+                                        <span className="logo-name">TRAVELIUM</span>
+                                        <span className="logo-tagline">Grobal</span>
+                                    </div>
                                 </Link>
                                 <p>Your Gateway to Global Education and Travel Opportunities. We help you achieve your international dreams with expert guidance.</p>
                                 <div className="footer-social">

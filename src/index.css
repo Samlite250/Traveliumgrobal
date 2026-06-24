@@ -177,10 +177,17 @@ button {
   flex-wrap: wrap;
 }
 
-.topbar-left span {
+.topbar-left span,
+.topbar-link {
   display: flex;
   align-items: center;
   gap: .35rem;
+  color: rgba(255,255,255,.8);
+  transition: color .2s ease;
+}
+
+.topbar-link:hover {
+  color: var(--gold);
 }
 
 .topbar-right {
@@ -243,6 +250,29 @@ button {
   place-items: center;
   color: var(--navy);
   font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.logo-text-stack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  gap: 1px;
+}
+
+.logo-name {
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: inherit;
+  letter-spacing: 0.04em;
+}
+
+.logo-tagline {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .nav-links {
@@ -1638,7 +1668,7 @@ button {
 .trust-badges {
   background: var(--white);
   border-top: 1px solid var(--gray-200);
-  padding: 2rem 0;
+  padding: 1.1rem 0;
 }
 
 .trust-badges .container {
@@ -1688,13 +1718,13 @@ button {
 }
 
 .footer-top {
-  padding: 4rem 0 2rem;
+  padding: 2.25rem 0 1.5rem;
 }
 
 .footer-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 3rem;
+  gap: 1.75rem;
 }
 
 .footer-brand .nav-logo {
@@ -2965,8 +2995,9 @@ tr:hover td {
   }
 
   .topbar .container {
-    flex-direction: column;
-    gap: 0.4rem;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.75rem;
     padding: 0.4rem 1rem;
     align-items: center;
   }
@@ -2975,17 +3006,21 @@ tr:hover td {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.8rem;
-    flex-wrap: wrap;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
   }
 
-  .topbar-left span {
+  .topbar-left span,
+  .topbar-link {
     font-size: 0.72rem;
   }
 
+  .topbar-hours {
+    display: none;
+  }
+
   .topbar-right {
-    justify-content: center;
-    gap: 0.5rem;
+    display: none;
   }
 
   .nav-links,
