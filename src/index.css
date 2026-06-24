@@ -1723,8 +1723,8 @@ button {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 1.75rem;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem;
 }
 
 .footer-brand .nav-logo {
@@ -1753,6 +1753,26 @@ button {
   place-items: center;
   transition: var(--transition);
   font-size: .95rem;
+}
+
+.footer-contact-inline {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  margin-top: 1rem;
+}
+
+.footer-contact-inline a {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .8rem;
+  color: rgba(255,255,255,.7);
+  transition: color .2s ease;
+}
+
+.footer-contact-inline a:hover {
+  color: var(--gold);
 }
 
 .footer-social a:hover {
@@ -3162,7 +3182,8 @@ tr:hover td {
 
   /* ── Footer ── */
   .footer-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .cta-banner-inner {

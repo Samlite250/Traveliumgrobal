@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
-    Mail, Phone, Clock, Globe, Send, Play,
+    Mail, Phone, Globe, Send, Play,
     Plane, GraduationCap, Landmark, Award, Info, PhoneCall,
     User, ArrowRight, Menu, X, ChevronDown, Home,
     BookOpen, Building2, FileText, Briefcase, MapPin, Star
@@ -183,7 +183,6 @@ export default function Navbar() {
                     <div className="topbar-left">
                         <a href="mailto:info@traveliumglobal.com" className="topbar-link"><Mail size={12} /> info@traveliumglobal.com</a>
                         <a href="tel:+250788207455" className="topbar-link"><Phone size={12} /> +250 788207455</a>
-                        <span className="topbar-hours"><Clock size={12} /> Mon–Sat: 9AM – 7PM</span>
                     </div>
                     <div className="topbar-right">
                         <a href="#" aria-label="LinkedIn"><Globe size={12} /></a>
