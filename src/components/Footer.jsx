@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Globe, Mail, Phone, Send, Play, Plane } from 'lucide-react'
+import { FaWhatsapp } from 'react-icons/fa';
 
 const footerLinks = {
     'Quick Links': [
