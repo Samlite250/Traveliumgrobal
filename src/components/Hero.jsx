@@ -352,14 +352,6 @@ export default function Hero() {
                 onTouchStart={handleMouseEnter}
                 onTouchEnd={handleMouseLeave}
             >
-                <div className="hero-dest-controls">
-                    <button className="dest-scroll-btn left" onClick={scrollLeft} aria-label="Scroll left">
-                        <ChevronLeft size={20} />
-                    </button>
-                    <button className="dest-scroll-btn right" onClick={scrollRight} aria-label="Scroll right">
-                        <ChevronRight size={20} />
-                    </button>
-                </div>
                 <div className="hero-dest-scroll">
                     {[...marqueeImages, ...marqueeImages].map((img, i) => (
                         <div className="hero-dest-card" key={i}>
