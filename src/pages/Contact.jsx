@@ -54,16 +54,27 @@ export default function Contact() {
                                 </div>
                                 <div className="contact-item">
                                     <div className="contact-item-icon"><Phone size={20} /></div>
-                                    <div>
-                                        <h4>Phone Number</h4>
-                                        <p>+250 788207455</p>
+                                    <div className="contact-phone-list">
+                                        <h4>Phone Numbers</h4>
+                                        <div className="phone-entry">
+                                            <p><strong>+250782531515</strong></p>
+                                            <small>Main Assistant</small>
+                                        </div>
+                                        <div className="phone-entry">
+                                            <p><strong>+250796230619</strong></p>
+                                            <small>Assistant</small>
+                                        </div>
+                                        <div className="phone-entry">
+                                            <p><strong>+250793658206</strong></p>
+                                            <small>Support & Inquiry</small>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="contact-item">
                                     <div className="contact-item-icon"><Mail size={20} /></div>
                                     <div>
                                         <h4>Email Address</h4>
-                                        <p>info@traveliumglobal.com</p>
+                                        <p>traveliumgrobal@gmail.com</p>
                                     </div>
                                 </div>
                                 <div className="contact-item">

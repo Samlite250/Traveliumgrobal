@@ -181,8 +181,8 @@ export default function Navbar() {
             <div className="topbar">
                 <div className="container">
                     <div className="topbar-left">
-                        <a href="mailto:info@traveliumglobal.com" className="topbar-link"><Mail size={12} /> info@traveliumglobal.com</a>
-                        <a href="tel:+250788207455" className="topbar-link"><Phone size={12} /> +250 788207455</a>
+                        <a href="mailto:traveliumgrobal@gmail.com" className="topbar-link"><Mail size={12} /> traveliumgrobal@gmail.com</a>
+                        <a href="tel:+250782531515" className="topbar-link"><Phone size={12} /> +250 782531515</a>
                     </div>
                     <div className="topbar-right">
                         <a href="#" aria-label="LinkedIn"><Globe size={12} /></a>

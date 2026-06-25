@@ -39,8 +39,10 @@ export default function Footer() {
                                 <a href="#" aria-label="YouTube"><Play size={15} /></a>
                             </div>
                             <div className="footer-contact-inline">
-                                <a href="mailto:info@traveliumglobal.com"><Mail size={13} /> info@traveliumglobal.com</a>
-                                <a href="tel:+250788207455"><Phone size={13} /> +250 788207455</a>
+                                <a href="mailto:traveliumgrobal@gmail.com"><Mail size={13} /> traveliumgrobal@gmail.com</a>
+                                <a href="tel:+250782531515"><Phone size={13} /> +250 782531515 (Main)</a>
+                                <a href="tel:+250796230619"><Phone size={13} /> +250 796230619 (Assistant)</a>
+                                <a href="tel:+250793658206"><Phone size={13} /> +250 793658206 (Support)</a>
                             </div>
                         </div>
 
