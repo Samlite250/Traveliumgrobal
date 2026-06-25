@@ -4,28 +4,28 @@ import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 const testimonials = [
     {
         stars: 5, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
-        text: '"Travelium made my study abroad dream possible. Their support was amazing throughout the process!"',
-        name: 'Sarah A.', role: 'Cornell University, Toronto',
+        text: '"Travelium made my move to Dubai seamless. Their work visa guidance was precise and professional!"',
+        name: 'Sarah A.', role: 'Operations Manager, Dubai',
     },
     {
         stars: 5, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
-        text: '"I got my student visa for the UK without any hassle. Thank you Travelium Global for your excellent support!"',
-        name: 'David K.', role: 'University of Manchester',
+        text: '"I got my skilled worker visa for the UK in record time. The job placement support was a game changer!"',
+        name: 'David K.', role: 'Software Engineer, London',
     },
     {
         stars: 5, avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop',
-        text: '"The team guided me perfectly to secure a scholarship in Australia. Highly recommended services!"',
-        name: 'Priya M.', role: 'Monash University, Australia',
+        text: '"Highly recommend for Germany EU Blue Card applications. They handled all the paperwork perfectly."',
+        name: 'Priya M.', role: 'Data Analyst, Berlin',
     },
     {
         stars: 5, avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop',
-        text: '"Professional and fast. They processed my work visa in record time. I am now working in Canada!"',
-        name: 'James O.', role: 'Toronto, Canada',
+        text: '"From CV prep to visa approval, Travelium was with me every step. Now thriving in Toronto!"',
+        name: 'James O.', role: 'Project Coordinator, Canada',
     },
     {
         stars: 5, avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
-        text: '"Best consultancy I have used. They handled everything from start to finish for my study abroad."',
-        name: 'Lisa E.', role: 'TU Berlin, Germany',
+        text: '"The best work visa consultants. They helped me secure a high-paying hospitality role in Dubai."',
+        name: 'Lisa E.', role: 'Restaurant Manager, UAE',
     },
 ]
 
@@ -64,9 +64,9 @@ export default function Testimonials() {
             <div className="container">
                 <div className="section-header">
                     <div className="section-label">Success Stories</div>
-                    <h2 className="section-title">Student Success Stories</h2>
+                    <h2 className="section-title">Professional Success Stories</h2>
                     <p className="section-sub">
-                        Hear from students who achieved their dreams with Travelium
+                        Hear from professionals who achieved their career goals with Travelium
                     </p>
                 </div>
                 <div className="testimonials-slider">

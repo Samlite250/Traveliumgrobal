@@ -4,17 +4,17 @@ import { Globe, Mail, Phone, Send, Play, Plane } from 'lucide-react'
 const footerLinks = {
     'Quick Links': [
         { label: 'Home', href: '/' },
-        { label: 'Study Abroad', href: '/study-abroad' },
+        { label: 'Work Abroad', href: '/visa-services' },
         { label: 'Visa Services', href: '/visa-services' },
-        { label: 'Scholarships', href: '/scholarships' },
         { label: 'About Us', href: '/about' },
+        { label: 'Contact', href: '/contact' },
     ],
     'Services': [
-        { label: 'Student Visa', href: '/visa-services' },
-        { label: 'Tourist Visa', href: '/visa-services' },
-        { label: 'Work Visa', href: '/visa-services' },
-        { label: 'Document Help', href: '/contact' },
-        { label: 'Consultations', href: '/contact' },
+        { label: 'Dubai Work Visa', href: '/visa-services' },
+        { label: 'Skilled Worker Visa', href: '/visa-services' },
+        { label: 'Work Permit Help', href: '/contact' },
+        { label: 'Job Placement', href: '/about' },
+        { label: 'Relocation Support', href: '/contact' },
     ],
 }
 
@@ -32,7 +32,7 @@ export default function Footer() {
                                     <span className="logo-tagline">Grobal</span>
                                 </div>
                             </Link>
-                            <p>Your Gateway to Global Education and Travel Opportunities.</p>
+                            <p>Your Gateway to Global Work Visas and Career Relocation.</p>
                             <div className="footer-social">
                                 <a href="#" aria-label="LinkedIn"><Globe size={15} /></a>
                                 <a href="#" aria-label="Twitter"><Send size={15} /></a>

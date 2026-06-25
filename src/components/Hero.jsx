@@ -60,7 +60,7 @@ const marqueeImages = [
         link: '/visa-services'
     },
     {
-        src: 'https://images.unsplash.com/photo-1513635269975-59663e0ca1ad?w=600&q=80&auto=format&fit=crop',
+        src: 'https://images.unsplash.com/photo-1529655683826-aba9b3e77383?w=600&q=80&auto=format&fit=crop',
         alt: 'London UK',
         label: 'Work Abroad — UK',
         desc: 'Skilled Worker Visa for the UK. Access world-class employers in London and beyond.',
@@ -153,15 +153,17 @@ export default function Hero() {
 
     const scrollLeft = () => {
         if (scrollRef.current) {
-            scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-            scrollPosRef.current = scrollRef.current.scrollLeft - 300;
+            const newPos = scrollRef.current.scrollLeft - 400;
+            scrollRef.current.scrollTo({ left: newPos, behavior: 'smooth' });
+            scrollPosRef.current = newPos;
         }
     };
 
     const scrollRight = () => {
         if (scrollRef.current) {
-            scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-            scrollPosRef.current = scrollRef.current.scrollLeft + 300;
+            const newPos = scrollRef.current.scrollLeft + 400;
+            scrollRef.current.scrollTo({ left: newPos, behavior: 'smooth' });
+            scrollPosRef.current = newPos;
         }
     };
 
@@ -345,29 +347,42 @@ export default function Hero() {
 
             {/* ── Destination Showcase Scroll Strip ── */}
             <div
-                className="hero-dest-strip-wrap"
-                ref={scrollRef}
+                className="hero-dest-outer-wrap"
+                style={{ position: 'relative' }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onTouchStart={handleMouseEnter}
                 onTouchEnd={handleMouseLeave}
             >
-                <div className="hero-dest-scroll">
-                    {[...marqueeImages, ...marqueeImages].map((img, i) => (
-                        <div className="hero-dest-card" key={i}>
-                            <div className="hero-dest-img">
-                                <img src={img.src} alt={img.alt} loading="lazy" />
-                                <div className="hero-dest-img-overlay" />
-                                <span className="hero-dest-img-label">{img.label}</span>
+                <div className="hero-dest-controls">
+                    <button className="dest-scroll-btn left" onClick={scrollLeft} aria-label="Scroll left">
+                        <ChevronLeft size={20} />
+                    </button>
+                    <button className="dest-scroll-btn right" onClick={scrollRight} aria-label="Scroll right">
+                        <ChevronRight size={20} />
+                    </button>
+                </div>
+                <div
+                    className="hero-dest-strip-wrap"
+                    ref={scrollRef}
+                >
+                    <div className="hero-dest-scroll">
+                        {[...marqueeImages, ...marqueeImages].map((img, i) => (
+                            <div className="hero-dest-card" key={i}>
+                                <div className="hero-dest-img">
+                                    <img src={img.src} alt={img.alt} loading="lazy" />
+                                    <div className="hero-dest-img-overlay" />
+                                    <span className="hero-dest-img-label">{img.label}</span>
+                                </div>
+                                <div className="hero-dest-body">
+                                    <p className="hero-dest-desc">{img.desc}</p>
+                                    <Link to={img.link} className="hero-dest-cta-btn">
+                                        {img.cta} <ArrowRight size={14} />
+                                    </Link>
+                                </div>
                             </div>
-                            <div className="hero-dest-body">
-                                <p className="hero-dest-desc">{img.desc}</p>
-                                <Link to={img.link} className="hero-dest-cta-btn">
-                                    {img.cta} <ArrowRight size={14} />
-                                </Link>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
 
