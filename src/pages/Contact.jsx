@@ -55,10 +55,10 @@ export default function Contact() {
                                 <div className="contact-item">
                                     <div className="contact-item-icon"><Phone size={20} /></div>
                                     <div className="contact-phone-list">
-                                        <h4>Phone Numbers</h4>
+                                        <h4>TRAVELIUM SUPPORT</h4>
                                         <div className="phone-entry">
                                             <p><strong>+250782531515</strong></p>
-                                            <small>Main Assistant</small>
+                                            <small>Travelium Support</small>
                                         </div>
                                         <div className="phone-entry">
                                             <p><strong>+250796230619</strong></p>
