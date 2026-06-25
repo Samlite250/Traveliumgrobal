@@ -1398,17 +1398,38 @@ button {
 }
 
 .testimonial-card {
-  min-width: calc(33.333% - 1rem);
+  flex: 0 0 calc(33.333% - 1rem);
   background: var(--white);
   border-radius: var(--radius);
   padding: 2.25rem;
   border: 1px solid var(--gray-200);
   box-shadow: var(--shadow-sm);
-  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 280px;
+}
+
+@media (max-width: 1024px) {
+  .testimonial-card {
+    flex: 0 0 calc(50% - 0.75rem);
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonial-card {
+    flex: 0 0 100%;
+    padding: 1.75rem;
+    min-height: 250px;
+  }
+
+  .testimonial-text {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
 }
 
 .testimonial-card:hover {
@@ -1839,6 +1860,26 @@ button {
   gap: 1rem;
   flex-wrap: wrap;
   font-size: .8rem;
+}
+
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  /* Force Quick Links and Services to be parallel even on mobile */
+  .footer-grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer-links-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    width: 100%;
+  }
 }
 
 .footer-bottom-links {
@@ -3431,16 +3472,9 @@ tr:hover td {
   display: none;
 }
 
-/* Fade masks on left + right edges */
 .hero-dest-strip-wrap::before,
 .hero-dest-strip-wrap::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 120px;
-  z-index: 2;
-  pointer-events: none;
+  display: none;
 }
 
 .hero-dest-strip-wrap::before {

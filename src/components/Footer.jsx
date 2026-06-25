@@ -44,16 +44,18 @@ export default function Footer() {
                             </div>
                         </div>
 
-                        {Object.entries(footerLinks).map(([title, links]) => (
-                            <div key={title} className="footer-col">
-                                <h4>{title}</h4>
-                                <ul>
-                                    {links.map(l => (
-                                        <li key={l.label}><Link to={l.href}>{l.label}</Link></li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
+                        <div className="footer-links-wrapper">
+                            {Object.entries(footerLinks).map(([title, links]) => (
+                                <div key={title} className="footer-col">
+                                    <h4>{title}</h4>
+                                    <ul>
+                                        {links.map(l => (
+                                            <li key={l.label}><Link to={l.href}>{l.label}</Link></li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
