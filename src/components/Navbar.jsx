@@ -52,6 +52,10 @@ const workAbroadDropdown = [
     },
 ]
 
+const flightsDropdown = [
+    { label: 'Buy Ticket', href: 'https://wa.me/250793658206', icon: <Send size={15} /> },
+    { label: 'Book Flight', href: '/flights', icon: <Plane size={15} /> },
+];
 const staticLinks = [
     { label: 'About Us', href: '/about', icon: <Info size={16} /> },
     { label: 'Contact Us', href: '/contact', icon: <PhoneCall size={16} /> },
@@ -210,6 +214,7 @@ export default function Navbar() {
                         <DropdownLink label="Study Abroad" icon={<GraduationCap size={16} />} items={studyAbroadDropdown} />
                         <DropdownLink label="Visa Services" icon={<Landmark size={16} />} items={visaServicesDropdown} />
                         <WorkAbroadDropdown />
+                        <DropdownLink label="Flights" icon={<Plane size={16} />} items={flightsDropdown} />
                         {staticLinks.map(l => (
                             <li key={l.href}>
                                 <Link to={l.href} className={location.pathname === l.href ? 'active' : ''}>
