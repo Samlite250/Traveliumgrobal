@@ -63,10 +63,12 @@ export default function Contact() {
                                         <div className="phone-entry">
                                             <p><strong>+250796230619</strong></p>
                                             <small>Assistant</small>
+                                            <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
                                         </div>
                                         <div className="phone-entry">
                                             <p><strong>+250793658206</strong></p>
                                             <small>Support & Inquiry</small>
+                                            <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
                                         </div>
                                     </div>
                                 </div>

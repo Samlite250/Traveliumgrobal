@@ -42,7 +42,9 @@ export default function Footer() {
                                 <a href="mailto:traveliumgrobal@gmail.com"><Mail size={13} /> traveliumgrobal@gmail.com</a>
                                 <a href="tel:+250782531515"><Phone size={13} /> +250 782531515 (Main)</a>
                                 <a href="tel:+250796230619"><Phone size={13} /> +250 796230619 (Assistant)</a>
+                                <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
                                 <a href="tel:+250793658206"><Phone size={13} /> +250 793658206 (Support)</a>
+                                <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
                             </div>
                         </div>
 
