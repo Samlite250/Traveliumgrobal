@@ -3844,3 +3844,179 @@ main {
     transform: translateY(0);
   }
 }
+
+/* ===== DUBAI / FEATURED CARD STYLES ===== */
+
+/* Featured Destination Card (Dubai highlight) */
+.destination-card--featured {
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 0 4px rgba(200, 168, 75, 0.15), var(--shadow-lg);
+  position: relative;
+  transform: scale(1.03);
+  z-index: 2;
+}
+
+.destination-card--featured .destination-btn {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.destination-card--featured .destination-btn:hover {
+  background: var(--gold-dark);
+}
+
+.destination-featured-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--navy);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 4px 14px;
+  border-radius: 50px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+  box-shadow: 0 4px 12px rgba(200, 168, 75, 0.4);
+}
+
+/* Featured Service Card */
+.service-card--featured {
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 0 4px rgba(200, 168, 75, 0.12), var(--shadow-lg);
+  position: relative;
+}
+
+/* Featured Visa Card */
+.visa-card--featured {
+  border: 2px solid var(--gold) !important;
+  box-shadow: 0 0 0 4px rgba(200, 168, 75, 0.15), var(--shadow-lg) !important;
+  position: relative;
+}
+
+.visa-featured-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--navy);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 4px 14px;
+  border-radius: 50px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+  box-shadow: 0 4px 12px rgba(200, 168, 75, 0.4);
+}
+
+/* ===== DUBAI SPOTLIGHT SECTION ===== */
+.dubai-spotlight {
+  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, #1a3a6e 100%);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.dubai-spotlight::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(200, 168, 75, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.dubai-spotlight-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.dubai-spotlight-header .section-label {
+  color: var(--gold-light);
+  font-size: 0.9rem;
+}
+
+.dubai-spotlight-header .section-title {
+  color: var(--white);
+}
+
+.dubai-spotlight-header .section-sub {
+  color: rgba(255,255,255,0.75);
+  margin: 0 auto;
+}
+
+.dubai-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .dubai-highlights-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .dubai-highlights-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dubai-highlight-card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+  transition: var(--transition);
+  backdrop-filter: blur(8px);
+}
+
+.dubai-highlight-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(200, 168, 75, 0.4);
+  transform: translateY(-4px);
+}
+
+.dubai-highlight-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.dubai-highlight-card h4 {
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.dubai-highlight-card p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.dubai-spotlight-cta {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dubai-spotlight-cta .btn-outline {
+  border-color: rgba(255,255,255,0.5);
+}

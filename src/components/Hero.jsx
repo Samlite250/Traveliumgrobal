@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Calendar, GraduationCap, Star, CheckCircle, Send, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowRight, Calendar, Briefcase, Star, CheckCircle, Send, ChevronLeft, ChevronRight } from 'lucide-react'
 
 // Hero background slideshow images — Dubai, visas, scholarships, campuses
 const heroBgImages = [
@@ -12,51 +12,27 @@ const heroBgImages = [
 
 const marqueeImages = [
     {
-        src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80&auto=format&fit=crop',
-        alt: 'Study Group',
-        label: 'Study Abroad',
-        desc: 'Join top-ranked universities across the UK, USA & Europe with expert guidance.',
-        cta: 'Apply Now',
-        link: '/apply'
-    },
-    {
-        src: 'https://images.unsplash.com/photo-1513635269975-59663e0ca1ad?w=600&q=80&auto=format&fit=crop',
-        alt: 'London',
-        label: 'United Kingdom',
-        desc: 'Russell Group universities, post-study work visas & scholarship opportunities.',
-        cta: 'Explore UK',
-        link: '/destinations'
-    },
-    {
-        src: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=600&q=80&auto=format&fit=crop',
-        alt: 'Travel & Visas',
-        label: 'Visa Assistance',
-        desc: '98% success rate. We handle every step of your student or work visa application.',
-        cta: 'Get Your Visa',
+        src: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80&auto=format&fit=crop',
+        alt: 'Dubai Skyline',
+        label: '🔥 Work in Dubai — UAE',
+        desc: 'Tax-free salaries, world-class lifestyle. We fast-track your UAE work visa from start to finish.',
+        cta: 'Apply for Dubai',
         link: '/visa-services'
     },
     {
-        src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80&auto=format&fit=crop',
-        alt: 'International Students',
-        label: 'Global Community',
-        desc: 'Connect with 15,000+ alumni from 50+ countries sharing your global ambitions.',
-        cta: 'Join Us',
-        link: '/about'
+        src: 'https://images.unsplash.com/photo-1583037189850-1921ae7c6c22?w=600&q=80&auto=format&fit=crop',
+        alt: 'Dubai City',
+        label: 'Dubai — NOW HIRING',
+        desc: '10,000+ open roles in hospitality, finance, tech & construction. Relocation support included.',
+        cta: 'Get UAE Visa',
+        link: '/visa-services'
     },
     {
-        src: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=600&q=80&auto=format&fit=crop',
-        alt: 'Campus Library',
-        label: 'Scholarships',
-        desc: 'Access curated scholarships worth millions — fully supported applications.',
-        cta: 'Find Scholarships',
-        link: '/scholarships'
-    },
-    {
-        src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80&auto=format&fit=crop',
-        alt: 'Collaborative Study',
-        label: 'Work Abroad — Dubai',
-        desc: 'Land a high-paying role in the UAE. We manage your work visa from start to finish.',
-        cta: 'Apply for Dubai',
+        src: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=600&q=80&auto=format&fit=crop',
+        alt: 'Work Visas',
+        label: 'Work Visa Assistance',
+        desc: '98% visa success rate. We handle every step of your international work visa application.',
+        cta: 'Get Your Work Visa',
         link: '/visa-services'
     },
     {
@@ -70,7 +46,7 @@ const marqueeImages = [
     {
         src: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80&auto=format&fit=crop',
         alt: 'Tokyo Japan',
-        label: 'Work Abroad — Tokyo',
+        label: 'Work Abroad — Japan',
         desc: 'Japan\'s booming tech & hospitality sectors are hiring internationally right now.',
         cta: 'Apply for Japan',
         link: '/visa-services'
@@ -84,11 +60,35 @@ const marqueeImages = [
         link: '/visa-services'
     },
     {
+        src: 'https://images.unsplash.com/photo-1513635269975-59663e0ca1ad?w=600&q=80&auto=format&fit=crop',
+        alt: 'London UK',
+        label: 'Work Abroad — UK',
+        desc: 'Skilled Worker Visa for the UK. Access world-class employers in London and beyond.',
+        cta: 'Explore UK',
+        link: '/visa-services'
+    },
+    {
         src: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&q=80&auto=format&fit=crop',
         alt: 'Career Coaching',
-        label: 'Career Support',
+        label: 'Career & Job Support',
         desc: 'CV writing, interview prep & job placement support — we don\'t stop at the visa.',
         cta: 'Register Free',
+        link: '/apply'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80&auto=format&fit=crop',
+        alt: 'Global Network',
+        label: 'Global Community',
+        desc: 'Connect with 15,000+ professionals placed in 50+ countries sharing your ambitions.',
+        cta: 'Join Us',
+        link: '/about'
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80&auto=format&fit=crop',
+        alt: 'Study Group',
+        label: 'Study Abroad',
+        desc: 'Join top-ranked universities across the UK, USA & Europe with expert guidance.',
+        cta: 'Apply Now',
         link: '/apply'
     },
 ]
@@ -118,14 +118,14 @@ export default function Hero() {
         const play = () => {
             if (scrollRef.current) {
                 scrollPosRef.current += 0.15;
-                
+
                 // loop back when scrolling past original content
                 // card width is approx 240px + 1.1rem gap (approx 257px)
                 // 10 items * 257.6px = 2576px
                 if (scrollPosRef.current >= 2576) {
                     scrollPosRef.current = 0;
                 }
-                
+
                 scrollRef.current.scrollLeft = scrollPosRef.current;
             }
             requestRef.current = requestAnimationFrame(play);
@@ -201,37 +201,37 @@ export default function Hero() {
             {/* ── Main content (Two Column) ── */}
             <div className="hero-inner">
                 <div className="container hero-grid">
-                    
+
                     {/* Left Column: Copy */}
                     <div className="hero-content reveal">
                         <div className="hero-badge">
-                            <GraduationCap size={14} />
-                            Your Future, Our Mission
+                            <Briefcase size={14} />
+                            Your Career, Our Mission
                         </div>
 
                         <h1 className="hero-title">
-                            Your Gateway to <em>Global Education</em><br />
-                            &amp; <span>Travel Opportunities</span>
+                            Your Gateway to <em>Dubai</em> &amp;<br />
+                            <span>Global Work Visas</span>
                         </h1>
 
                         <p className="hero-sub">
-                            Join thousands of students building their future with the world's
-                            best universities. Expert guidance from application to arrival.
+                            Join thousands of professionals securing high-paying careers abroad.
+                            Expert work visa guidance — from application to your first day on the job.
                         </p>
 
                         {/* Bullet benefits */}
                         <div className="hero-benefits">
                             <div className="benefit-item">
                                 <CheckCircle size={16} className="benefit-icon" />
-                                <span>98% Visa Success Rate</span>
+                                <span>98% Work Visa Success Rate</span>
                             </div>
                             <div className="benefit-item">
                                 <CheckCircle size={16} className="benefit-icon" />
-                                <span>200+ Partner Universities</span>
+                                <span>Dubai & 50+ Countries Covered</span>
                             </div>
                             <div className="benefit-item">
                                 <CheckCircle size={16} className="benefit-icon" />
-                                <span>Complete Scholarship Guidance</span>
+                                <span>End-to-End Relocation Support</span>
                             </div>
                         </div>
 
@@ -255,7 +255,7 @@ export default function Hero() {
                                 <div className="hero-proof-stars">
                                     {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="currentColor" />)}
                                 </div>
-                                <span><strong>15,000+</strong> students placed worldwide</span>
+                                <span><strong>15,000+</strong> professionals placed worldwide</span>
                             </div>
                         </div>
                     </div>
@@ -264,68 +264,72 @@ export default function Hero() {
                     <div className="hero-form-wrapper reveal">
                         <div className="hero-form-card">
                             <div className="form-card-header">
-                                <h3>Check Your Eligibility</h3>
+                                <h3>Check Work Visa Eligibility</h3>
                                 <p>Get a response within 24 hours</p>
                             </div>
-                            
+
                             {submitted ? (
                                 <div className="form-success-msg">
                                     <CheckCircle size={40} className="success-icon" />
                                     <h4>Application Received!</h4>
-                                    <p>Our global education expert will contact you shortly.</p>
+                                    <p>Our work visa expert will contact you shortly.</p>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="hero-form">
                                     <div className="form-group-custom">
                                         <label htmlFor="hero-name">Full Name</label>
-                                        <input 
-                                            type="text" 
-                                            id="hero-name" 
-                                            placeholder="John Doe" 
-                                            required 
+                                        <input
+                                            type="text"
+                                            id="hero-name"
+                                            placeholder="John Doe"
+                                            required
                                             value={formData.name}
-                                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         />
                                     </div>
                                     <div className="form-group-custom">
                                         <label htmlFor="hero-email">Email Address</label>
-                                        <input 
-                                            type="email" 
-                                            id="hero-email" 
-                                            placeholder="john@example.com" 
-                                            required 
+                                        <input
+                                            type="email"
+                                            id="hero-email"
+                                            placeholder="john@example.com"
+                                            required
                                             value={formData.email}
-                                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         />
                                     </div>
                                     <div className="form-group-custom">
                                         <label htmlFor="hero-dest">Preferred Destination</label>
-                                        <select 
+                                        <select
                                             id="hero-dest"
                                             value={formData.destination}
-                                            onChange={(e) => setFormData({...formData, destination: e.target.value})}
+                                            onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
                                             required
                                         >
                                             <option value="">Select country...</option>
-                                            <option value="UK">United Kingdom</option>
-                                            <option value="USA">United States</option>
-                                            <option value="Canada">Canada</option>
-                                            <option value="Australia">Australia</option>
-                                            <option value="Germany">Germany</option>
+                                            <option value="Dubai">🇦🇪 Dubai, UAE — Most Popular</option>
+                                            <option value="Canada">🇨🇦 Canada</option>
+                                            <option value="UK">🇬🇧 United Kingdom</option>
+                                            <option value="Germany">🇩🇪 Germany</option>
+                                            <option value="USA">🇺🇸 United States</option>
+                                            <option value="Australia">🇦🇺 Australia</option>
+                                            <option value="Japan">🇯🇵 Japan</option>
+                                            <option value="France">🇫🇷 France</option>
                                         </select>
                                     </div>
                                     <div className="form-group-custom">
                                         <label htmlFor="hero-service">Service Needed</label>
-                                        <select 
+                                        <select
                                             id="hero-service"
                                             value={formData.service}
-                                            onChange={(e) => setFormData({...formData, service: e.target.value})}
+                                            onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                                             required
                                         >
                                             <option value="">Select service...</option>
-                                            <option value="Study">Study Abroad Visa</option>
                                             <option value="Work">Work Visa / Permit</option>
+                                            <option value="Dubai">Dubai UAE Work Visa</option>
                                             <option value="Tourist">Tourist / Visitor Visa</option>
+                                            <option value="Study">Study Abroad Visa</option>
                                         </select>
                                     </div>
                                     <button type="submit" className="btn btn-primary btn-block btn-icon">
@@ -340,7 +344,7 @@ export default function Hero() {
             </div>
 
             {/* ── Destination Showcase Scroll Strip ── */}
-            <div 
+            <div
                 className="hero-dest-strip-wrap"
                 ref={scrollRef}
                 onMouseEnter={handleMouseEnter}
