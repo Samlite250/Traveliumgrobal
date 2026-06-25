@@ -7,7 +7,7 @@ const destinations = [
         img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop',
         jobs: '10,000+', salary: 'AED 8K – 30K/mo',
         featured: true,
-        tag: '🔥 Most Popular',
+        tag: 'Most Popular',
     },
     {
         flag: 'https://flagcdn.com/w80/ca.png', name: 'Canada',
