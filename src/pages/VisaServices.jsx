@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
-import { Briefcase, Globe, GraduationCap, Home, CheckCircle, ArrowRight, Star, Zap, Fire } from 'lucide-react'
+import { Briefcase, Globe, GraduationCap, Home, CheckCircle, ArrowRight, Star, Zap, Flame } from 'lucide-react'
 
 const visas = [
     {
@@ -71,7 +71,7 @@ export default function VisaServices() {
             <section className="dubai-spotlight section">
                 <div className="container">
                     <div className="dubai-spotlight-header">
-                        <div className="section-label"><Fire size={20} className="icon-fire" /> Featured Destination</div>
+                        <div className="section-label"><Flame size={20} className="icon-fire" /> Featured Destination</div>
                         <h2 className="section-title">Work in Dubai, UAE</h2>
                         <p className="section-sub">
                             The #1 destination for ambitious professionals. Tax-free salaries, visa-friendly policies, and limitless career growth.
