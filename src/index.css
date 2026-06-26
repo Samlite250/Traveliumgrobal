@@ -5331,15 +5331,15 @@ main {
 
 /* ===== FOOTER CONTACT CENTER REFINEMENT ===== */
 .contact-card-premium {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--white);
   padding: 2.25rem;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .contact-card-premium h4 {
   margin-bottom: 2rem !important;
-  color: var(--gold) !important;
+  color: var(--navy) !important;
 }
 
 .contact-grid-premium {
@@ -5372,7 +5372,7 @@ main {
 .block-head span {
   font-size: .85rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--navy);
   text-transform: uppercase;
   letter-spacing: .05em;
 }
@@ -5386,14 +5386,14 @@ main {
 
 .link-item {
   font-size: .95rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  font-weight: 700;
+  color: var(--navy);
   text-decoration: none;
   transition: var(--transition);
 }
 
 .link-item:hover {
-  color: var(--white);
+  color: var(--gold-dark);
 }
 
 .wa-link-inline {
