@@ -4926,7 +4926,7 @@ main {
 .footer-nav-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 3rem;
 }
 
 .footer-links-col h4,
@@ -4944,7 +4944,7 @@ main {
 }
 
 .footer-links-col li {
-  margin-bottom: .85rem;
+  margin-bottom: 1.25rem;
 }
 
 .footer-links-col a {
@@ -5301,24 +5301,24 @@ main {
 /* ===== FOOTER CONTACT CENTER REFINEMENT ===== */
 .contact-card-premium {
   background: rgba(255, 255, 255, 0.03);
-  padding: 1.5rem;
+  padding: 2.25rem;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .contact-card-premium h4 {
-  margin-bottom: 1.5rem !important;
+  margin-bottom: 2rem !important;
   color: var(--gold) !important;
 }
 
 .contact-grid-premium {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .contact-block {
-  padding-bottom: 1.25rem;
+  padding-bottom: 1.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
