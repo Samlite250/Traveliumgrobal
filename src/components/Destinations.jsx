@@ -10,14 +10,26 @@ const destinations = [
         tag: 'Most Popular',
     },
     {
+        flag: 'https://flagcdn.com/w80/om.png', name: 'Oman',
+        img: 'https://images.unsplash.com/photo-1549474843-ed29a439266e?q=80&w=800&auto=format&fit=crop',
+        jobs: '2,000+', salary: 'OMR 500 – 1,500/mo',
+    },
+    {
+        flag: 'https://flagcdn.com/w80/cn.png', name: 'China',
+        img: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=800&auto=format&fit=crop',
+        jobs: '8,000+', salary: 'CNY 15K – 35K/mo',
+        tag: 'High Demand',
+    },
+    {
         flag: 'https://flagcdn.com/w80/ca.png', name: 'Canada',
         img: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=800&auto=format&fit=crop',
         jobs: '5,000+', salary: 'CAD 50K – 90K/yr',
     },
     {
-        flag: 'https://flagcdn.com/w80/gb.png', name: 'United Kingdom',
-        img: 'https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?q=80&w=800&auto=format&fit=crop',
-        jobs: '4,000+', salary: 'GBP 30K – 70K/yr',
+        flag: 'https://flagcdn.com/w80/us.png', name: 'United States',
+        img: 'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=800&auto=format&fit=crop',
+        jobs: '6,000+', salary: 'USD 55K – 120K/yr',
+        featured: true,
     },
     {
         flag: 'https://flagcdn.com/w80/de.png', name: 'Germany',
@@ -25,14 +37,9 @@ const destinations = [
         jobs: '3,000+', salary: 'EUR 35K – 65K/yr',
     },
     {
-        flag: 'https://flagcdn.com/w80/us.png', name: 'United States',
-        img: 'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=800&auto=format&fit=crop',
-        jobs: '6,000+', salary: 'USD 55K – 120K/yr',
-    },
-    {
-        flag: 'https://flagcdn.com/w80/au.png', name: 'Australia',
-        img: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=800&auto=format&fit=crop',
-        jobs: '2,500+', salary: 'AUD 60K – 100K/yr',
+        flag: 'https://flagcdn.com/w80/nl.png', name: 'Netherlands',
+        img: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=800&auto=format&fit=crop',
+        jobs: '1,500+', salary: 'EUR 40K – 75K/yr',
     },
 ]
 

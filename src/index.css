@@ -4118,3 +4118,190 @@ main {
 .dubai-spotlight-cta .btn-outline {
   border-color: rgba(255, 255, 255, 0.5);
 }
+/* Flights Page Styles */
+.flights-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+.flights-form-container {
+    width: 100%;
+}
+
+.trip-type-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    width: fit-content;
+}
+
+.trip-type-btn {
+    cursor: pointer;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+}
+
+.trip-type-btn input {
+    display: none;
+}
+
+.trip-type-btn.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon svg {
+    position: absolute;
+    left: 1rem;
+    color: var(--primary-color);
+    opacity: 0.7;
+}
+
+.input-with-icon input,
+.input-with-icon select {
+    padding-left: 3rem !important;
+}
+
+.file-upload-section {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+}
+
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.file-input-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.file-input-card:hover {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.file-input-card input[type=" file\] {
+ width: 100%;
+ font-size: 0.8rem;
+ color: var(--text-muted);
+}
+
+.file-input-card small {
+ display: block;
+ margin-top: 0.5rem;
+ font-size: 0.75rem;
+ color: var(--text-muted);
+}
+
+.flights-sidebar {
+ display: flex;
+ flex-direction: column;
+ gap: 1.5rem;
+}
+
+.info-card {
+ background: var(--glass-bg);
+ backdrop-filter: blur(12px);
+ border: 1px solid var(--glass-border);
+ padding: 1.5rem;
+ border-radius: 20px;
+}
+
+.info-card h3 {
+ font-size: 1.25rem;
+ margin-bottom: 1rem;
+ color: white;
+}
+
+.info-list {
+ list-style: none;
+ padding: 0;
+}
+
+.info-list li {
+ display: flex;
+ align-items: center;
+ gap: 0.75rem;
+ margin-bottom: 0.75rem;
+ font-size: 0.95rem;
+ color: var(--text-muted);
+}
+
+.info-list li svg {
+ color: var(--primary-color);
+}
+
+.help-box {
+ background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+ padding: 2rem;
+ border-radius: 24px;
+ color: white;
+ text-align: center;
+}
+
+.help-icon {
+ width: 50px;
+ height: 50px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin: 0 auto 1rem;
+}
+
+.btn-whatsapp {
+ background: #25d366;
+ color: white;
+ border: none;
+ margin-top: 1rem;
+ width: 100%;
+ justify-content: center;
+}
+
+@media (max-width: 992px) {
+ .flights-grid {
+ grid-template-columns: 1fr;
+ }
+}
+

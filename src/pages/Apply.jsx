@@ -1,17 +1,23 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { Send, CheckCircle, ArrowRight, Globe, Info } from 'lucide-react'
+import { Send, CheckCircle, ArrowRight, Globe, Info, Upload } from 'lucide-react'
 
 export default function Apply() {
     const [form, setForm] = useState({
         full_name: '', email: '', phone: '', nationality: '',
         destination: '', program_type: '', education_level: '', message: ''
     })
+    const [files, setFiles] = useState({
+        passport: null,
+        diploma: null,
+        id_card: null
+    })
     const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
 
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+    const handleFile = e => setFiles(f => ({ ...f, [e.target.name]: e.target.files[0] }))
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -24,6 +30,7 @@ export default function Apply() {
         } else {
             setStatus({ type: 'success', msg: 'Application submitted successfully! Our team will reach out within 2 business days.' })
             setForm({ full_name: '', email: '', phone: '', nationality: '', destination: '', program_type: '', education_level: '', message: '' })
+            setFiles({ passport: null, diploma: null, id_card: null })
         }
     }
 
@@ -75,7 +82,7 @@ export default function Apply() {
                                         <Globe size={16} className="select-icon" />
                                         <select name="destination" value={form.destination} onChange={set} required>
                                             <option value="">Select country</option>
-                                            {['Canada', 'United States', 'United Kingdom', 'Australia', 'Germany', 'New Zealand', 'France', 'Netherlands'].map(c => (
+                                            {['Canada', 'United States', 'United Kingdom', 'Australia', 'Germany', 'Oman', 'China', 'France', 'Netherlands', 'Poland', 'Singapore', 'South Korea'].map(c => (
                                                 <option key={c}>{c}</option>
                                             ))}
                                         </select>
@@ -108,7 +115,39 @@ export default function Apply() {
                                     <option>Professional Certification</option>
                                 </select>
                             </div>
-                            <div className="form-group">
+                            <div className="file-upload-section">
+                                <label className="section-label" style={{ display: 'block', marginBottom: '1rem', fontWeight: '600', color: 'var(--primary-color)' }}>
+                                    Required Documents
+                                </label>
+                                <div className="file-grid">
+                                    <div className="file-input-card">
+                                        <div className="file-info">
+                                            <Upload size={18} />
+                                            <span>Passport Photo *</span>
+                                        </div>
+                                        <input type="file" name="passport" onChange={handleFile} accept="image/*,.pdf" required />
+                                        <small>Bio-data page copy</small>
+                                    </div>
+                                    <div className="file-input-card">
+                                        <div className="file-info">
+                                            <Upload size={18} />
+                                            <span>Latest Diploma *</span>
+                                        </div>
+                                        <input type="file" name="diploma" onChange={handleFile} accept="image/*,.pdf" required />
+                                        <small>Highest qualification</small>
+                                    </div>
+                                    <div className="file-input-card">
+                                        <div className="file-info">
+                                            <Upload size={18} />
+                                            <span>National ID / Passport</span>
+                                        </div>
+                                        <input type="file" name="id_card" onChange={handleFile} accept="image/*,.pdf" />
+                                        <small>Front and back copy</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="form-group full">
                                 <label>Additional Information</label>
                                 <textarea name="message" value={form.message} onChange={set} placeholder="Tell us about your goals, timeline, budget, or any specific requirements..." />
                             </div>

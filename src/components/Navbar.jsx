@@ -30,11 +30,25 @@ const workAbroadDropdown = [
         sub: 'UAE Work Visa'
     },
     {
-        label: 'Tokyo',
+        label: 'Oman',
         href: '/visa-services',
         icon: <MapPin size={15} />,
         tag: 'New',
-        sub: 'Japan Work Permit'
+        sub: 'Oman Work Permit'
+    },
+    {
+        label: 'China',
+        href: '/visa-services',
+        icon: <MapPin size={15} />,
+        tag: 'New',
+        sub: 'China Z-Visa'
+    },
+    {
+        label: 'USA',
+        href: '/visa-services',
+        icon: <MapPin size={15} />,
+        tag: 'Trending',
+        sub: 'H-1B Work Visa'
     },
     {
         label: 'Germany',
@@ -44,11 +58,18 @@ const workAbroadDropdown = [
         sub: 'EU Blue Card'
     },
     {
-        label: 'France',
+        label: 'Poland',
         href: '/visa-services',
         icon: <MapPin size={15} />,
         tag: null,
-        sub: 'Talent Passport Visa'
+        sub: 'Poland D-Type Visa'
+    },
+    {
+        label: 'Singapore',
+        href: '/visa-services',
+        icon: <MapPin size={15} />,
+        tag: 'Trending',
+        sub: 'S-Pass Visa'
     },
 ]
 
