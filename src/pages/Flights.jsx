@@ -66,154 +66,173 @@ export default function Flights() {
                     <div className="breadcrumb">
                         <Link to="/">Home</Link><span className="sep">›</span><span>Book Flight</span>
                     </div>
-                    <h1>Global Flight Booking</h1>
-                    <p>Exclusive deals on international flights. Direct routes to Dubai, USA, Europe, and Asia.</p>
+                    <h1 className="animate-reveal">Global Flight Booking</h1>
+                    <p className="animate-reveal" style={{ animationDelay: '0.1s' }}>Exclusive deals on international flights. We source the best prices for your journey.</p>
                 </div>
             </div>
 
-            <section className="form-page">
+            <section className="form-page section">
                 <div className="container">
-                    <div className="flights-grid">
-                        <div className="flights-form-container">
-                            <form className="form-card animate-fadeIn" onSubmit={handleSubmit}>
-                                <div className="form-header">
-                                    <div className="form-icon-circle"><Plane size={24} /></div>
-                                    <h2>Flight Reservation</h2>
-                                    <p className="sub">Secure your seat at the best rate. We'll handle the logistics.</p>
+                    <div className="flights-layout">
+                        <div className="flights-main">
+                            <form className="premium-form glass animate-reveal" onSubmit={handleSubmit} style={{ animationDelay: '0.2s' }}>
+                                <div className="form-header-premium">
+                                    <div className="header-badge">Step 1 of 2</div>
+                                    <h2>Flight Ticket Inquiry</h2>
+                                    <p>Share your travel plans and receive a quote within minutes.</p>
                                 </div>
 
-                                <div className="trip-type-selector">
-                                    <label className={`trip-type-btn ${form.trip_type === 'one-way' ? 'active' : ''}`}>
-                                        <input type="radio" name="trip_type" value="one-way" checked={form.trip_type === 'one-way'} onChange={set} />
+                                <div className="trip-type-tabs">
+                                    <button
+                                        type="button"
+                                        className={`trip-tab ${form.trip_type === 'one-way' ? 'active' : ''}`}
+                                        onClick={() => setForm(f => ({ ...f, trip_type: 'one-way' }))}
+                                    >
                                         One Way
-                                    </label>
-                                    <label className={`trip-type-btn ${form.trip_type === 'round-trip' ? 'active' : ''}`}>
-                                        <input type="radio" name="trip_type" value="round-trip" checked={form.trip_type === 'round-trip'} onChange={set} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`trip-tab ${form.trip_type === 'round-trip' ? 'active' : ''}`}
+                                        onClick={() => setForm(f => ({ ...f, trip_type: 'round-trip' }))}
+                                    >
                                         Round Trip
-                                    </label>
+                                    </button>
                                 </div>
 
-                                <div className="form-grid">
-                                    <div className="form-group full">
-                                        <label>Full Name *</label>
-                                        <input name="full_name" value={form.full_name} onChange={set} required placeholder="Name as on Passport" />
-                                    </div>
-
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label>Email Address *</label>
-                                            <input type="email" name="email" value={form.email} onChange={set} required placeholder="you@email.com" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Phone Number *</label>
-                                            <input name="phone" value={form.phone} onChange={set} required placeholder="+1 (999) 00-0000" />
+                                <div className="form-premium-grid">
+                                    <div className="input-group full">
+                                        <label>Full Name</label>
+                                        <div className="input-field">
+                                            <Users size={18} className="field-icon" />
+                                            <input name="full_name" value={form.full_name} onChange={set} required placeholder="Enter full name" />
                                         </div>
                                     </div>
 
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label>Departure City *</label>
-                                            <div className="input-with-icon">
-                                                <MapPin size={16} />
-                                                <input name="origin" value={form.origin} onChange={set} required placeholder="From where?" />
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Destination City *</label>
-                                            <div className="input-with-icon">
-                                                <MapPin size={16} />
-                                                <input name="destination" value={form.destination} onChange={set} required placeholder="To where?" />
-                                            </div>
+                                    <div className="input-group">
+                                        <label>Email Address</label>
+                                        <div className="input-field">
+                                            <Send size={18} className="field-icon" />
+                                            <input type="email" name="email" value={form.email} onChange={set} required placeholder="you@example.com" />
                                         </div>
                                     </div>
 
-                                    <div className="form-row">
-                                        <div className="form-group">
-                                            <label>Departure Date *</label>
-                                            <div className="input-with-icon">
-                                                <Calendar size={16} />
-                                                <input type="date" name="departure_date" value={form.departure_date} onChange={set} required />
+                                    <div className="input-group">
+                                        <label>Phone Number</label>
+                                        <div className="input-field">
+                                            <PhoneCall size={18} className="field-icon" />
+                                            <input name="phone" value={form.phone} onChange={set} required placeholder="+250..." />
+                                        </div>
+                                    </div>
+
+                                    <div className="input-group">
+                                        <label>Origin City</label>
+                                        <div className="input-field">
+                                            <MapPin size={18} className="field-icon" />
+                                            <input name="origin" value={form.origin} onChange={set} required placeholder="From where?" />
+                                        </div>
+                                    </div>
+
+                                    <div className="input-group">
+                                        <label>Destination City</label>
+                                        <div className="input-field">
+                                            <MapPin size={18} className="field-icon" />
+                                            <input name="destination" value={form.destination} onChange={set} required placeholder="To where?" />
+                                        </div>
+                                    </div>
+
+                                    <div className="input-group">
+                                        <label>Departure Date</label>
+                                        <div className="input-field">
+                                            <Calendar size={18} className="field-icon" />
+                                            <input type="date" name="departure_date" value={form.departure_date} onChange={set} required />
+                                        </div>
+                                    </div>
+
+                                    {form.trip_type === 'round-trip' ? (
+                                        <div className="input-group">
+                                            <label>Return Date</label>
+                                            <div className="input-field">
+                                                <Calendar size={18} className="field-icon" />
+                                                <input type="date" name="return_date" value={form.return_date} onChange={set} required />
                                             </div>
                                         </div>
-                                        {form.trip_type === 'round-trip' && (
-                                            <div className="form-group">
-                                                <label>Return Date *</label>
-                                                <div className="input-with-icon">
-                                                    <Calendar size={16} />
-                                                    <input type="date" name="return_date" value={form.return_date} onChange={set} required />
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div className="form-group">
-                                            <label>Passengers *</label>
-                                            <div className="input-with-icon">
-                                                <Users size={16} />
+                                    ) : (
+                                        <div className="input-group">
+                                            <label>Passengers</label>
+                                            <div className="input-field">
+                                                <Users size={18} className="field-icon" />
                                                 <select name="passengers" value={form.passengers} onChange={set}>
-                                                    {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option key={n} value={n}>{n} {n === 1 ? 'Adult' : 'Adults'}</option>)}
+                                                    {[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n}>{n} {n === 1 ? 'Adult' : 'Adults'}</option>)}
                                                 </select>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div className="file-upload-section">
-                                        <label className="section-label">Required Documents</label>
-                                        <div className="file-grid">
-                                            <div className="file-input-card">
-                                                <div className="file-info">
-                                                    <Upload size={18} />
-                                                    <span>Passport Photo *</span>
-                                                </div>
-                                                <input type="file" name="passport" onChange={handleFile} accept="image/*,.pdf" required />
-                                                <small>Clear copy of bio-data page</small>
-                                            </div>
-                                            <div className="file-input-card">
-                                                <div className="file-info">
-                                                    <Upload size={18} />
-                                                    <span>National ID</span>
-                                                </div>
-                                                <input type="file" name="id_card" onChange={handleFile} accept="image/*,.pdf" />
-                                                <small>Front and back copy</small>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group full">
-                                        <label>Additional Requests</label>
-                                        <textarea name="message" value={form.message} onChange={set} placeholder="Preferred airline, seat preferences, or dietary requirements..." />
-                                    </div>
-
-                                    <button type="submit" className="form-submit" disabled={loading}>
-                                        {loading ? 'Processing...' : 'Book Flight Now'}
-                                        {!loading && <Send size={18} style={{ marginLeft: '.75rem' }} />}
-                                    </button>
-
-                                    {status && (
-                                        <div className={`form-msg ${status.type}`}>
-                                            {status.type === 'success' && <CheckCircle size={18} style={{ marginRight: '.5rem' }} />}
-                                            {status.msg}
-                                        </div>
                                     )}
                                 </div>
+
+                                <div className="document-upload-premium">
+                                    <h3>Travel Documents <small>(Optional for inquiry)</small></h3>
+                                    <div className="upload-grid-premium">
+                                        <label className="upload-box-premium">
+                                            <Upload size={20} />
+                                            <span>Passport Bio-Page</span>
+                                            <input type="file" name="passport" onChange={handleFile} accept="image/*,.pdf" />
+                                        </label>
+                                        <label className="upload-box-premium">
+                                            <Upload size={20} />
+                                            <span>National ID</span>
+                                            <input type="file" name="id_card" onChange={handleFile} accept="image/*,.pdf" />
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" className="submit-btn-premium" disabled={loading}>
+                                    {loading ? 'Sending Request...' : 'Get Best Quote'}
+                                    <ArrowRight size={20} />
+                                </button>
+
+                                {status && (
+                                    <div className={`status-alert ${status.type} animate-reveal`}>
+                                        {status.type === 'success' ? <CheckCircle size={20} /> : <Info size={20} />}
+                                        {status.msg}
+                                    </div>
+                                )}
                             </form>
                         </div>
 
-                        <div className="flights-sidebar">
-                            <div className="info-card">
-                                <h3>Why Book With Us?</h3>
-                                <ul className="info-list">
-                                    <li><ChevronRight size={14} /> Competitive Pricing</li>
-                                    <li><ChevronRight size={14} /> 24/7 Travel Support</li>
-                                    <li><ChevronRight size={14} /> Visa-Linked Booking</li>
-                                    <li><ChevronRight size={14} /> Flexible Rescheduling</li>
+                        <div className="flights-sidebar-premium">
+                            <div className="sidebar-card animate-reveal" style={{ animationDelay: '0.3s' }}>
+                                <h3>Why Travelium?</h3>
+                                <ul className="premium-features-list">
+                                    <li>
+                                        <div className="feat-icon"><ShieldCheck size={18} /></div>
+                                        <div>
+                                            <strong>Verified Agency</strong>
+                                            <span>Licensed travel partner.</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div className="feat-icon"><Plane size={18} /></div>
+                                        <div>
+                                            <strong>500+ Airlines</strong>
+                                            <span>Widest range of options.</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div className="feat-icon"><Clock size={18} /></div>
+                                        <div>
+                                            <strong>Fast Response</strong>
+                                            <span>Quotes within 30 minutes.</span>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
 
-                            <div className="help-box">
-                                <div className="help-icon"><Info size={24} /></div>
-                                <h4>Need Assistance?</h4>
-                                <p>Our travel consultants are ready to help you plan your itinerary.</p>
-                                <a href="https://wa.me/250793658206" className="btn btn-whatsapp">
-                                    Chat on WhatsApp
+                            <div className="whatsapp-help-card animate-reveal" style={{ animationDelay: '0.4s' }}>
+                                <div className="wa-icon-large"><Send size={32} /></div>
+                                <h4>Instant Assistance</h4>
+                                <p>Talk directly to our travel experts for immediate booking support.</p>
+                                <a href="https://wa.me/250793658206" className="wa-btn-premium">
+                                    Open WhatsApp Chat
                                 </a>
                             </div>
                         </div>

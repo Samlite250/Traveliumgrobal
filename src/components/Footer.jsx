@@ -26,56 +26,86 @@ const footerLinks = {
 
 export default function Footer() {
     return (
-        <footer className="footer">
-            <div className="footer-top">
-                <div className="container">
-                    <div className="footer-grid">
-                        <div className="footer-brand">
-                            <Link to="/" className="nav-logo">
-                                <div className="logo-icon"><Plane size={22} transform="rotate(45)" /></div>
-                                <div className="logo-text-stack">
-                                    <span className="logo-name">TRAVELIUM</span>
-                                    <span className="logo-tagline">Grobal</span>
-                                </div>
-                            </Link>
-                            <p>Your Gateway to Global Work Visas and Career Relocation.</p>
-                            <div className="footer-social">
-                                <a href="#" aria-label="LinkedIn"><Globe size={15} /></a>
-                                <a href="#" aria-label="Twitter"><Send size={15} /></a>
-                                <a href="#" aria-label="YouTube"><Play size={15} /></a>
+        <footer className="footer-premium">
+            <div className="container">
+                <div className="footer-main-grid">
+                    <div className="footer-brand-side">
+                        <Link to="/" className="nav-logo">
+                            <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
+                            <div className="logo-text-stack">
+                                <span className="logo-name">TRAVELIUM</span>
+                                <span className="logo-tagline">Grobal</span>
                             </div>
-                            <div className="footer-contact-inline">
-                                <a href="mailto:traveliumgrobal@gmail.com"><Mail size={13} /> traveliumgrobal@gmail.com</a>
-                                <a href="tel:+250782531515"><Phone size={13} /> +250 782531515</a> <a href="https://wa.me/250782531515" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><WhatsAppIcon size={13} /></a>
-                                <a href="tel:+250796230619"><Phone size={13} /> +250 796230619</a>
-                                <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><WhatsAppIcon size={13} /></a>
-                                <a href="tel:+250793658206"><Phone size={13} /> +250 793658206</a>
-                                <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><WhatsAppIcon size={13} /></a>
-                            </div>
+                        </Link>
+                        <p className="brand-pitch">
+                            Your trusted partner for global career transformation. We simplify the complex visa and relocation process so you can focus on your future.
+                        </p>
+                        <div className="social-links-premium">
+                            <a href="#" className="social-pill"><Globe size={16} /></a>
+                            <a href="#" className="social-pill"><Send size={16} /></a>
+                            <a href="#" className="social-pill"><Play size={16} /></a>
                         </div>
+                    </div>
 
-                        <div className="footer-links-wrapper">
-                            {Object.entries(footerLinks).map(([title, links]) => (
-                                <div key={title} className="footer-col">
-                                    <h4>{title}</h4>
-                                    <ul>
-                                        {links.map(l => (
-                                            <li key={l.label}><Link to={l.href}>{l.label}</Link></li>
-                                        ))}
-                                    </ul>
+                    <div className="footer-nav-grid">
+                        <div className="footer-links-col">
+                            <h4>Quick Links</h4>
+                            <ul>
+                                <li><Link to="/">Home</Link></li>
+                                <li><Link to="/about">About Travelium</Link></li>
+                                <li><Link to="/visa-services">Visa Solutions</Link></li>
+                                <li><Link to="/flights">Flight Booking</Link></li>
+                                <li><Link to="/contact">Contact Support</Link></li>
+                            </ul>
+                        </div>
+                        <div className="footer-links-col">
+                            <h4>Hot Destinies</h4>
+                            <ul>
+                                <li><Link to="/visa-services">Dubai, UAE</Link></li>
+                                <li><Link to="/visa-services">Canada PR</Link></li>
+                                <li><Link to="/visa-services">United Kingdom</Link></li>
+                                <li><Link to="/visa-services">USA Work Visa</Link></li>
+                                <li><Link to="/visa-services">Germany & EU</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="footer-contact-side">
+                        <h4>Contact Center</h4>
+                        <div className="contact-departments">
+                            <div className="contact-dept">
+                                <span className="dept-label">General & Visa</span>
+                                <div className="dept-links">
+                                    <a href="tel:+250782531515" className="contact-item"><Phone size={14} /> +250 782531515</a>
+                                    <a href="https://wa.me/250782531515" target="_blank" rel="noopener noreferrer" className="wa-bubble"><WhatsAppIcon size={14} /> WhatsApp</a>
                                 </div>
-                            ))}
+                            </div>
+                            <div className="contact-dept">
+                                <span className="dept-label">Recruitment & Jobs</span>
+                                <div className="dept-links">
+                                    <a href="tel:+250796230619" className="contact-item"><Phone size={14} /> +250 796230619</a>
+                                    <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="wa-bubble"><WhatsAppIcon size={14} /> WhatsApp</a>
+                                </div>
+                            </div>
+                            <div className="contact-dept">
+                                <span className="dept-label">Flight Ticketing</span>
+                                <div className="dept-links">
+                                    <a href="tel:+250793658206" className="contact-item"><Phone size={14} /> +250 793658206</a>
+                                    <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="wa-bubble"><WhatsAppIcon size={14} /> WhatsApp</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="container">
-                <div className="footer-bottom">
-                    <span>© {new Date().getFullYear()} Travelium Global. All rights reserved.</span>
-                    <div className="footer-bottom-links">
+                <div className="footer-bottom-premium">
+                    <div className="copyright-info">
+                        <span>© {new Date().getFullYear()} Travelium Global. Licensed Recruitment & Travel Agency.</span>
+                    </div>
+                    <div className="legal-links">
+                        <Link to="#">Terms of Use</Link>
                         <Link to="#">Privacy Policy</Link>
-                        <Link to="#">Terms of Service</Link>
+                        <span className="location-tag"><Globe size={14} /> Headquartered in Kigali, Rwanda</span>
                     </div>
                 </div>
             </div>
