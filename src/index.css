@@ -5102,10 +5102,11 @@ main {
 
 .hero-content-stack h1 {
   font-size: 3.5rem;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--white);
   line-height: 1.1;
   margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
 }
 
 .hero-content-stack p {
@@ -5268,15 +5269,17 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  padding: 1.25rem;
+  gap: .75rem;
+  padding: .85rem 1.5rem;
   background: #25d366;
   color: var(--white);
-  border-radius: 16px;
+  border-radius: 12px;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
   transition: var(--transition);
   text-decoration: none;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .wa-btn-xl:hover {

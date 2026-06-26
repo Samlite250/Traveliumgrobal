@@ -31,7 +31,7 @@ export default function BuyTicket() {
                 <div className="container">
                     <div className="hero-content-stack animate-reveal">
                         <span className="hero-badge">Ticketing Center</span>
-                        <h1>International <span className="gradient-text">Flight Solutions</span></h1>
+                        <h1>International Flight Solutions</h1>
                         <p>Experience seamless global travel with our dedicated ticketing assistance. Competitive rates and personalized support for every journey.</p>
                     </div>
                 </div>
