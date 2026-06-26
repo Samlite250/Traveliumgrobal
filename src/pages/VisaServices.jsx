@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
-import { Briefcase, Globe, GraduationCap, Home, CheckCircle, ArrowRight, Star, Zap } from 'lucide-react'
+import { Briefcase, Globe, GraduationCap, Home, CheckCircle, ArrowRight, Star, Zap, Fire } from 'lucide-react'
 
 const visas = [
     {
