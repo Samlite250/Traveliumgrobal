@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import {
     Plane, Send, CheckCircle, ArrowRight,
     Calendar, MapPin, Users, Upload,
-    ChevronRight, Info
+    ChevronRight, Info, PhoneCall, ShieldCheck, Clock
 } from 'lucide-react'
 
 export default function Flights() {
