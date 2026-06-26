@@ -82,7 +82,7 @@ export default function Apply() {
                                         <Globe size={16} className="select-icon" />
                                         <select name="destination" value={form.destination} onChange={set} required>
                                             <option value="">Select country</option>
-                                            {['Canada', 'United States', 'United Kingdom', 'Australia', 'Germany', 'Oman', 'China', 'France', 'Netherlands', 'Poland', 'Singapore', 'South Korea'].map(c => (
+                                            {['Dubai', 'Canada', 'United States', 'United Kingdom', 'Germany', 'France', 'Oman', 'China', 'Japan', 'Netherlands'].map(c => (
                                                 <option key={c}>{c}</option>
                                             ))}
                                         </select>

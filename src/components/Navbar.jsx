@@ -22,59 +22,20 @@ const visaServicesDropdown = [
 ]
 
 const workAbroadDropdown = [
-    {
-        label: 'Dubai',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: 'Hot',
-        sub: 'UAE Work Visa'
-    },
-    {
-        label: 'Oman',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: 'New',
-        sub: 'Oman Work Permit'
-    },
-    {
-        label: 'China',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: 'New',
-        sub: 'China Z-Visa'
-    },
-    {
-        label: 'USA',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: 'Trending',
-        sub: 'H-1B Work Visa'
-    },
-    {
-        label: 'Germany',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: null,
-        sub: 'EU Blue Card'
-    },
-    {
-        label: 'Poland',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: null,
-        sub: 'Poland D-Type Visa'
-    },
-    {
-        label: 'Singapore',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: 'Trending',
-        sub: 'S-Pass Visa'
-    },
+    { label: 'Dubai', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Hot', sub: 'UAE Work Visa' },
+    { label: 'Canada', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Hot', sub: 'Express Entry' },
+    { label: 'USA', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Trending', sub: 'H-1B Work Visa' },
+    { label: 'UK', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Skilled Worker' },
+    { label: 'Germany', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'EU Blue Card' },
+    { label: 'France', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Talent Passport' },
+    { label: 'Oman', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'Oman Work Permit' },
+    { label: 'China', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'China Z-Visa' },
+    { label: 'Japan', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'Work Permit' },
+    { label: 'Netherlands', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Skilled Migrant' },
 ]
 
 const flightsDropdown = [
-    { label: 'Buy Ticket', href: 'https://wa.me/250793658206', icon: <Send size={15} /> },
+    { label: 'Buy Ticket', href: '/buy-ticket', icon: <Send size={15} /> },
     { label: 'Book Flight', href: '/flights', icon: <Plane size={15} /> },
 ];
 const staticLinks = [

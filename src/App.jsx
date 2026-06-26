@@ -12,8 +12,8 @@ const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Apply = lazy(() => import('./pages/Apply'))
 const Login = lazy(() => import('./pages/Login'))
-const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Flights = lazy(() => import('./pages/Flights'))
+const BuyTicket = lazy(() => import('./pages/BuyTicket'))
 
 export default function App() {
     return (
@@ -31,6 +31,7 @@ export default function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/flights" element={<Flights />} />
+                    <Route path="/buy-ticket" element={<BuyTicket />} />
                 </Routes>
             </Suspense>
             <Footer />
