@@ -12,6 +12,7 @@ const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Apply = lazy(() => import('./pages/Apply'))
 const Login = lazy(() => import('./pages/Login'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Flights = lazy(() => import('./pages/Flights'))
 const BuyTicket = lazy(() => import('./pages/BuyTicket'))
 
