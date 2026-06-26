@@ -156,6 +156,7 @@ export default function Navbar() {
     const [studyAbroadOpen, setStudyAbroadOpen] = useState(false)
     const [visaServicesOpen, setVisaServicesOpen] = useState(false)
     const [workAbroadOpen, setWorkAbroadOpen] = useState(false)
+    const [flightsOpen, setFlightsOpen] = useState(false)
     const location = useLocation()
 
     useEffect(() => {
@@ -164,7 +165,13 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', onScroll)
     }, [])
 
-    useEffect(() => { setMenuOpen(false) }, [location])
+    useEffect(() => {
+        setMenuOpen(false)
+        setStudyAbroadOpen(false)
+        setVisaServicesOpen(false)
+        setWorkAbroadOpen(false)
+        setFlightsOpen(false)
+    }, [location])
 
     useEffect(() => {
         if (menuOpen) {
@@ -324,6 +331,30 @@ export default function Navbar() {
                                     <FileText size={15} /> <span className="mobile-link-text">View All Work Visas</span>
                                 </Link>
                             </li>
+                        </ul>
+                    </li>
+
+                    <li className={`mobile-accordion ${flightsOpen ? 'open' : ''}`}>
+                        <button className="mobile-accordion-trigger" onClick={() => setFlightsOpen(!flightsOpen)}>
+                            <span className="trigger-label">
+                                <Plane size={16} /> <span className="mobile-link-text">Flights</span>
+                            </span>
+                            <ChevronDown size={14} className="chevron" />
+                        </button>
+                        <ul className="mobile-accordion-menu">
+                            {flightsDropdown.map(item => (
+                                <li key={item.label}>
+                                    {item.href.startsWith('http') ? (
+                                        <a href={item.href} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)}>
+                                            {item.icon} <span className="mobile-link-text">{item.label}</span>
+                                        </a>
+                                    ) : (
+                                        <Link to={item.href} onClick={() => setMenuOpen(false)}>
+                                            {item.icon} <span className="mobile-link-text">{item.label}</span>
+                                        </Link>
+                                    )}
+                                </li>
+                            ))}
                         </ul>
                     </li>
 

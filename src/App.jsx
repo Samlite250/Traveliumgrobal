@@ -13,6 +13,7 @@ const Contact = lazy(() => import('./pages/Contact'))
 const Apply = lazy(() => import('./pages/Apply'))
 const Login = lazy(() => import('./pages/Login'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Flights = lazy(() => import('./pages/Flights'))
 
 export default function App() {
     return (
@@ -29,6 +30,7 @@ export default function App() {
                     <Route path="/apply" element={<Apply />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/flights" element={<Flights />} />
                 </Routes>
             </Suspense>
             <Footer />
