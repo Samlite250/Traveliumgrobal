@@ -5331,8 +5331,8 @@ main {
 
 /* ===== FOOTER CONTACT CENTER REFINEMENT ===== */
 .contact-card-premium {
-  background: var(--white);
-  padding: 2.25rem;
+  background: var(--navy-glass);
+  padding: 1.5rem;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
@@ -5415,6 +5415,29 @@ main {
   transform: translateY(-1px);
 }
 
+.wa-link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .75rem 1.25rem;
+  background: #25d366;
+  color: var(--white);
+  border-radius: 8px;
+  font-size: .95rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: var(--transition);
+  width: auto;
+  max-width: 250px;
+}
+
+.wa-link-btn:hover {
+  background: #128c7e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
 @media (max-width: 768px) {
   .hero-content-stack h1 {
     font-size: 2.5rem;
@@ -5437,6 +5460,11 @@ main {
   }
 
   .wa-link-inline {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .wa-link-btn {
     width: 100%;
     justify-content: center;
   }

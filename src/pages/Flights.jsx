@@ -11,13 +11,11 @@ export default function Flights() {
     const [form, setForm] = useState({
         full_name: '', email: '', phone: '',
         origin: '', destination: '',
-        departure_date: '', return_date: '',
-        trip_type: 'one-way', passengers: '1',
-        message: ''
+        departure_date: '',
+        trip_type: 'one-way'
     })
     const [files, setFiles] = useState({
-        passport: null,
-        id_card: null
+        passport: null
     })
     const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -46,11 +44,10 @@ export default function Flights() {
             setForm({
                 full_name: '', email: '', phone: '',
                 origin: '', destination: '',
-                departure_date: '', return_date: '',
-                trip_type: 'one-way', passengers: '1',
-                message: ''
+                departure_date: '',
+                trip_type: 'one-way'
             })
-            setFiles({ passport: null, id_card: null })
+            setFiles({ passport: null })
         } catch (error) {
             setStatus({ type: 'error', msg: 'Submission failed. Please try again.' })
         } finally {
@@ -148,39 +145,16 @@ export default function Flights() {
                                         </div>
                                     </div>
 
-                                    {form.trip_type === 'round-trip' ? (
-                                        <div className="input-group">
-                                            <label>Return Date</label>
-                                            <div className="input-field">
-                                                <Calendar size={18} className="field-icon" />
-                                                <input type="date" name="return_date" value={form.return_date} onChange={set} required />
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="input-group">
-                                            <label>Passengers</label>
-                                            <div className="input-field">
-                                                <Users size={18} className="field-icon" />
-                                                <select name="passengers" value={form.passengers} onChange={set}>
-                                                    {[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n}>{n} {n === 1 ? 'Adult' : 'Adults'}</option>)}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    )}
+
                                 </div>
 
                                 <div className="document-upload-premium">
-                                    <h3>Travel Documents <small>(Optional for inquiry)</small></h3>
+                                    <h3>Travel Document <small>(Optional for inquiry)</small></h3>
                                     <div className="upload-grid-premium">
-                                        <label className="upload-box-premium">
+                                        <label className="upload-box-premium full-width">
                                             <Upload size={20} />
-                                            <span>Passport Bio-Page</span>
+                                            <span>Passport Bio-Page Photo</span>
                                             <input type="file" name="passport" onChange={handleFile} accept="image/*,.pdf" />
-                                        </label>
-                                        <label className="upload-box-premium">
-                                            <Upload size={20} />
-                                            <span>National ID</span>
-                                            <input type="file" name="id_card" onChange={handleFile} accept="image/*,.pdf" />
                                         </label>
                                     </div>
                                 </div>

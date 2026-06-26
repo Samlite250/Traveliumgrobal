@@ -80,9 +80,8 @@ export default function Footer() {
                                         <span>Visas & General</span>
                                     </div>
                                     <div className="block-body">
-                                        <a href="tel:+250782531515" className="link-item">+250 782 531 515</a>
-                                        <a href="https://wa.me/250782531515" target="_blank" rel="noopener noreferrer" className="wa-link-inline">
-                                            <WhatsAppIcon size={14} /> Secure Chat
+                                        <a href="https://wa.me/250782531515" target="_blank" rel="noopener noreferrer" className="wa-link-btn">
+                                            <WhatsAppIcon size={18} /> Chat on WhatsApp
                                         </a>
                                     </div>
                                 </div>
@@ -93,9 +92,8 @@ export default function Footer() {
                                         <span>Jobs & Recruitment</span>
                                     </div>
                                     <div className="block-body">
-                                        <a href="tel:+250796230619" className="link-item">+250 796 230 619</a>
-                                        <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="wa-link-inline">
-                                            <WhatsAppIcon size={14} /> Direct Hire
+                                        <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="wa-link-btn">
+                                            <WhatsAppIcon size={18} /> Chat on WhatsApp
                                         </a>
                                     </div>
                                 </div>
@@ -106,9 +104,8 @@ export default function Footer() {
                                         <span>Air Ticketing</span>
                                     </div>
                                     <div className="block-body">
-                                        <a href="tel:+250793658206" className="link-item">+250 793 658 206</a>
-                                        <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="wa-link-inline">
-                                            <WhatsAppIcon size={14} /> Book Flight
+                                        <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="wa-link-btn">
+                                            <WhatsAppIcon size={18} /> Chat on WhatsApp
                                         </a>
                                     </div>
                                 </div>

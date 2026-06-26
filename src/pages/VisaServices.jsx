@@ -71,7 +71,7 @@ export default function VisaServices() {
             <section className="dubai-spotlight section">
                 <div className="container">
                     <div className="dubai-spotlight-header">
-                        <div className="section-label">🔥 Featured Destination</div>
+                        <div className="section-label"><Fire size={20} className="icon-fire" /> Featured Destination</div>
                         <h2 className="section-title">Work in Dubai, UAE</h2>
                         <p className="section-sub">
                             The #1 destination for ambitious professionals. Tax-free salaries, visa-friendly policies, and limitless career growth.
