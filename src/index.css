@@ -5265,37 +5265,123 @@ main {
   color: #10b981;
 }
 
-.wa-btn-xl {
+.wa-btn-sm {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .75rem;
-  padding: .85rem 1.5rem;
+  gap: .5rem;
+  padding: .65rem 1.25rem;
   background: #25d366;
   color: var(--white);
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: .9rem;
   transition: var(--transition);
   text-decoration: none;
   width: fit-content;
   margin: 0 auto;
 }
 
-.wa-btn-xl:hover {
+.wa-btn-sm:hover {
   background: #128c7e;
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(37, 211, 102, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(37, 211, 102, 0.2);
 }
 
 .response-time {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .5rem;
-  font-size: .85rem;
+  gap: .4rem;
+  font-size: .8rem;
   color: var(--text-muted);
+}
+
+/* ===== FOOTER CONTACT CENTER REFINEMENT ===== */
+.contact-card-premium {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.contact-card-premium h4 {
+  margin-bottom: 1.5rem !important;
+  color: var(--gold) !important;
+}
+
+.contact-grid-premium {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.contact-block {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.contact-block:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.block-head {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+
+.block-icon {
+  color: var(--gold);
+}
+
+.block-head span {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.block-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.link-item {
+  font-size: .95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.link-item:hover {
+  color: var(--white);
+}
+
+.wa-link-inline {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .35rem .75rem;
+  background: rgba(37, 211, 102, 0.1);
+  color: #25d366;
+  border-radius: 6px;
+  font-size: .8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.wa-link-inline:hover {
+  background: rgba(37, 211, 102, 0.2);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {

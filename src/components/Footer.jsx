@@ -71,27 +71,46 @@ export default function Footer() {
                     </div>
 
                     <div className="footer-contact-side">
-                        <h4>Contact Center</h4>
-                        <div className="contact-departments">
-                            <div className="contact-dept">
-                                <span className="dept-label">General & Visa</span>
-                                <div className="dept-links">
-                                    <a href="tel:+250782531515" className="contact-item"><Phone size={14} /> +250 782531515</a>
-                                    <a href="https://wa.me/250782531515" target="_blank" rel="noopener noreferrer" className="wa-bubble"><WhatsAppIcon size={14} /> WhatsApp</a>
+                        <div className="contact-card-premium">
+                            <h4>Support Hub</h4>
+                            <div className="contact-grid-premium">
+                                <div className="contact-block">
+                                    <div className="block-head">
+                                        <div className="block-icon"><ShieldCheck size={16} /></div>
+                                        <span>Visas & General</span>
+                                    </div>
+                                    <div className="block-body">
+                                        <a href="tel:+250782531515" className="link-item">+250 782 531 515</a>
+                                        <a href="https://wa.me/250782531515" target="_blank" rel="noopener noreferrer" className="wa-link-inline">
+                                            <WhatsAppIcon size={14} /> Secure Chat
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="contact-dept">
-                                <span className="dept-label">Recruitment & Jobs</span>
-                                <div className="dept-links">
-                                    <a href="tel:+250796230619" className="contact-item"><Phone size={14} /> +250 796230619</a>
-                                    <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="wa-bubble"><WhatsAppIcon size={14} /> WhatsApp</a>
+
+                                <div className="contact-block">
+                                    <div className="block-head">
+                                        <div className="block-icon"><Globe size={16} /></div>
+                                        <span>Jobs & Recruitment</span>
+                                    </div>
+                                    <div className="block-body">
+                                        <a href="tel:+250796230619" className="link-item">+250 796 230 619</a>
+                                        <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="wa-link-inline">
+                                            <WhatsAppIcon size={14} /> Direct Hire
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="contact-dept">
-                                <span className="dept-label">Flight Ticketing</span>
-                                <div className="dept-links">
-                                    <a href="tel:+250793658206" className="contact-item"><Phone size={14} /> +250 793658206</a>
-                                    <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="wa-bubble"><WhatsAppIcon size={14} /> WhatsApp</a>
+
+                                <div className="contact-block">
+                                    <div className="block-head">
+                                        <div className="block-icon"><Plane size={16} /></div>
+                                        <span>Air Ticketing</span>
+                                    </div>
+                                    <div className="block-body">
+                                        <a href="tel:+250793658206" className="link-item">+250 793 658 206</a>
+                                        <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="wa-link-inline">
+                                            <WhatsAppIcon size={14} /> Book Flight
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
