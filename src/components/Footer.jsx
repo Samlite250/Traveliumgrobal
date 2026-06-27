@@ -71,42 +71,45 @@ export default function Footer() {
                     </div>
 
                     <div className="footer-contact-side">
-                        <div className="contact-card-premium">
-                            <h4>Support Hub</h4>
+                        <div className="contact-card-premium" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
+                            <h4 style={{ color: 'white', marginBottom: '1.5rem' }}>Support Hub</h4>
                             <div className="contact-grid-premium">
                                 <div className="contact-block">
                                     <div className="block-head">
                                         <div className="block-icon"><ShieldCheck size={16} /></div>
-                                        <span>Visas & General</span>
+                                        <span style={{ color: 'white' }}>Visas & General</span>
                                     </div>
-                                    <div className="block-body">
-                                        <a href="https://wa.me/250782531515" target="_blank" rel="noopener noreferrer" className="wa-link-btn">
-                                            <WhatsAppIcon size={18} /> Chat on WhatsApp
-                                        </a>
+                                    <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
+                                            <Phone size={14} color="var(--gold)" /> <span>+250 782 531 515</span>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
+                                            <Mail size={14} color="var(--gold)" /> <a href="mailto:traveliumglobal@gmail.com" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none' }}>traveliumglobal@gmail.com</a>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div className="contact-block">
                                     <div className="block-head">
                                         <div className="block-icon"><Globe size={16} /></div>
-                                        <span>Jobs & Recruitment</span>
+                                        <span style={{ color: 'white' }}>Jobs & Recruitment</span>
                                     </div>
-                                    <div className="block-body">
-                                        <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="wa-link-btn">
-                                            <WhatsAppIcon size={18} /> Chat on WhatsApp
-                                        </a>
+                                    <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
+                                            <Phone size={14} color="var(--gold)" /> <span>+250 796 230 619</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div className="contact-block">
                                     <div className="block-head">
                                         <div className="block-icon"><Plane size={16} /></div>
-                                        <span>Air Ticketing</span>
+                                        <span style={{ color: 'white' }}>Air Ticketing</span>
                                     </div>
-                                    <div className="block-body">
-                                        <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="wa-link-btn">
-                                            <WhatsAppIcon size={18} /> Chat on WhatsApp
-                                        </a>
+                                    <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
+                                            <Phone size={14} color="var(--gold)" /> <span>+250 793 658 206</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
