@@ -24,13 +24,14 @@ export default function AdminLogin() {
         e.preventDefault()
         
         if (!ADMIN_EMAILS.includes(email.toLowerCase())) {
+        if (!ADMIN_EMAILS.includes(email.trim().toLowerCase())) {
             return setError('Access Denied: This portal is for authorized administrative personnel only.')
         }
 
         try {
             setError('')
             setLoading(true)
-            await login(email, password)
+            await login(email.trim(), password.trim())
             navigate('/admin')
         } catch (err) {
             setError('Login failed. Please check your credentials.')
