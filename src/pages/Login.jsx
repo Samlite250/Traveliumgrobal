@@ -20,10 +20,10 @@ export default function Login() {
         setStatus(null)
         try {
             if (tab === 'login') {
-                const { user } = await login(form.email, form.password)
+                const { user } = await login(form.email.trim(), form.password.trim())
                 navigate(isAdmin(user) ? '/admin' : '/dashboard')
             } else {
-                await signup(form.email, form.password, form.full_name)
+                await signup(form.email.trim(), form.password.trim(), form.full_name)
                 navigate('/dashboard')
             }
         } catch (err) {
