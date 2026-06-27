@@ -23,7 +23,6 @@ export default function AdminLogin() {
     async function handleSubmit(e) {
         e.preventDefault()
         
-        if (!ADMIN_EMAILS.includes(email.toLowerCase())) {
         if (!ADMIN_EMAILS.includes(email.trim().toLowerCase())) {
             return setError('Access Denied: This portal is for authorized administrative personnel only.')
         }
