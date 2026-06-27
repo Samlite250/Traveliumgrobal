@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Applications ──────────────────────────────────────────────────────────
+    // Any authenticated user may CREATE an application.
+    // Users may READ their own applications.
+    // Admin (by email) may READ and UPDATE any application.
+    match /applications/{docId} {
+      allow create: if request.auth != null;
+
+      allow read: if request.auth != null && (
+        resource.data.user_id == request.auth.uid ||
+        request.auth.token.email == 'traveliumgrobal@gmail.com'
+      );
+
+      allow update: if request.auth != null &&
+        request.auth.token.email == 'traveliumgrobal@gmail.com';
+
+      allow delete: if false; // never allow deletion
+    }
+
+    // ── User profiles (future) ────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

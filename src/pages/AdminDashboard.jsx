@@ -1,22 +1,24 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-    collection, getDocs, doc, updateDoc, orderBy, query
+    collection, getDocs, doc, updateDoc, orderBy, query, limit, serverTimestamp
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
 import {
     Shield, LogOut, Users, ClipboardList, CheckCircle, XCircle,
-    Clock, Loader2, FileText, Search, Filter, RefreshCw
+    Clock, Loader2, FileText, Search, Filter, RefreshCw, 
+    ChevronDown, Download, ExternalLink, Calendar, Mail, Phone,
+    Globe, BookOpen, User, MoreHorizontal, Check
 } from 'lucide-react'
 
 const STATUS_OPTIONS = ['all', 'pending', 'processing', 'approved', 'rejected']
 
-const statusColor = {
-    pending:    'status-pending',
-    approved:   'status-approved',
-    rejected:   'status-rejected',
-    processing: 'status-processing'
+const statusConfig = {
+    pending: { class: 'st-pending', label: 'Pending', icon: <Clock size={14} /> },
+    approved: { class: 'st-approved', label: 'Approved', icon: <CheckCircle size={14} /> },
+    rejected: { class: 'st-rejected', label: 'Rejected', icon: <XCircle size={14} /> },
+    processing: { class: 'st-processing', label: 'Processing', icon: <RefreshCw size={14} className="animate-spin-slow" /> }
 }
 
 export default function AdminDashboard() {
@@ -30,13 +32,26 @@ export default function AdminDashboard() {
     const [search, setSearch]             = useState('')
     const [filterStatus, setFilterStatus] = useState('all')
     const [filterType, setFilterType]     = useState('all')
+    const [stats, setStats]               = useState({ total: 0, pending: 0, approved: 0, processing: 0 })
 
     const fetchApplications = async () => {
         setLoading(true)
-        const q = query(collection(db, 'applications'), orderBy('created_at', 'desc'))
-        const snap = await getDocs(q)
-        const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-        setApplications(data)
+        try {
+            const q = query(collection(db, 'applications'), orderBy('created_at', 'desc'), limit(100))
+            const snap = await getDocs(q)
+            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            setApplications(data)
+            
+            // Calculate stats
+            setStats({
+                total: data.length,
+                pending: data.filter(a => a.status === 'pending').length,
+                approved: data.filter(a => a.status === 'approved').length,
+                processing: data.filter(a => a.status === 'processing').length
+            })
+        } catch (err) {
+            console.error("Admin fetch error:", err)
+        }
         setLoading(false)
     }
 
@@ -45,193 +60,220 @@ export default function AdminDashboard() {
     useEffect(() => {
         let list = [...applications]
         if (filterStatus !== 'all') list = list.filter(a => a.status === filterStatus)
-        if (filterType   !== 'all') list = list.filter(a => a.program_type === filterType)
-        if (search.trim())          list = list.filter(a =>
-            a.full_name?.toLowerCase().includes(search.toLowerCase()) ||
-            a.email?.toLowerCase().includes(search.toLowerCase()) ||
-            a.destination?.toLowerCase().includes(search.toLowerCase())
-        )
+        if (filterType !== 'all')   list = list.filter(a => a.program_type === filterType)
+        if (search.trim()) {
+            const s = search.toLowerCase()
+            list = list.filter(a =>
+                a.full_name?.toLowerCase().includes(s) ||
+                a.email?.toLowerCase().includes(s) ||
+                a.destination?.toLowerCase().includes(s) ||
+                a.user_email?.toLowerCase().includes(s)
+            )
+        }
         setFiltered(list)
     }, [applications, filterStatus, filterType, search])
 
     const updateStatus = async (id, newStatus) => {
         setUpdating(id)
-        await updateDoc(doc(db, 'applications', id), { status: newStatus })
-        setApplications(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a))
+        try {
+            await updateDoc(doc(db, 'applications', id), { 
+                status: newStatus,
+                updated_at: serverTimestamp()
+            })
+            setApplications(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a))
+        } catch (err) {
+            console.error("Update error:", err)
+        }
         setUpdating(null)
     }
 
     const handleLogout = async () => { await logout(); navigate('/') }
 
-    const total      = applications.length
-    const pending    = applications.filter(a => a.status === 'pending').length
-    const approved   = applications.filter(a => a.status === 'approved').length
-    const rejected   = applications.filter(a => a.status === 'rejected').length
-    const processing = applications.filter(a => a.status === 'processing').length
-
     return (
-        <main>
-            {/* Admin Hero */}
-            <div className="page-hero dashboard-hero" style={{ minHeight: 220 }}>
-                <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1600&auto=format&fit=crop)' }} />
-                <div className="container page-hero-content" style={{ textAlign: 'left' }}>
-                    <div className="dashboard-welcome">
-                        <div className="user-avatar-large" style={{ background: 'linear-gradient(135deg,#1e3a5f,#0ea5e9)' }}>
-                            <Shield size={32} />
+        <main className="admin-root">
+            {/* Admin Header Ribbon */}
+            <header className="admin-header">
+                <div className="admin-container">
+                    <div className="admin-logo-zone">
+                        <div className="admin-badge">
+                            <Shield size={18} />
+                            <span>ADMIN PANEL</span>
                         </div>
-                        <div>
-                            <h1 style={{ fontSize: '1.75rem', marginBottom: '.25rem' }}>Admin Dashboard</h1>
-                            <p>Manage all applications · Logged in as <strong>{currentUser?.email}</strong></p>
+                        <span className="divider">/</span>
+                        <h1 className="admin-title">Application Management</h1>
+                    </div>
+                    
+                    <div className="admin-user-zone">
+                        <div className="admin-profile">
+                            <div className="admin-avatar">{currentUser?.email?.charAt(0).toUpperCase()}</div>
+                            <div className="admin-info">
+                                <span className="email">{currentUser?.email}</span>
+                                <span className="role">Primary Administrator</span>
+                            </div>
                         </div>
+                        <button onClick={handleLogout} className="admin-logout-btn" title="Sign Out">
+                            <LogOut size={20} />
+                        </button>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            <section className="dashboard">
-                <div className="container">
-                    {/* Header row */}
-                    <div className="dashboard-header">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
-                            <ClipboardList size={24} color="var(--navy)" />
-                            <h2>All Applications</h2>
-                        </div>
-                        <div className="dashboard-actions">
-                            <button onClick={fetchApplications} className="btn btn-outline">
-                                <RefreshCw size={16} /> Refresh
-                            </button>
-                            <button onClick={handleLogout} className="btn btn-outline">
-                                <LogOut size={18} /> Sign Out
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Stats row */}
-                    <div className="dashboard-stats" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
-                        {[
-                            { label: 'Total',      value: total,      color: 'var(--navy)',   icon: <Users size={18} /> },
-                            { label: 'Pending',    value: pending,    color: '#d97706',        icon: <Clock size={18} /> },
-                            { label: 'Processing', value: processing, color: '#7c3aed',        icon: <Clock size={18} /> },
-                            { label: 'Approved',   value: approved,   color: '#16a34a',        icon: <CheckCircle size={18} /> },
-                            { label: 'Rejected',   value: rejected,   color: '#dc2626',        icon: <XCircle size={18} /> },
-                        ].map(({ label, value, color, icon }) => (
-                            <div key={label} className="dash-stat">
-                                <div className="dash-stat-label" style={{ display: 'flex', alignItems: 'center', gap: '.4rem' }}>
-                                    {icon} {label}
-                                </div>
-                                <div className="dash-stat-value" style={{ color }}>{value}</div>
+            <section className="admin-content">
+                <div className="admin-container">
+                    {/* KPI Row */}
+                    <div className="admin-kpi-row">
+                        <div className="kpi-card">
+                            <div className="kpi-icon blue"><Users size={24} /></div>
+                            <div className="kpi-data">
+                                <span className="label">Total Applications</span>
+                                <span className="val">{stats.total}</span>
                             </div>
-                        ))}
+                        </div>
+                        <div className="kpi-card">
+                            <div className="kpi-icon orange"><Clock size={24} /></div>
+                            <div className="kpi-data">
+                                <span className="label">Pending Review</span>
+                                <span className="val">{stats.pending}</span>
+                            </div>
+                        </div>
+                        <div className="kpi-card">
+                            <div className="kpi-icon purple"><RefreshCw size={24} /></div>
+                            <div className="kpi-data">
+                                <span className="label">In Processing</span>
+                                <span className="val">{stats.processing}</span>
+                            </div>
+                        </div>
+                        <div className="kpi-card">
+                            <div className="kpi-icon green"><CheckCircle size={24} /></div>
+                            <div className="kpi-data">
+                                <span className="label">Total Approved</span>
+                                <span className="val">{stats.approved}</span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Filter bar */}
-                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem', alignItems: 'center' }}>
-                        <div className="input-with-icon" style={{ flex: '1 1 260px', background: '#f8fafc', borderRadius: 10, border: '1px solid #e2e8f0', padding: '0 1rem' }}>
-                            <Search size={16} color="#64748b" />
-                            <input
+                    {/* Filter Bar */}
+                    <div className="admin-filter-bar">
+                        <div className="search-box">
+                            <Search size={18} className="s-icon" />
+                            <input 
+                                type="text"
+                                placeholder="Search by name, email, or destination..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                placeholder="Search by name, email, destination..."
-                                style={{ border: 'none', background: 'transparent', padding: '.6rem .5rem', outline: 'none', width: '100%' }}
                             />
                         </div>
-                        <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem' }}>
-                                <Filter size={15} color="#64748b" />
-                                <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-                                    style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '.45rem .75rem', fontSize: '.875rem', background: '#fff', cursor: 'pointer' }}>
-                                    {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s === 'all' ? 'All Statuses' : s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
+                        <div className="filters-group">
+                            <div className="filter-select-wrap">
+                                <Filter size={14} className="f-icon" />
+                                <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+                                    <option value="all">All Statuses</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
                                 </select>
                             </div>
-                            <select value={filterType} onChange={e => setFilterType(e.target.value)}
-                                style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '.45rem .75rem', fontSize: '.875rem', background: '#fff', cursor: 'pointer' }}>
-                                <option value="all">All Services</option>
-                                <option value="study">Study Abroad</option>
-                                <option value="student_visa">Student Visa</option>
-                                <option value="tourist">Tourist Visa</option>
-                                <option value="work">Work Visa</option>
-                                <option value="scholarship">Scholarship</option>
-                                <option value="residency">Residency</option>
-                            </select>
+                            <div className="filter-select-wrap">
+                                <BookOpen size={14} className="f-icon" />
+                                <select value={filterType} onChange={e => setFilterType(e.target.value)}>
+                                    <option value="all">All Services</option>
+                                    <option value="study">Study Abroad</option>
+                                    <option value="student_visa">Student Visa</option>
+                                    <option value="tourist">Tourist Visa</option>
+                                    <option value="work">Work Visa</option>
+                                    <option value="scholarship">Scholarship</option>
+                                </select>
+                            </div>
+                            <button onClick={fetchApplications} className="refresh-btn" disabled={loading}>
+                                <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+                            </button>
                         </div>
                     </div>
 
-                    {/* Table */}
-                    <div className="applications-table-wrap">
+                    {/* Main Table Card */}
+                    <div className="admin-table-card">
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '4rem' }}>
-                                <Loader2 className="animate-spin" size={40} color="var(--navy)" />
-                                <p style={{ marginTop: '1rem' }}>Loading applications...</p>
+                            <div className="admin-loading">
+                                <Loader2 size={40} className="animate-spin" />
+                                <p>Fetching applications...</p>
                             </div>
                         ) : filtered.length === 0 ? (
-                            <div className="empty-state">
-                                <div className="empty-icon"><ClipboardList size={48} /></div>
-                                <h3>No applications found</h3>
-                                <p>Try adjusting your search or filters.</p>
+                            <div className="admin-empty">
+                                <ClipboardList size={60} />
+                                <h3>No applications match your criteria</h3>
+                                <p>Try adjusting your filters or search terms</p>
                             </div>
                         ) : (
-                            <div className="table-wrap">
-                                <table>
+                            <div className="admin-table-overflow">
+                                <table className="admin-table">
                                     <thead>
                                         <tr>
-                                            <th>Applicant</th>
-                                            <th>Email</th>
-                                            <th>Destination</th>
-                                            <th>Service</th>
-                                            <th>Education</th>
-                                            <th>Docs</th>
+                                            <th>Applicant & Contact</th>
+                                            <th>Application Details</th>
+                                            <th>Documents</th>
                                             <th>Submitted</th>
                                             <th>Status</th>
-                                            <th>Actions</th>
+                                            <th className="actions-col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {filtered.map(a => (
-                                            <tr key={a.id}>
-                                                <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>{a.full_name}</td>
-                                                <td style={{ fontSize: '.82rem', color: '#64748b' }}>{a.email}</td>
-                                                <td>{a.destination}</td>
-                                                <td style={{ textTransform: 'capitalize', whiteSpace: 'nowrap' }}>{a.program_type?.replace('_', ' ')}</td>
-                                                <td style={{ fontSize: '.82rem' }}>{a.education_level}</td>
+                                            <tr key={a.id} className={updating === a.id ? 'updating-row' : ''}>
                                                 <td>
-                                                    <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap' }}>
-                                                        {a.documents?.passport && <a href={a.documents.passport} target="_blank" rel="noreferrer" className="doc-link" title="Passport"><FileText size={13} /></a>}
-                                                        {a.documents?.diploma  && <a href={a.documents.diploma}  target="_blank" rel="noreferrer" className="doc-link" title="Diploma"><FileText size={13} /></a>}
-                                                        {a.documents?.id_card  && <a href={a.documents.id_card}  target="_blank" rel="noreferrer" className="doc-link" title="ID Card"><FileText size={13} /></a>}
+                                                    <div className="user-cell">
+                                                        <div className="u-avatar">{a.full_name?.charAt(0) || 'U'}</div>
+                                                        <div className="u-info">
+                                                            <span className="n">{a.full_name}</span>
+                                                            <span className="e">{a.email}</span>
+                                                        </div>
                                                     </div>
                                                 </td>
-                                                <td style={{ whiteSpace: 'nowrap', fontSize: '.82rem' }}>
-                                                    {a.created_at?.toDate ? a.created_at.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '—'}
-                                                </td>
                                                 <td>
-                                                    <span className={`status-badge ${statusColor[a.status] || 'status-pending'}`}>
-                                                        {a.status}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    {updating === a.id ? (
-                                                        <Loader2 size={18} className="animate-spin" color="var(--navy)" />
-                                                    ) : (
-                                                        <div style={{ display: 'flex', gap: '.4rem' }}>
-                                                            {a.status !== 'approved' && (
-                                                                <button onClick={() => updateStatus(a.id, 'approved')}
-                                                                    className="action-btn approve" title="Approve">
-                                                                    <CheckCircle size={15} />
-                                                                </button>
-                                                            )}
-                                                            {a.status !== 'processing' && (
-                                                                <button onClick={() => updateStatus(a.id, 'processing')}
-                                                                    className="action-btn process" title="Mark Processing">
-                                                                    <Clock size={15} />
-                                                                </button>
-                                                            )}
-                                                            {a.status !== 'rejected' && (
-                                                                <button onClick={() => updateStatus(a.id, 'rejected')}
-                                                                    className="action-btn reject" title="Reject">
-                                                                    <XCircle size={15} />
-                                                                </button>
-                                                            )}
+                                                    <div className="app-cell">
+                                                        <div className="destination-pill">
+                                                            <Globe size={12} />
+                                                            <span>{a.destination}</span>
                                                         </div>
-                                                    )}
+                                                        <span className="service-type">{a.program_type?.replace('_', ' ')}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="doc-chip-group">
+                                                        {a.documents?.passport && <a href={a.documents.passport} target="_blank" rel="noreferrer" className="d-chip" title="Passport"><FileText size={14} /></a>}
+                                                        {a.documents?.diploma && <a href={a.documents.diploma} target="_blank" rel="noreferrer" className="d-chip" title="Diploma"><FileText size={14} /></a>}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="date-cell">
+                                                        <Calendar size={12} />
+                                                        <span>{a.created_at?.toDate ? a.created_at.toDate().toLocaleDateString() : '—'}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className={`status-pill-admin ${statusConfig[a.status]?.class || 'st-pending'}`}>
+                                                        {statusConfig[a.status]?.icon}
+                                                        <span>{statusConfig[a.status]?.label || a.status}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="actions-col">
+                                                    <div className="admin-action-btns">
+                                                        {a.status !== 'approved' && (
+                                                            <button onClick={() => updateStatus(a.id, 'approved')} className="btn-act app" title="Approve">
+                                                                <Check size={16} />
+                                                            </button>
+                                                        )}
+                                                        {a.status !== 'processing' && (
+                                                            <button onClick={() => updateStatus(a.id, 'processing')} className="btn-act pro" title="Process">
+                                                                <RefreshCw size={16} />
+                                                            </button>
+                                                        )}
+                                                        {a.status !== 'rejected' && (
+                                                            <button onClick={() => updateStatus(a.id, 'rejected')} className="btn-act rej" title="Reject">
+                                                                <XCircle size={16} />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -239,11 +281,11 @@ export default function AdminDashboard() {
                                 </table>
                             </div>
                         )}
+                        <div className="admin-table-footer">
+                            <span>Showing {filtered.length} of {applications.length} results</span>
+                            <span className="last-sync">Last updated: {new Date().toLocaleTimeString()}</span>
+                        </div>
                     </div>
-
-                    <p style={{ textAlign: 'right', marginTop: '1rem', color: '#94a3b8', fontSize: '.8rem' }}>
-                        Showing {filtered.length} of {total} applications
-                    </p>
                 </div>
             </section>
         </main>
