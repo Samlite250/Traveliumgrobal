@@ -50,14 +50,18 @@ export default function Apply() {
 
         try {
             const uid = currentUser.uid
-            setUploadProgress('Uploading passport copy...')
-            const passportUrl = await uploadFile(files.passport, `applications/${uid}/passport_${Date.now()}`)
+            let passportUrl = null;
+            let diplomaUrl = null;
+            let idCardUrl = null;
 
-            setUploadProgress('Uploading diploma / certificate...')
-            const diplomaUrl = await uploadFile(files.diploma, `applications/${uid}/diploma_${Date.now()}`)
-
-            setUploadProgress('Uploading ID document...')
-            const idCardUrl = await uploadFile(files.id_card, `applications/${uid}/id_card_${Date.now()}`)
+            try {
+                setUploadProgress('Uploading documents (if provided)...')
+                passportUrl = await uploadFile(files.passport, `applications/${uid}/passport_${Date.now()}`)
+                diplomaUrl = await uploadFile(files.diploma, `applications/${uid}/diploma_${Date.now()}`)
+                idCardUrl = await uploadFile(files.id_card, `applications/${uid}/id_card_${Date.now()}`)
+            } catch (storageErr) {
+                console.warn('[Apply] Storage is not initialized or rejected the upload. Proceeding without files.', storageErr);
+            }
 
             setUploadProgress('Saving your application...')
 
