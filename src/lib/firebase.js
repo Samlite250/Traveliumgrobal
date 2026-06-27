@@ -21,5 +21,5 @@ export const storage = getStorage(app)
 export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null
 
 // Admin emails (MVP: replace with Firebase Custom Claims later)
-export const ADMIN_EMAILS = ['admin@travelium.com']
+export const ADMIN_EMAILS = ['traveliumgrobal@gmail.com']
 export const isAdmin = (user) => user && ADMIN_EMAILS.includes(user.email)
