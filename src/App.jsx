@@ -16,8 +16,8 @@ const Apply        = lazy(() => import('./pages/Apply'))
 const Login        = lazy(() => import('./pages/Login'))
 const Dashboard    = lazy(() => import('./pages/Dashboard'))
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
-const AdminPortal = lazy(() => import('./pages/AdminPortal'))
-const Flights      = lazy(() => import('./pages/Flights'))
+const AdminLogin     = lazy(() => import('./pages/AdminLogin'))
+const Flights        = lazy(() => import('./pages/Flights'))
 const BuyTicket    = lazy(() => import('./pages/BuyTicket'))
 
 function ProtectedRoute({ children }) {
@@ -58,7 +58,7 @@ function AppRoutes() {
                     <Route path="/admin" element={
                         <AdminRoute><AdminDashboard /></AdminRoute>
                     } />
-                    <Route path="/admin-portal"  element={<AdminPortal />} />
+                    <Route path="/travelium-admin-login" element={<AdminLogin />} />
                 </Routes>
             </Suspense>
             <Footer />
