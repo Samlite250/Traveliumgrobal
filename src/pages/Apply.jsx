@@ -1,37 +1,71 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
-import { Send, CheckCircle, ArrowRight, Globe, Info, Upload } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { db, storage } from '../lib/firebase'
+import { useAuth } from '../context/AuthContext'
+import { Send, CheckCircle, ArrowRight, Globe, Info, Upload, Loader2 } from 'lucide-react'
 
 export default function Apply() {
+    const { currentUser } = useAuth()
+    const navigate = useNavigate()
+
     const [form, setForm] = useState({
         full_name: '', email: '', phone: '', nationality: '',
         destination: '', program_type: '', education_level: '', message: ''
     })
-    const [files, setFiles] = useState({
-        passport: null,
-        diploma: null,
-        id_card: null
-    })
+    const [files, setFiles] = useState({ passport: null, diploma: null, id_card: null })
     const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [uploadProgress, setUploadProgress] = useState('')
 
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
     const handleFile = e => setFiles(f => ({ ...f, [e.target.name]: e.target.files[0] }))
 
+    const uploadFile = async (file, path) => {
+        if (!file) return null
+        const storageRef = ref(storage, path)
+        await uploadBytes(storageRef, file)
+        return getDownloadURL(storageRef)
+    }
+
     const handleSubmit = async e => {
         e.preventDefault()
+        if (!currentUser) { navigate('/login'); return }
         setLoading(true)
         setStatus(null)
-        const { error } = await supabase.from('applications').insert([form])
-        setLoading(false)
-        if (error) {
-            setStatus({ type: 'error', msg: 'Submission failed. Please try again or contact us.' })
-        } else {
+
+        try {
+            const uid = currentUser.uid
+            setUploadProgress('Uploading passport...')
+            const passportUrl = await uploadFile(files.passport, `applications/${uid}/passport_${Date.now()}`)
+            setUploadProgress('Uploading diploma...')
+            const diplomaUrl  = await uploadFile(files.diploma,  `applications/${uid}/diploma_${Date.now()}`)
+            setUploadProgress('Uploading ID card...')
+            const idCardUrl   = await uploadFile(files.id_card,  `applications/${uid}/id_card_${Date.now()}`)
+            setUploadProgress('Saving application...')
+
+            await addDoc(collection(db, 'applications'), {
+                ...form,
+                user_id:     uid,
+                user_email:  currentUser.email,
+                status:      'pending',
+                documents: {
+                    passport: passportUrl,
+                    diploma:  diplomaUrl,
+                    id_card:  idCardUrl,
+                },
+                created_at: serverTimestamp(),
+            })
+
             setStatus({ type: 'success', msg: 'Application submitted successfully! Our team will reach out within 2 business days.' })
             setForm({ full_name: '', email: '', phone: '', nationality: '', destination: '', program_type: '', education_level: '', message: '' })
             setFiles({ passport: null, diploma: null, id_card: null })
+        } catch (err) {
+            setStatus({ type: 'error', msg: 'Submission failed: ' + err.message })
         }
+        setUploadProgress('')
+        setLoading(false)
     }
 
     return (
@@ -120,30 +154,21 @@ export default function Apply() {
                                     Required Documents
                                 </label>
                                 <div className="file-grid">
-                                    <div className="file-input-card">
-                                        <div className="file-info">
-                                            <Upload size={18} />
-                                            <span>Passport Photo *</span>
+                                    {[
+                                        { key: 'passport', label: 'Passport Photo *', hint: 'Bio-data page copy', required: true },
+                                        { key: 'diploma',  label: 'Latest Diploma *',  hint: 'Highest qualification', required: true },
+                                        { key: 'id_card',  label: 'National ID / Passport', hint: 'Front and back copy', required: false },
+                                    ].map(({ key, label, hint, required }) => (
+                                        <div className="file-input-card" key={key}>
+                                            <div className="file-info">
+                                                <Upload size={18} />
+                                                <span>{label}</span>
+                                            </div>
+                                            <input type="file" name={key} onChange={handleFile} accept="image/*,.pdf" required={required} />
+                                            <small>{hint}</small>
+                                            {files[key] && <small style={{ color: 'var(--navy)', fontWeight: 600 }}>✓ {files[key].name}</small>}
                                         </div>
-                                        <input type="file" name="passport" onChange={handleFile} accept="image/*,.pdf" required />
-                                        <small>Bio-data page copy</small>
-                                    </div>
-                                    <div className="file-input-card">
-                                        <div className="file-info">
-                                            <Upload size={18} />
-                                            <span>Latest Diploma *</span>
-                                        </div>
-                                        <input type="file" name="diploma" onChange={handleFile} accept="image/*,.pdf" required />
-                                        <small>Highest qualification</small>
-                                    </div>
-                                    <div className="file-input-card">
-                                        <div className="file-info">
-                                            <Upload size={18} />
-                                            <span>National ID / Passport</span>
-                                        </div>
-                                        <input type="file" name="id_card" onChange={handleFile} accept="image/*,.pdf" />
-                                        <small>Front and back copy</small>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -151,9 +176,13 @@ export default function Apply() {
                                 <label>Additional Information</label>
                                 <textarea name="message" value={form.message} onChange={set} placeholder="Tell us about your goals, timeline, budget, or any specific requirements..." />
                             </div>
+
                             <button type="submit" className="form-submit" disabled={loading}>
-                                {loading ? 'Submitting...' : 'Submit Application'}
-                                {!loading && <Send size={18} style={{ marginLeft: '.75rem' }} />}
+                                {loading ? (
+                                    <><Loader2 size={18} className="animate-spin" style={{ marginRight: '.5rem' }} />{uploadProgress || 'Submitting...'}</>
+                                ) : (
+                                    <>Submit Application <Send size={18} style={{ marginLeft: '.75rem' }} /></>
+                                )}
                             </button>
                             {status && (
                                 <div className={`form-msg ${status.type}`}>

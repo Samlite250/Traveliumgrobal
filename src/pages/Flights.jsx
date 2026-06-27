@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { db, storage } from '../lib/firebase'
+import { useAuth } from '../context/AuthContext'
 import {
     Plane, Send, CheckCircle, ArrowRight,
     Calendar, MapPin, Users, Upload,
@@ -8,6 +11,7 @@ import {
 } from 'lucide-react'
 
 export default function Flights() {
+    const { currentUser } = useAuth()
     const [form, setForm] = useState({
         full_name: '', email: '', phone: '',
         origin: '', destination: '',
@@ -23,22 +27,35 @@ export default function Flights() {
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
     const handleFile = e => setFiles(f => ({ ...f, [e.target.name]: e.target.files[0] }))
 
+    const uploadFile = async (file, path) => {
+        if (!file) return null
+        const storageRef = ref(storage, path)
+        await uploadBytes(storageRef, file)
+        return getDownloadURL(storageRef)
+    }
+
     const handleSubmit = async e => {
         e.preventDefault()
         setLoading(true)
         setStatus(null)
 
         try {
-            // In a real implementation, we would upload files to Supabase Storage here
-            // const { data, error: uploadError } = await supabase.storage.from('applications').upload(...)
+            let passportUrl = null
+            if (files.passport) {
+                passportUrl = await uploadFile(files.passport, `flights/${currentUser?.uid || 'guest'}/passport_${Date.now()}`)
+            }
 
-            const { error } = await supabase.from('applications').insert([{
+            await addDoc(collection(db, 'applications'), {
                 ...form,
+                user_id: currentUser?.uid || null,
+                user_email: currentUser?.email || form.email,
                 program_type: 'flight_booking',
-                // file_urls will be added here after upload logic is implemented
-            }])
-
-            if (error) throw error
+                status: 'pending',
+                documents: {
+                    passport: passportUrl
+                },
+                created_at: serverTimestamp(),
+            })
 
             setStatus({ type: 'success', msg: 'Flight booking request submitted! Our travel agent will contact you with the best prices shortly.' })
             setForm({
@@ -49,7 +66,7 @@ export default function Flights() {
             })
             setFiles({ passport: null })
         } catch (error) {
-            setStatus({ type: 'error', msg: 'Submission failed. Please try again.' })
+            setStatus({ type: 'error', msg: 'Submission failed: ' + error.message })
         } finally {
             setLoading(false)
         }

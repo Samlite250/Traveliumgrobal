@@ -1,43 +1,42 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
+import { db } from '../lib/firebase'
+import { useAuth } from '../context/AuthContext'
 import {
     LayoutDashboard, PlusCircle, LogOut, ClipboardList,
-    CheckCircle, AlertCircle, Loader2, ArrowRight, User
+    CheckCircle, AlertCircle, Loader2, ArrowRight, User, FileText
 } from 'lucide-react'
 
 const statusColor = {
-    pending: 'status-pending',
-    approved: 'status-approved',
-    rejected: 'status-rejected',
+    pending:    'status-pending',
+    approved:   'status-approved',
+    rejected:   'status-rejected',
     processing: 'status-processing'
 }
 
 export default function Dashboard() {
-    const [user, setUser] = useState(null)
+    const { currentUser, logout } = useAuth()
     const [applications, setApplications] = useState([])
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
 
     useEffect(() => {
-        supabase.auth.getUser().then(({ data: { user } }) => {
-            if (!user) { navigate('/login'); return }
-            setUser(user)
-            supabase
-                .from('applications')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false })
-                .then(({ data }) => { setApplications(data || []); setLoading(false) })
-        })
-    }, [navigate])
+        if (!currentUser) return
+        const q = query(
+            collection(db, 'applications'),
+            where('user_id', '==', currentUser.uid),
+            orderBy('created_at', 'desc')
+        )
+        getDocs(q).then(snap => {
+            setApplications(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+            setLoading(false)
+        }).catch(() => setLoading(false))
+    }, [currentUser])
 
-    const handleLogout = async () => {
-        await supabase.auth.signOut()
-        navigate('/')
-    }
+    const handleLogout = async () => { await logout(); navigate('/') }
 
-    const pending = applications.filter(a => a.status === 'pending').length
+    const pending  = applications.filter(a => a.status === 'pending').length
     const approved = applications.filter(a => a.status === 'approved').length
 
     if (loading) return (
@@ -55,12 +54,10 @@ export default function Dashboard() {
                 <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container page-hero-content" style={{ textAlign: 'left' }}>
                     <div className="dashboard-welcome">
-                        <div className="user-avatar-large">
-                            <User size={32} />
-                        </div>
+                        <div className="user-avatar-large"><User size={32} /></div>
                         <div>
                             <h1 style={{ fontSize: '1.75rem', marginBottom: '.25rem' }}>
-                                Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
+                                Welcome back, {currentUser?.displayName || currentUser?.email?.split('@')[0]}
                             </h1>
                             <p>Manage your applications and track your global education journey.</p>
                         </div>
@@ -85,6 +82,7 @@ export default function Dashboard() {
                         </div>
                     </div>
 
+                    {/* Stats */}
                     <div className="dashboard-stats">
                         <div className="dash-stat">
                             <div className="dash-stat-label">Total Applications</div>
@@ -100,9 +98,10 @@ export default function Dashboard() {
                         </div>
                     </div>
 
+                    {/* Applications table */}
                     <div className="applications-table-wrap">
                         <div className="applications-table-head">
-                            <h3><ClipboardList size={18} style={{ marginRight: '.5rem', verticalAlign: 'middle' }} /> Recent Applications</h3>
+                            <h3><ClipboardList size={18} style={{ marginRight: '.5rem', verticalAlign: 'middle' }} />Recent Applications</h3>
                         </div>
                         {applications.length === 0 ? (
                             <div className="empty-state">
@@ -122,7 +121,8 @@ export default function Dashboard() {
                                             <th>Destination</th>
                                             <th>Service Type</th>
                                             <th>Status</th>
-                                            <th>Submission Date</th>
+                                            <th>Documents</th>
+                                            <th>Submitted</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -130,9 +130,7 @@ export default function Dashboard() {
                                             <tr key={a.id}>
                                                 <td style={{ fontWeight: 600 }}>{a.full_name}</td>
                                                 <td>{a.destination}</td>
-                                                <td style={{ textTransform: 'capitalize' }}>
-                                                    {a.program_type?.replace('_', ' ')}
-                                                </td>
+                                                <td style={{ textTransform: 'capitalize' }}>{a.program_type?.replace('_', ' ')}</td>
                                                 <td>
                                                     <span className={`status-badge ${statusColor[a.status] || 'status-pending'}`}>
                                                         {a.status === 'approved' && <CheckCircle size={12} style={{ marginRight: '.3rem' }} />}
@@ -140,7 +138,14 @@ export default function Dashboard() {
                                                         {a.status}
                                                     </span>
                                                 </td>
-                                                <td>{new Date(a.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                                                <td>
+                                                    <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                                                        {a.documents?.passport && <a href={a.documents.passport} target="_blank" rel="noreferrer" className="doc-link"><FileText size={14} /> Passport</a>}
+                                                        {a.documents?.diploma  && <a href={a.documents.diploma}  target="_blank" rel="noreferrer" className="doc-link"><FileText size={14} /> Diploma</a>}
+                                                        {a.documents?.id_card  && <a href={a.documents.id_card}  target="_blank" rel="noreferrer" className="doc-link"><FileText size={14} /> ID Card</a>}
+                                                    </div>
+                                                </td>
+                                                <td>{a.created_at?.toDate ? a.created_at.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '—'}</td>
                                             </tr>
                                         ))}
                                     </tbody>

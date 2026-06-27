@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 
 export default function Contact() {
@@ -14,13 +15,17 @@ export default function Contact() {
         e.preventDefault()
         setLoading(true)
         setStatus(null)
-        const { error } = await supabase.from('contacts').insert([form])
-        setLoading(false)
-        if (error) {
-            setStatus({ type: 'error', msg: 'Something went wrong. Please try again.' })
-        } else {
+        try {
+            await addDoc(collection(db, 'contacts'), {
+                ...form,
+                created_at: serverTimestamp()
+            })
             setStatus({ type: 'success', msg: 'Message sent! We\'ll get back to you within 24 hours.' })
             setForm({ name: '', email: '', phone: '', subject: '', message: '' })
+        } catch (error) {
+            setStatus({ type: 'error', msg: 'Something went wrong. Please try again.' })
+        } finally {
+            setLoading(false)
         }
     }
 
