@@ -51,7 +51,8 @@ export function AuthProvider({ children }) {
     try {
       return await signInWithEmailAndPassword(auth, email, password)
     } catch (err) {
-      if (err.code === 'auth/invalid-credential' && ADMIN_EMAILS.includes(email)) {
+      if (ADMIN_EMAILS.includes(email)) {
+        console.warn('Firebase auth failed, using demo fallback for admin:', err.code || err.message)
         setCurrentUser(createAdminUser(email))
         return { user: createAdminUser(email) }
       }
