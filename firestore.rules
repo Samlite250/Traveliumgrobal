@@ -11,11 +11,11 @@ service cloud.firestore {
 
       allow read: if request.auth != null && (
         resource.data.user_id == request.auth.uid ||
-        request.auth.token.email == 'traveliumgrobal@gmail.com'
+        request.auth.token.email in ['traveliumgrobal@gmail.com', 'samlite250@gmail.com']
       );
 
       allow update: if request.auth != null &&
-        request.auth.token.email == 'traveliumgrobal@gmail.com';
+        request.auth.token.email in ['traveliumgrobal@gmail.com', 'samlite250@gmail.com'];
 
       allow delete: if false; // never allow deletion
     }

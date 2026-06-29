@@ -34,5 +34,5 @@ export { auth, db, storage }
 export const analytics = null
 
 // Admin emails
-export const ADMIN_EMAILS = ['traveliumgrobal@gmail.com']
+export const ADMIN_EMAILS = ['traveliumgrobal@gmail.com', 'samlite250@gmail.com']
 export const isAdmin = (user) => user && ADMIN_EMAILS.includes(user.email)

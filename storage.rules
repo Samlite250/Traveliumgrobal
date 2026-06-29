@@ -9,7 +9,7 @@ service firebase.storage {
       allow write: if request.auth != null && request.auth.uid == uid;
       allow read:  if request.auth != null && (
         request.auth.uid == uid ||
-        request.auth.token.email == 'traveliumgrobal@gmail.com'
+        request.auth.token.email in ['traveliumgrobal@gmail.com', 'samlite250@gmail.com']
       );
     }
   }
