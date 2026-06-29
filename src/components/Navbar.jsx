@@ -171,6 +171,7 @@ export default function Navbar() {
 
     return (
         <>
+            <header className="site-header">
             <div className="topbar">
                 <div className="container">
                     <div className="topbar-left">
@@ -231,6 +232,7 @@ export default function Navbar() {
                     </div>
                 </div>
             </nav>
+            </header>
 
             <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
                 <div className="mobile-menu-header">

@@ -247,6 +247,9 @@ export default function AdminLogin() {
                 .admin-login-form input::placeholder {
                     color: #475569;
                 }
+                .admin-login-form .input-field input:focus {
+                    background: rgba(15, 23, 42, 0.9);
+                }
 
                 .admin-submit-btn {
                     width: 100%;

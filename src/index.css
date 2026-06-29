@@ -212,6 +212,11 @@ button {
 }
 
 /* ===== TOPBAR ===== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
 .topbar {
   background: var(--navy-dark);
   color: rgba(255, 255, 255, .8);
@@ -267,8 +272,6 @@ button {
 
 /* ===== NAVBAR ===== */
 .navbar {
-  position: sticky;
-  top: 0;
   z-index: 1000;
   background: var(--white);
   border-bottom: 1px solid var(--gray-200);
