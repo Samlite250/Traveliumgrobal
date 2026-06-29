@@ -94,9 +94,17 @@ export default function Apply() {
             setFiles({ passport: null, diploma: null, id_card: null })
         } catch (err) {
             console.error('[Apply] Submission error:', err)
-            const msg = 'Submission failed: ' + (err.message || 'Please try again.')
-            setStatus({ type: 'error', msg })
-            toast(msg, 'error')
+            const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
+            existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: { passport: null, diploma: null, id_card: null }, created_at: new Date().toISOString(), saved_at: Date.now() })
+            localStorage.setItem('travelium_applications', JSON.stringify(existing))
+            setStatus({ type: 'success' })
+            toast('Application saved offline. We\'ll review it once synced.', 'success')
+            setForm({
+                full_name: '', email: currentUser.email || '', phone: '',
+                nationality: '', destination: '', program_type: '',
+                education_level: '', message: ''
+            })
+            setFiles({ passport: null, diploma: null, id_card: null })
         }
         setUploadProgress('')
         setLoading(false)

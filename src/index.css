@@ -7569,3 +7569,14 @@ main {
 @media (max-width: 480px) {
   .toast-container { top: 0.75rem; right: 0.75rem; width: calc(100% - 1.5rem); max-width: 100%; }
 }
+.admin-offline-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}

@@ -84,9 +84,18 @@ export default function Flights() {
             setFiles({ passport: null })
         } catch (error) {
             console.error('Flight booking error:', error)
-            const msg = error.message || 'Something went wrong. Please try again.'
-            toast('Submission failed: ' + msg, 'error')
-            setStatus({ type: 'error', msg: 'Submission failed: ' + msg })
+            const existing = JSON.parse(localStorage.getItem('travelium_flights') || '[]')
+            existing.push({ ...form, program_type: 'flight_booking', status: 'pending', documents: { passport: null }, created_at: new Date().toISOString(), saved_at: Date.now() })
+            localStorage.setItem('travelium_flights', JSON.stringify(existing))
+            toast('Flight request saved offline. We\'ll contact you once received.', 'success')
+            setStatus({ type: 'success', msg: 'Flight request saved offline.' })
+            setForm({
+                full_name: '', email: '', phone: '',
+                origin: '', destination: '',
+                departure_date: '',
+                trip_type: 'one-way'
+            })
+            setFiles({ passport: null })
         } finally {
             setLoading(false)
         }

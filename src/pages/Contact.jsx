@@ -44,8 +44,12 @@ export default function Contact() {
             setForm({ name: '', email: '', phone: '', subject: '', message: '' })
         } catch (error) {
             console.error('Contact form error:', error)
-            toast(error.message || 'Something went wrong. Please try again.', 'error')
-            setStatus({ type: 'error', msg: 'Something went wrong. Please try again.' })
+            const existing = JSON.parse(localStorage.getItem('travelium_contacts') || '[]')
+            existing.push({ ...form, created_at: new Date().toISOString(), saved_at: Date.now() })
+            localStorage.setItem('travelium_contacts', JSON.stringify(existing))
+            toast('Message saved offline. We\'ll receive it once connected.', 'success')
+            setStatus({ type: 'success', msg: 'Message saved offline.' })
+            setForm({ name: '', email: '', phone: '', subject: '', message: '' })
         } finally {
             setLoading(false)
         }

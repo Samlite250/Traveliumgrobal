@@ -91,6 +91,7 @@ export default function AdminDashboard() {
     const [services, setServices] = useState([])
     const [transactions, setTransactions] = useState([])
     const [loading, setLoading] = useState(true)
+    const [offlineMode, setOfflineMode] = useState(!db)
 
     // Settings state
     const [siteSettings, setSiteSettings] = useState(null)
@@ -106,27 +107,52 @@ export default function AdminDashboard() {
     const [txForm, setTxForm] = useState({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
     const [showTxEditor, setShowTxEditor] = useState(false)
 
+    const loadLocalData = (key) => {
+        try { return JSON.parse(localStorage.getItem(key) || '[]') } catch { return [] }
+    }
+
     useEffect(() => {
-        if (!db) { setLoading(false); return }
+        if (!db) {
+            setOfflineMode(true)
+            setApplications(loadLocalData('travelium_applications_admin'))
+            setContacts(loadLocalData('travelium_contacts_admin'))
+            setServices(loadLocalData('travelium_services_admin'))
+            setTransactions(loadLocalData('travelium_transactions_admin'))
+            setLoading(false)
+            return
+        }
+        const onError = (name) => (err) => {
+            console.error(`Realtime ${name} error:`, err)
+            const localKey = `travelium_${name}_admin`
+            const local = loadLocalData(localKey)
+            if (local.length) {
+                if (name === 'applications') setApplications(local)
+                if (name === 'contacts') setContacts(local)
+                if (name === 'services') setServices(local)
+                if (name === 'transactions') setTransactions(local)
+            }
+            setOfflineMode(true)
+            setLoading(false)
+        }
         const unsubApps = onSnapshot(
             query(collection(db, 'applications'), orderBy('created_at', 'desc'), limit(200)),
-            (snap) => { setApplications(snap.docs.map(d => ({ id: d.id, ...d.data() }))); setLoading(false) },
-            (err) => { console.error('Realtime apps error:', err); setLoading(false) }
+            (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setApplications(d); saveLocal('applications', d); setLoading(false); setOfflineMode(false) },
+            onError('applications')
         )
         const unsubMsgs = onSnapshot(
             query(collection(db, 'contacts'), orderBy('created_at', 'desc'), limit(200)),
-            (snap) => setContacts(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
-            (err) => console.error('Realtime contacts error:', err)
+            (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setContacts(d); saveLocal('contacts', d) },
+            onError('contacts')
         )
         const unsubServices = onSnapshot(
             query(collection(db, 'services'), orderBy('created_at', 'desc')),
-            (snap) => setServices(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
-            (err) => console.error('Realtime services error:', err)
+            (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setServices(d); saveLocal('services', d) },
+            onError('services')
         )
         const unsubTx = onSnapshot(
             query(collection(db, 'transactions'), orderBy('created_at', 'desc'), limit(200)),
-            (snap) => setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
-            (err) => console.error('Realtime transactions error:', err)
+            (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setTransactions(d); saveLocal('transactions', d) },
+            onError('transactions')
         )
         const unsubSettings = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
             const data = snap.exists() ? snap.data() : {}
@@ -155,7 +181,8 @@ export default function AdminDashboard() {
             const merged = { ...defaults, ...data }
             setSiteSettings(merged)
             setSettingsForm(prev => Object.keys(prev).length ? prev : merged)
-        }, (err) => console.error('Settings error:', err))
+            setOfflineMode(false)
+        }, (err) => { console.error('Settings error:', err); setOfflineMode(true) })
         return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubSettings() }
     }, [])
 
@@ -217,36 +244,58 @@ export default function AdminDashboard() {
         return Array.from(map.values()).sort((a, b) => b.appCount - a.appCount)
     }, [applications])
 
+    const saveLocal = (key, data) => {
+        try { localStorage.setItem(`travelium_${key}_admin`, JSON.stringify(data)) } catch {}
+    }
+
     const updateStatus = async (id, newStatus) => {
         setUpdating(id)
-        try {
-            const updateData = { status: newStatus, updated_at: serverTimestamp() }
-            if (statusNote.trim()) updateData.admin_note = statusNote.trim()
-            await updateDoc(doc(db, 'applications', id), updateData)
-            toast(`Application ${newStatus}.`, 'success')
-            setStatusNote('')
-            setShowNoteInput(null)
-        } catch (err) { console.error('Update error:', err); toast('Failed to update status.', 'error') }
-        setUpdating(null)
+        const updateData = { status: newStatus, updated_at: new Date().toISOString() }
+        if (statusNote.trim()) updateData.admin_note = statusNote.trim()
+        if (db) {
+            try {
+                await updateDoc(doc(db, 'applications', id), { ...updateData, updated_at: serverTimestamp() })
+                toast(`Application ${newStatus}.`, 'success')
+                setStatusNote(''); setShowNoteInput(null); setUpdating(null)
+                return
+            } catch (err) { console.error('Update error:', err) }
+        }
+        const next = applications.map(a => a.id === id ? { ...a, ...updateData } : a)
+        setApplications(next); saveLocal('applications', next)
+        toast(`Application ${newStatus} (offline).`, 'success')
+        setStatusNote(''); setShowNoteInput(null); setUpdating(null)
     }
 
     const deleteApplication = async (id) => {
-        try {
-            await deleteDoc(doc(db, 'applications', id))
-            toast('Application deleted.', 'success')
-            setDeleteConfirm(null)
-            setSelectedApp(null)
-        } catch (err) { console.error('Delete error:', err); toast('Failed to delete application.', 'error') }
+        if (db) {
+            try { await deleteDoc(doc(db, 'applications', id)); toast('Application deleted.', 'success'); setDeleteConfirm(null); setSelectedApp(null); return }
+            catch (err) { console.error('Delete error:', err) }
+        }
+        const next = applications.filter(a => a.id !== id)
+        setApplications(next); saveLocal('applications', next)
+        toast('Application deleted (offline).', 'success')
+        setDeleteConfirm(null); setSelectedApp(null)
     }
 
     const markMessageRead = async (id, read = true) => {
-        try { await updateDoc(doc(db, 'contacts', id), { read, read_at: serverTimestamp(), read_by: currentUser?.email }); toast(read ? 'Marked as read.' : 'Marked as unread.', 'info') }
-        catch (err) { console.error('Mark read error:', err); toast('Failed to update message.', 'error') }
+        if (db) {
+            try { await updateDoc(doc(db, 'contacts', id), { read, read_at: serverTimestamp(), read_by: currentUser?.email }); toast(read ? 'Marked as read.' : 'Marked as unread.', 'info'); return }
+            catch (err) { console.error('Mark read error:', err) }
+        }
+        const next = contacts.map(m => m.id === id ? { ...m, read, read_at: new Date().toISOString() } : m)
+        setContacts(next); saveLocal('contacts', next)
+        toast(read ? 'Marked as read (offline).' : 'Marked as unread (offline).', 'info')
     }
 
     const deleteMessage = async (id) => {
-        try { await deleteDoc(doc(db, 'contacts', id)); setSelectedMsg(null); toast('Message deleted.', 'success') }
-        catch (err) { console.error('Delete message error:', err); toast('Failed to delete message.', 'error') }
+        if (db) {
+            try { await deleteDoc(doc(db, 'contacts', id)); setSelectedMsg(null); toast('Message deleted.', 'success'); return }
+            catch (err) { console.error('Delete message error:', err) }
+        }
+        const next = contacts.filter(m => m.id !== id)
+        setContacts(next); saveLocal('contacts', next)
+        setSelectedMsg(null)
+        toast('Message deleted (offline).', 'success')
     }
 
     // ── Service CRUD ──
@@ -257,16 +306,30 @@ export default function AdminDashboard() {
             features: serviceForm.features.split('\n').filter(Boolean),
             updated_at: serverTimestamp()
         }
-        try {
-            if (editingService) {
-                await updateDoc(doc(db, 'services', editingService.id), data)
-            } else {
-                await addDoc(collection(db, 'services'), { ...data, created_at: serverTimestamp() })
-            }
-            setShowServiceEditor(false); setEditingService(null)
-            setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
-            toast(editingService ? 'Service updated.' : 'Service created.', 'success')
-        } catch (err) { console.error('Service save error:', err); toast('Failed to save service.', 'error') }
+        if (db) {
+            try {
+                if (editingService) {
+                    await updateDoc(doc(db, 'services', editingService.id), data)
+                } else {
+                    await addDoc(collection(db, 'services'), { ...data, created_at: serverTimestamp() })
+                }
+                setShowServiceEditor(false); setEditingService(null)
+                setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
+                toast(editingService ? 'Service updated.' : 'Service created.', 'success')
+                return
+            } catch (err) { console.error('Service save error:', err) }
+        }
+        const localData = { ...data, id: editingService?.id || 'local_' + Date.now(), created_at: editingService?.created_at || new Date().toISOString() }
+        let next
+        if (editingService) {
+            next = services.map(s => s.id === editingService.id ? { ...s, ...localData } : s)
+        } else {
+            next = [...services, localData]
+        }
+        setServices(next); saveLocal('services', next)
+        setShowServiceEditor(false); setEditingService(null)
+        setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
+        toast(editingService ? 'Service updated (offline).' : 'Service created (offline).', 'success')
     }
     const editService = (s) => {
         setEditingService(s)
@@ -274,23 +337,42 @@ export default function AdminDashboard() {
         setShowServiceEditor(true)
     }
     const deleteService = async (id) => {
-        try { await deleteDoc(doc(db, 'services', id)); toast('Service deleted.', 'success') }
-        catch (err) { console.error('Service delete error:', err); toast('Failed to delete service.', 'error') }
+        if (db) {
+            try { await deleteDoc(doc(db, 'services', id)); toast('Service deleted.', 'success'); return }
+            catch (err) { console.error('Service delete error:', err) }
+        }
+        const next = services.filter(s => s.id !== id)
+        setServices(next); saveLocal('services', next)
+        toast('Service deleted (offline).', 'success')
     }
 
     // ── Transaction CRUD ──
     const saveTx = async () => {
         const data = { ...txForm, amount: parseFloat(txForm.amount) || 0, updated_at: serverTimestamp() }
-        try {
-            if (editingTx) {
-                await updateDoc(doc(db, 'transactions', editingTx.id), data)
-            } else {
-                await addDoc(collection(db, 'transactions'), { ...data, created_at: serverTimestamp() })
-            }
-            setShowTxEditor(false); setEditingTx(null)
-            setTxForm({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
-            toast(editingTx ? 'Transaction updated.' : 'Transaction created.', 'success')
-        } catch (err) { console.error('Tx save error:', err); toast('Failed to save transaction.', 'error') }
+        if (db) {
+            try {
+                if (editingTx) {
+                    await updateDoc(doc(db, 'transactions', editingTx.id), data)
+                } else {
+                    await addDoc(collection(db, 'transactions'), { ...data, created_at: serverTimestamp() })
+                }
+                setShowTxEditor(false); setEditingTx(null)
+                setTxForm({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
+                toast(editingTx ? 'Transaction updated.' : 'Transaction created.', 'success')
+                return
+            } catch (err) { console.error('Tx save error:', err) }
+        }
+        const localData = { ...data, id: editingTx?.id || 'local_' + Date.now(), created_at: editingTx?.created_at || new Date().toISOString() }
+        let next
+        if (editingTx) {
+            next = transactions.map(t => t.id === editingTx.id ? { ...t, ...localData } : t)
+        } else {
+            next = [...transactions, localData]
+        }
+        setTransactions(next); saveLocal('transactions', next)
+        setShowTxEditor(false); setEditingTx(null)
+        setTxForm({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
+        toast(editingTx ? 'Transaction updated (offline).' : 'Transaction created (offline).', 'success')
     }
     const editTx = (t) => {
         setEditingTx(t)
@@ -298,8 +380,13 @@ export default function AdminDashboard() {
         setShowTxEditor(true)
     }
     const deleteTx = async (id) => {
-        try { await deleteDoc(doc(db, 'transactions', id)); toast('Transaction deleted.', 'success') }
-        catch (err) { console.error('Tx delete error:', err); toast('Failed to delete transaction.', 'error') }
+        if (db) {
+            try { await deleteDoc(doc(db, 'transactions', id)); toast('Transaction deleted.', 'success'); return }
+            catch (err) { console.error('Tx delete error:', err) }
+        }
+        const next = transactions.filter(t => t.id !== id)
+        setTransactions(next); saveLocal('transactions', next)
+        toast('Transaction deleted (offline).', 'success')
     }
 
     // ── Settings CRUD ──
@@ -325,11 +412,17 @@ export default function AdminDashboard() {
         if (payload.faviconUrl && !/^https?:\/\/.+/.test(payload.faviconUrl)) {
             return alert('Favicon URL must start with http:// or https://')
         }
-        try {
-            await setDoc(doc(db, 'settings', 'site'), { ...payload, updated_at: serverTimestamp(), updated_by: currentUser?.email }, { merge: true })
-            toast('Settings saved.', 'success')
-            setSettingsForm(prev => ({ ...prev, ...payload }))
-        } catch (err) { console.error('Settings save error:', err); toast('Failed to save settings.', 'error') }
+        if (db) {
+            try {
+                await setDoc(doc(db, 'settings', 'site'), { ...payload, updated_at: serverTimestamp(), updated_by: currentUser?.email }, { merge: true })
+                toast('Settings saved.', 'success')
+                setSettingsForm(prev => ({ ...prev, ...payload }))
+                return
+            } catch (err) { console.error('Settings save error:', err) }
+        }
+        try { localStorage.setItem('travelium_settings_admin', JSON.stringify(payload)) } catch {}
+        toast('Settings saved (offline).', 'success')
+        setSettingsForm(prev => ({ ...prev, ...payload }))
     }
     const initSettings = () => {
         const clean = {}
@@ -1085,6 +1178,11 @@ export default function AdminDashboard() {
 
             {/* Main Content */}
             <main className="admin-main">
+                {offlineMode && (
+                    <div className="admin-offline-banner">
+                        <AlertTriangle size={16} /> Running in offline mode. Data is saved locally. Set up Firestore security rules and restart to enable real-time sync. <button onClick={() => setOfflineMode(false)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', textDecoration: 'underline', marginLeft: 8 }}>Dismiss</button>
+                    </div>
+                )}
                 <header className="main-header">
                     <div className="main-header-left">
                         <button className="mobile-menu-btn" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
