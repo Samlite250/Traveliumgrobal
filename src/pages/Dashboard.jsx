@@ -5,33 +5,33 @@ import { db } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
 import {
     LayoutDashboard, PlusCircle, LogOut, ClipboardList,
-    CheckCircle, AlertCircle, Loader2, ArrowRight, User, 
+    CheckCircle, AlertCircle, Loader2, ArrowRight, User,
     FileText, Clock, ShieldCheck, HelpCircle, ChevronRight,
-    Settings, Search, Filter
+    Settings, Search, Filter, TrendingUp, XCircle
 } from 'lucide-react'
 
 const statusInfo = {
-    pending: { 
-        class: 'status-pending', 
-        icon: <Clock size={16} />, 
+    pending: {
+        class: 'status-pending',
+        icon: <Clock size={16} />,
         label: 'Pending Review',
         description: 'Your application is waiting for initial review by our admissions team.'
     },
-    approved: { 
-        class: 'status-approved', 
-        icon: <ShieldCheck size={16} />, 
+    approved: {
+        class: 'status-approved',
+        icon: <ShieldCheck size={16} />,
         label: 'Approved',
         description: 'Congratulations! Your application has been approved. Check your email for next steps.'
     },
-    rejected: { 
-        class: 'status-rejected', 
-        icon: <AlertCircle size={16} />, 
+    rejected: {
+        class: 'status-rejected',
+        icon: <AlertCircle size={16} />,
         label: 'Not Approved',
         description: 'Unfortunately, your application was not approved at this time. Contact support for details.'
     },
-    processing: { 
-        class: 'status-processing', 
-        icon: <Loader2 size={16} className="animate-spin" />, 
+    processing: {
+        class: 'status-processing',
+        icon: <Loader2 size={16} className="animate-spin" />,
         label: 'Processing',
         description: 'Our team is actively processing your documents with the relevant authorities.'
     }
@@ -48,6 +48,11 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (!currentUser) return
+        // Guard: skip Firestore when running in demo mode (no real Firebase)
+        if (!db) {
+            setLoading(false)
+            return
+        }
         const q = query(
             collection(db, 'applications'),
             where('user_id', '==', currentUser.uid),
@@ -62,10 +67,10 @@ export default function Dashboard() {
         })
     }, [currentUser])
 
-    const handleLogout = async () => { 
+    const handleLogout = async () => {
         try {
             await logout()
-            navigate('/') 
+            navigate('/')
         } catch (err) {
             console.error("Logout error:", err)
         }
@@ -73,10 +78,11 @@ export default function Dashboard() {
 
     const pendingCount = applications.filter(a => a.status === 'pending' || a.status === 'processing').length
     const approvedCount = applications.filter(a => a.status === 'approved').length
+    const rejectedCount = applications.filter(a => a.status === 'rejected').length
 
     const filteredApps = applications.filter(a => {
-        const matchesSearch = a.destination?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                              a.program_type?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = a.destination?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            a.program_type?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesFilter = filterStatus === 'all' || a.status === filterStatus;
         return matchesSearch && matchesFilter;
     });
@@ -128,8 +134,8 @@ export default function Dashboard() {
                             </td>
                             <td>
                                 <span className="date-text">
-                                    {a.created_at?.toDate ? a.created_at.toDate().toLocaleDateString(undefined, { 
-                                        year: 'numeric', month: 'short', day: 'numeric' 
+                                    {a.created_at?.toDate ? a.created_at.toDate().toLocaleDateString(undefined, {
+                                        year: 'numeric', month: 'short', day: 'numeric'
                                     }) : 'Recent'}
                                 </span>
                             </td>
@@ -169,28 +175,28 @@ export default function Dashboard() {
                 </div>
 
                 <nav className="sidebar-nav">
-                    <button 
+                    <button
                         className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
                         onClick={() => setActiveTab('overview')}
                     >
                         <LayoutDashboard size={20} />
                         <span>Overview</span>
                     </button>
-                    <button 
+                    <button
                         className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`}
                         onClick={() => setActiveTab('applications')}
                     >
                         <ClipboardList size={20} />
                         <span>My Applications</span>
                     </button>
-                    <button 
+                    <button
                         className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
                         onClick={() => setActiveTab('settings')}
                     >
                         <Settings size={20} />
                         <span>Settings</span>
                     </button>
-                    <Link to="/apply" className="nav-item" style={{ marginTop: 'auto', background: 'var(--gold-glass)', color: 'var(--gold-dark)'}}>
+                    <Link to="/apply" className="nav-item dash-new-app-link">
                         <PlusCircle size={20} />
                         <span>New Application</span>
                     </Link>
@@ -235,40 +241,75 @@ export default function Dashboard() {
                 <div className="dash-scroll-content">
                     {activeTab === 'overview' && (
                         <>
-                            {/* Stats Row */}
+                            {/* Stats Row — 4 cards */}
                             <div className="dash-stats-grid">
+                                {/* Card 1 — Total */}
                                 <div className="premium-stat-card navy">
                                     <div className="stat-icon-wrap">
-                                        <ClipboardList size={24} />
+                                        <ClipboardList size={22} />
                                     </div>
                                     <div className="stat-content">
-                                        <span className="stat-label">Total Submissions</span>
+                                        <span className="stat-label">Total Applications</span>
                                         <span className="stat-value">{applications.length}</span>
+                                        <span className="stat-trend neutral">
+                                            <TrendingUp size={12} /> All time
+                                        </span>
                                     </div>
+                                    <div className="stat-bar" style={{ width: '100%' }}></div>
                                     <div className="stat-decoration"></div>
                                 </div>
+
+                                {/* Card 2 — In Progress */}
                                 <div className="premium-stat-card gold">
                                     <div className="stat-icon-wrap">
-                                        <Clock size={24} />
+                                        <Clock size={22} />
                                     </div>
                                     <div className="stat-content">
                                         <span className="stat-label">In Progress</span>
                                         <span className="stat-value">{pendingCount}</span>
+                                        <span className="stat-trend pending">
+                                            <Clock size={12} /> Awaiting review
+                                        </span>
                                     </div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(pendingCount / applications.length) * 100}%` : '0%' }}></div>
                                     <div className="stat-decoration"></div>
                                 </div>
+
+                                {/* Card 3 — Approved */}
                                 <div className="premium-stat-card success">
                                     <div className="stat-icon-wrap">
-                                        <ShieldCheck size={24} />
+                                        <ShieldCheck size={22} />
                                     </div>
                                     <div className="stat-content">
                                         <span className="stat-label">Approved</span>
                                         <span className="stat-value">{approvedCount}</span>
+                                        <span className="stat-trend success">
+                                            <CheckCircle size={12} />
+                                            {applications.length ? `${Math.round((approvedCount / applications.length) * 100)}% rate` : 'No data'}
+                                        </span>
                                     </div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(approvedCount / applications.length) * 100}%` : '0%' }}></div>
+                                    <div className="stat-decoration"></div>
+                                </div>
+
+                                {/* Card 4 — Rejected */}
+                                <div className="premium-stat-card rejected">
+                                    <div className="stat-icon-wrap">
+                                        <XCircle size={22} />
+                                    </div>
+                                    <div className="stat-content">
+                                        <span className="stat-label">Not Approved</span>
+                                        <span className="stat-value">{rejectedCount}</span>
+                                        <span className="stat-trend danger">
+                                            <AlertCircle size={12} />
+                                            {rejectedCount > 0 ? 'Contact support' : 'All clear'}
+                                        </span>
+                                    </div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(rejectedCount / applications.length) * 100}%` : '0%' }}></div>
                                     <div className="stat-decoration"></div>
                                 </div>
                             </div>
-        
+
                             {/* Recent Applications Preview */}
                             <div className="dash-content-card">
                                 <div className="card-header">
@@ -301,7 +342,7 @@ export default function Dashboard() {
 
                     {activeTab === 'applications' && (
                         <div className="dash-content-card">
-                            <div className="card-header" style={{flexDirection: 'column', alignItems: 'stretch', gap: '1.5rem'}}>
+                            <div className="card-header" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '1.5rem' }}>
                                 <div className="card-title-group">
                                     <ClipboardList size={20} className="title-icon" />
                                     <div>
@@ -309,20 +350,20 @@ export default function Dashboard() {
                                         <p>Comprehensive history of your journey</p>
                                     </div>
                                 </div>
-                                <div style={{display: 'flex', gap: '1rem', flexWrap: 'wrap'}}>
-                                    <div style={{display: 'flex', alignItems: 'center', background: 'var(--white)', border: '1px solid var(--gray-200)', padding: '0.6rem 1rem', borderRadius: '10px', flex: 1, minWidth: '250px'}}>
+                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', background: 'var(--white)', border: '1px solid var(--gray-200)', padding: '0.6rem 1rem', borderRadius: '10px', flex: 1, minWidth: '250px' }}>
                                         <Search size={18} color="var(--gray-400)" />
-                                        <input 
-                                            type="text" 
-                                            placeholder="Search destination or program..." 
-                                            style={{border: 'none', background: 'transparent', outline: 'none', marginLeft: '0.6rem', width: '100%', fontSize: '0.9rem'}} 
-                                            value={searchTerm} 
-                                            onChange={e => setSearchTerm(e.target.value)} 
+                                        <input
+                                            type="text"
+                                            placeholder="Search destination or program..."
+                                            style={{ border: 'none', background: 'transparent', outline: 'none', marginLeft: '0.6rem', width: '100%', fontSize: '0.9rem' }}
+                                            value={searchTerm}
+                                            onChange={e => setSearchTerm(e.target.value)}
                                         />
                                     </div>
-                                    <select 
-                                        style={{padding: '0.6rem 1rem', borderRadius: '10px', border: '1px solid var(--gray-200)', outline: 'none', background: 'var(--white)', fontSize: '0.9rem', color: 'var(--gray-600)', minWidth: '160px'}} 
-                                        value={filterStatus} 
+                                    <select
+                                        style={{ padding: '0.6rem 1rem', borderRadius: '10px', border: '1px solid var(--gray-200)', outline: 'none', background: 'var(--white)', fontSize: '0.9rem', color: 'var(--gray-600)', minWidth: '160px' }}
+                                        value={filterStatus}
                                         onChange={e => setFilterStatus(e.target.value)}
                                     >
                                         <option value="all">All Statuses</option>
@@ -333,7 +374,7 @@ export default function Dashboard() {
                                     </select>
                                 </div>
                             </div>
-                            
+
                             {filteredApps.length === 0 ? (
                                 <div className="empty-dashboard-state">
                                     <h3>No matches found</h3>
@@ -344,37 +385,37 @@ export default function Dashboard() {
                     )}
 
                     {activeTab === 'settings' && (
-                        <div className="dash-content-card" style={{padding: '2rem'}}>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem'}}>
+                        <div className="dash-content-card" style={{ padding: '2rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
                                 <Settings size={32} color="var(--gold-dark)" />
                                 <div>
-                                    <h3 style={{fontSize: '1.5rem', color: 'var(--navy)'}}>Profile & Settings</h3>
-                                    <p style={{color: 'var(--gray-600)'}}>Manage your personal account details.</p>
+                                    <h3 style={{ fontSize: '1.5rem', color: 'var(--navy)' }}>Profile & Settings</h3>
+                                    <p style={{ color: 'var(--gray-600)' }}>Manage your personal account details.</p>
                                 </div>
                             </div>
-                            
-                            <div style={{display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '600px'}}>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '600px' }}>
                                 <div>
-                                    <label style={{display:'block', fontWeight: 'bold', color: 'var(--gray-800)', marginBottom: '0.5rem'}}>Full Name</label>
-                                    <input 
-                                        type="text" 
-                                        value={currentUser?.displayName || 'Not Provided'} 
-                                        readOnly 
-                                        style={{width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid var(--gray-200)', background: 'var(--gray-100)', color: 'var(--gray-600)', fontSize: '0.95rem'}} 
+                                    <label style={{ display: 'block', fontWeight: 'bold', color: 'var(--gray-800)', marginBottom: '0.5rem' }}>Full Name</label>
+                                    <input
+                                        type="text"
+                                        value={currentUser?.displayName || 'Not Provided'}
+                                        readOnly
+                                        style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid var(--gray-200)', background: 'var(--gray-100)', color: 'var(--gray-600)', fontSize: '0.95rem' }}
                                     />
-                                    <small style={{color: 'var(--gray-400)', marginTop: '0.4rem', display: 'block'}}>Your name as it appears on official documents.</small>
+                                    <small style={{ color: 'var(--gray-400)', marginTop: '0.4rem', display: 'block' }}>Your name as it appears on official documents.</small>
                                 </div>
                                 <div>
-                                    <label style={{display:'block', fontWeight: 'bold', color: 'var(--gray-800)', marginBottom: '0.5rem'}}>Email Address</label>
-                                    <input 
-                                        type="email" 
-                                        value={currentUser?.email || ''} 
-                                        readOnly 
-                                        style={{width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid var(--gray-200)', background: 'var(--gray-100)', color: 'var(--gray-600)', fontSize: '0.95rem'}} 
+                                    <label style={{ display: 'block', fontWeight: 'bold', color: 'var(--gray-800)', marginBottom: '0.5rem' }}>Email Address</label>
+                                    <input
+                                        type="email"
+                                        value={currentUser?.email || ''}
+                                        readOnly
+                                        style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid var(--gray-200)', background: 'var(--gray-100)', color: 'var(--gray-600)', fontSize: '0.95rem' }}
                                     />
-                                    <small style={{color: 'var(--gray-400)', marginTop: '0.4rem', display: 'block'}}>This is the email used for all communications and login.</small>
+                                    <small style={{ color: 'var(--gray-400)', marginTop: '0.4rem', display: 'block' }}>This is the email used for all communications and login.</small>
                                 </div>
-                                <div style={{marginTop: '1rem', display: 'flex', gap: '1rem'}}>
+                                <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
                                     <button className="btn-premium-sm" onClick={() => alert('Profile update feature coming soon!')}>
                                         Save Changes
                                     </button>
