@@ -9,11 +9,9 @@ export default function AdminLogin() {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    
     const { login, currentUser } = useAuth()
     const navigate = useNavigate()
 
-    // If already logged in as admin, go to admin dashboard
     useEffect(() => {
         if (currentUser && ADMIN_EMAILS.includes(currentUser.email)) {
             navigate('/admin')
@@ -22,11 +20,9 @@ export default function AdminLogin() {
 
     async function handleSubmit(e) {
         e.preventDefault()
-        
         if (!ADMIN_EMAILS.includes(email.trim().toLowerCase())) {
             return setError('Access Denied: This portal is for authorized administrative personnel only.')
         }
-
         try {
             setError('')
             setLoading(true)
@@ -42,8 +38,13 @@ export default function AdminLogin() {
 
     return (
         <main className="admin-login-page">
+            {/* Animated background blobs */}
+            <div className="login-bg-blob blob-1" />
+            <div className="login-bg-blob blob-2" />
+            <div className="login-bg-blob blob-3" />
+
             <div className="admin-login-container">
-                <div className="admin-login-card glass">
+                <div className="admin-login-card">
                     <div className="admin-login-header">
                         <div className="admin-badge-icon">
                             <ShieldCheck size={32} />
@@ -59,9 +60,9 @@ export default function AdminLogin() {
                             <label>Admin Email</label>
                             <div className="input-field">
                                 <Mail size={18} className="field-icon" />
-                                <input 
-                                    type="email" 
-                                    required 
+                                <input
+                                    type="email"
+                                    required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="admin@travelium.com"
@@ -73,12 +74,12 @@ export default function AdminLogin() {
                             <label>Security Password</label>
                             <div className="input-field">
                                 <Lock size={18} className="field-icon" />
-                                <input 
-                                    type="password" 
-                                    required 
+                                <input
+                                    type="password"
+                                    required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="••••••••"
+                                    placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
                                 />
                             </div>
                         </div>
@@ -96,8 +97,6 @@ export default function AdminLogin() {
                         </button>
                     </div>
                 </div>
-                
-                <div className="admin-login-bg-overlay" />
             </div>
 
             <style dangerouslySetInnerHTML={{ __html: `
@@ -105,11 +104,52 @@ export default function AdminLogin() {
                     min-height: 100vh;
                     display: grid;
                     place-items: center;
-                    background: #0f172a;
+                    background: #0a0f1e;
                     position: relative;
                     overflow: hidden;
                     font-family: 'Inter', system-ui, sans-serif;
                 }
+
+                /* Animated background blobs */
+                .login-bg-blob {
+                    position: absolute;
+                    border-radius: 50%;
+                    filter: blur(80px);
+                    opacity: 0.3;
+                    animation: blobFloat 20s ease-in-out infinite;
+                    pointer-events: none;
+                }
+                .blob-1 {
+                    width: 600px;
+                    height: 600px;
+                    background: linear-gradient(135deg, #fbbf24, #d97706);
+                    top: -200px;
+                    right: -100px;
+                    animation-delay: 0s;
+                }
+                .blob-2 {
+                    width: 500px;
+                    height: 500px;
+                    background: linear-gradient(135deg, #6366f1, #4f46e5);
+                    bottom: -150px;
+                    left: -100px;
+                    animation-delay: -7s;
+                }
+                .blob-3 {
+                    width: 400px;
+                    height: 400px;
+                    background: linear-gradient(135deg, #ec4899, #db2777);
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    animation-delay: -14s;
+                }
+                @keyframes blobFloat {
+                    0%, 100% { transform: translate(0, 0) scale(1); }
+                    33% { transform: translate(30px, -30px) scale(1.1); }
+                    66% { transform: translate(-20px, 20px) scale(0.9); }
+                }
+
                 .admin-login-container {
                     width: 100%;
                     max-width: 440px;
@@ -118,27 +158,28 @@ export default function AdminLogin() {
                     z-index: 10;
                 }
                 .admin-login-card {
-                    background: rgba(30, 41, 59, 0.7);
-                    backdrop-filter: blur(12px);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-radius: 20px;
+                    background: rgba(15, 23, 42, 0.75);
+                    backdrop-filter: blur(20px);
+                    -webkit-backdrop-filter: blur(20px);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    border-radius: 24px;
                     padding: 3rem 2.5rem;
-                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
                 }
                 .admin-login-header {
                     text-align: center;
                     margin-bottom: 2.5rem;
                 }
                 .admin-badge-icon {
-                    width: 64px;
-                    height: 64px;
+                    width: 68px;
+                    height: 68px;
                     background: linear-gradient(135deg, #fbbf24, #d97706);
-                    border-radius: 16px;
+                    border-radius: 18px;
                     display: grid;
                     place-items: center;
                     color: #fff;
                     margin: 0 auto 1.5rem;
-                    box-shadow: 0 10px 20px -5px rgba(217, 119, 6, 0.4);
+                    box-shadow: 0 12px 28px -8px rgba(217, 119, 6, 0.5);
                 }
                 .admin-login-header h1 {
                     color: #fff;
@@ -152,6 +193,7 @@ export default function AdminLogin() {
                     font-size: 0.95rem;
                     font-weight: 500;
                 }
+
                 .admin-login-form .input-group {
                     margin-bottom: 1.5rem;
                 }
@@ -167,9 +209,9 @@ export default function AdminLogin() {
                 .admin-login-form .input-field {
                     position: relative;
                     background: rgba(15, 23, 42, 0.5);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
                     border-radius: 12px;
-                    transition: all 0.2s;
+                    transition: all 0.25s;
                 }
                 .admin-login-form .input-field:focus-within {
                     border-color: #fbbf24;
@@ -181,15 +223,18 @@ export default function AdminLogin() {
                     top: 50%;
                     transform: translateY(-50%);
                     color: #64748b;
+                    pointer-events: none;
                 }
                 .admin-login-form input {
                     width: 100%;
-                    padding: 0.85rem 1rem 0.85rem 2.75rem;
-                    background: rgba(15, 23, 42, 0.8);
+                    padding: 0.9rem 1rem 0.9rem 2.85rem;
+                    background: rgba(15, 23, 42, 0.9);
                     border: none;
+                    border-radius: 12px;
                     color: #fff;
                     font-size: 1rem;
                     outline: none;
+                    font-family: inherit;
                 }
                 .admin-login-form input:-webkit-autofill,
                 .admin-login-form input:-webkit-autofill:hover,
@@ -199,6 +244,10 @@ export default function AdminLogin() {
                     -webkit-text-fill-color: #fff !important;
                     transition: background-color 5000s ease-in-out 0s;
                 }
+                .admin-login-form input::placeholder {
+                    color: #475569;
+                }
+
                 .admin-submit-btn {
                     width: 100%;
                     padding: 1rem;
@@ -208,27 +257,30 @@ export default function AdminLogin() {
                     border-radius: 12px;
                     font-weight: 700;
                     font-size: 1rem;
+                    font-family: inherit;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     gap: 0.75rem;
                     cursor: pointer;
-                    transition: all 0.2s;
-                    margin-top: 1rem;
+                    transition: all 0.25s;
+                    margin-top: 0.5rem;
                 }
                 .admin-submit-btn:hover {
                     transform: translateY(-2px);
-                    box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.3);
+                    box-shadow: 0 12px 24px -8px rgba(245, 158, 11, 0.4);
                 }
                 .admin-submit-btn:disabled {
                     opacity: 0.6;
                     cursor: not-allowed;
                     transform: none;
+                    box-shadow: none;
                 }
+
                 .admin-login-footer {
                     margin-top: 2rem;
                     padding-top: 1.5rem;
-                    border-top: 1px solid rgba(255, 255, 255, 0.05);
+                    border-top: 1px solid rgba(255, 255, 255, 0.06);
                     display: flex;
                     justify-content: center;
                 }
@@ -238,23 +290,34 @@ export default function AdminLogin() {
                     color: #64748b;
                     font-size: 0.85rem;
                     font-weight: 600;
+                    font-family: inherit;
                     display: flex;
                     align-items: center;
                     gap: 0.5rem;
                     cursor: pointer;
                     transition: color 0.2s;
                 }
-                .back-home-btn:hover {
-                    color: #fbbf24;
+                .back-home-btn:hover { color: #fbbf24; }
+
+                .status-alert {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.75rem 1rem;
+                    border-radius: 10px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    margin-bottom: 1.5rem;
                 }
-                .admin-login-bg-overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.05), transparent 70%);
-                    pointer-events: none;
+                .status-alert.error {
+                    background: rgba(239, 68, 68, 0.12);
+                    color: #fca5a5;
+                    border: 1px solid rgba(239, 68, 68, 0.2);
+                }
+
+                @media (max-width: 480px) {
+                    .admin-login-card { padding: 2rem 1.5rem; border-radius: 20px; }
+                    .blob-1, .blob-2, .blob-3 { width: 300px; height: 300px; }
                 }
             `}} />
         </main>
