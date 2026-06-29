@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-    collection, doc, addDoc, updateDoc, deleteDoc, orderBy, query,
+    collection, doc, addDoc, updateDoc, setDoc, deleteDoc, orderBy, query,
     limit, serverTimestamp, onSnapshot
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
@@ -127,10 +127,32 @@ export default function AdminDashboard() {
             (err) => console.error('Realtime transactions error:', err)
         )
         const unsubSettings = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
-            if (snap.exists()) {
-                setSiteSettings(snap.data())
-                setSettingsForm(prev => Object.keys(prev).length ? prev : snap.data())
+            const data = snap.exists() ? snap.data() : {}
+            const defaults = {
+                siteName: 'TRAVELIUM', tagline: 'Global',
+                description: 'Your trusted partner for global career transformation, study abroad, visa services, and travel solutions.',
+                logoUrl: '', faviconUrl: '',
+                metaTitle: 'Travelium | Global Education & Travel Opportunities',
+                metaDescription: 'Travelium — Your Gateway to Global Education and Travel Opportunities. Study abroad, visa services, scholarships and more.',
+                metaKeywords: 'travel, visa, study abroad, scholarship, work visa, flight booking',
+                googleAnalyticsId: '',
+                supportEmail: 'traveliumgrobal@gmail.com', supportPhone: '+250 782 531 515',
+                address: '123 Global Avenue, Suite 400, New York, NY 10001, USA',
+                workingHours: 'Mon – Sat: 9:00 AM – 7:00 PM',
+                headquarters: 'Headquartered in Kigali, Rwanda',
+                copyright: 'Travelium Global. Licensed Recruitment & Travel Agency.',
+                linkedin: '#', twitter: '#', youtube: '#', instagram: '#', facebook: '#',
+                whatsappNumbers: [
+                    { label: 'Visas & General Inquiries', number: '250782531515' },
+                    { label: 'Jobs & Recruitment', number: '250796230619' },
+                    { label: 'Air Ticketing', number: '250793658206' },
+                ],
+                adminEmails: ['traveliumgrobal@gmail.com', 'samlite250@gmail.com'],
+                maintenanceMode: false,
             }
+            const merged = { ...defaults, ...data }
+            setSiteSettings(merged)
+            setSettingsForm(prev => Object.keys(prev).length ? prev : merged)
         }, (err) => console.error('Settings error:', err))
         return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubSettings() }
     }, [])
@@ -271,14 +293,11 @@ export default function AdminDashboard() {
     // ── Settings CRUD ──
     const saveSettings = async () => {
         try {
-            await updateDoc(doc(db, 'settings', 'site'), { ...settingsForm, updated_at: serverTimestamp(), updated_by: currentUser?.email })
+            await setDoc(doc(db, 'settings', 'site'), { ...settingsForm, updated_at: serverTimestamp(), updated_by: currentUser?.email }, { merge: true })
             setSettingsSaved(true); setTimeout(() => setSettingsSaved(false), 2500)
         } catch (err) { console.error('Settings save error:', err) }
     }
-    const initSettings = () => {
-        if (!siteSettings) return
-        setSettingsForm({ ...siteSettings })
-    }
+    const initSettings = () => setSettingsForm({ ...siteSettings })
 
     const exportCSV = () => {
         const headers = ['ID', 'Name', 'Email', 'Phone', 'Destination', 'Service', 'Status', 'Submitted', 'Nationality', 'Education']
@@ -624,7 +643,6 @@ export default function AdminDashboard() {
         const set = (key, val) => setSettingsForm(f => ({ ...f, [key]: val }))
         const whatsAppNumbers = settingsForm.whatsappNumbers || siteSettings?.whatsappNumbers || []
         const adminEmails = settingsForm.adminEmails || siteSettings?.adminEmails || []
-        if (!siteSettings) return <div className="admin-loading"><Loader2 size={24} className="animate-spin" /><p>Loading settings...</p></div>
         return (
             <>
                 <div className="admin-filter-bar">
