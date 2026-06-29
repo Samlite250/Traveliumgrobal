@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import LoadingScreen from './components/LoadingScreen'
@@ -13,11 +13,15 @@ const Contact = lazy(() => import('./pages/Contact'))
 const Apply = lazy(() => import('./pages/Apply'))
 const Login = lazy(() => import('./pages/Login'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Admin = lazy(() => import('./pages/Admin'))
 
-export default function App() {
+function AppLayout() {
+    const location = useLocation()
+    const isAdmin = location.pathname.startsWith('/admin')
+
     return (
-        <BrowserRouter>
-            <Navbar />
+        <>
+            {!isAdmin && <Navbar />}
             <Suspense fallback={<LoadingScreen />}>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -29,9 +33,18 @@ export default function App() {
                     <Route path="/apply" element={<Apply />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/admin" element={<Admin />} />
                 </Routes>
             </Suspense>
-            <Footer />
+            {!isAdmin && <Footer />}
+        </>
+    )
+}
+
+export default function App() {
+    return (
+        <BrowserRouter>
+            <AppLayout />
         </BrowserRouter>
     )
 }
