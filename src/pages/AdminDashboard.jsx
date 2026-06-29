@@ -61,6 +61,7 @@ export default function AdminDashboard() {
     const navigate = useNavigate()
 
     const [activeTab, setActiveTab] = useState('overview')
+    const [menuOpen, setMenuOpen] = useState(false)
     const [search, setSearch] = useState('')
     const [filterStatus, setFilterStatus] = useState('all')
     const [filterType, setFilterType] = useState('all')
@@ -264,29 +265,36 @@ export default function AdminDashboard() {
             <section className="admin-content">
                 <div className="admin-container">
                     {/* Tab Navigation */}
-                    <div className="admin-tabs">
-                        <button className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
-                            <PieChart size={18} />
-                            <span>Overview</span>
+                    <div className="admin-tabs-bar">
+                        <button className={`admin-tab-toggle ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation menu">
+                            <div className="hamburger-line" />
+                            <div className="hamburger-line" />
+                            <div className="hamburger-line" />
                         </button>
-                        <button className={`admin-tab ${activeTab === 'applications' ? 'active' : ''}`} onClick={() => setActiveTab('applications')}>
-                            <ClipboardList size={18} />
-                            <span>Applications</span>
-                            {stats.pending > 0 && <span className="tab-badge">{stats.pending}</span>}
-                        </button>
-                        <button className={`admin-tab ${activeTab === 'messages' ? 'active' : ''}`} onClick={() => setActiveTab('messages')}>
-                            <MessageSquare size={18} />
-                            <span>Messages</span>
-                            {stats.unread > 0 && <span className="tab-badge">{stats.unread}</span>}
-                        </button>
-                        <button className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
-                            <Users size={18} />
-                            <span>Users</span>
-                        </button>
-                        <button className={`admin-tab ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
-                            <Settings size={18} />
-                            <span>Settings</span>
-                        </button>
+                        <div className={`admin-tabs ${menuOpen ? 'open' : ''}`}>
+                            <button className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => { setActiveTab('overview'); setMenuOpen(false) }}>
+                                <PieChart size={18} />
+                                <span>Overview</span>
+                            </button>
+                            <button className={`admin-tab ${activeTab === 'applications' ? 'active' : ''}`} onClick={() => { setActiveTab('applications'); setMenuOpen(false) }}>
+                                <ClipboardList size={18} />
+                                <span>Applications</span>
+                                {stats.pending > 0 && <span className="tab-badge">{stats.pending}</span>}
+                            </button>
+                            <button className={`admin-tab ${activeTab === 'messages' ? 'active' : ''}`} onClick={() => { setActiveTab('messages'); setMenuOpen(false) }}>
+                                <MessageSquare size={18} />
+                                <span>Messages</span>
+                                {stats.unread > 0 && <span className="tab-badge">{stats.unread}</span>}
+                            </button>
+                            <button className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`} onClick={() => { setActiveTab('users'); setMenuOpen(false) }}>
+                                <Users size={18} />
+                                <span>Users</span>
+                            </button>
+                            <button className={`admin-tab ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => { setActiveTab('settings'); setMenuOpen(false) }}>
+                                <Settings size={18} />
+                                <span>Settings</span>
+                            </button>
+                        </div>
                     </div>
 
                     {/* ===== OVERVIEW TAB ===== */}

@@ -185,11 +185,19 @@ export default function AdminLogin() {
                 .admin-login-form input {
                     width: 100%;
                     padding: 0.85rem 1rem 0.85rem 2.75rem;
-                    background: transparent;
+                    background: rgba(15, 23, 42, 0.8);
                     border: none;
                     color: #fff;
                     font-size: 1rem;
                     outline: none;
+                }
+                .admin-login-form input:-webkit-autofill,
+                .admin-login-form input:-webkit-autofill:hover,
+                .admin-login-form input:-webkit-autofill:focus,
+                .admin-login-form input:-webkit-autofill:active {
+                    -webkit-box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.95) inset !important;
+                    -webkit-text-fill-color: #fff !important;
+                    transition: background-color 5000s ease-in-out 0s;
                 }
                 .admin-submit-btn {
                     width: 100%;

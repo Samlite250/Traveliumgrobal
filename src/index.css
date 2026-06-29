@@ -5957,6 +5957,35 @@ main {
 }
 
 /* ── TAB NAVIGATION ── */
+.admin-tabs-bar {
+  position: relative;
+}
+.admin-tab-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.admin-tab-toggle:hover { border-color: var(--navy); }
+.admin-tab-toggle .hamburger-line {
+  width: 18px;
+  height: 2px;
+  background: var(--gray-600);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.admin-tab-toggle.open .hamburger-line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.admin-tab-toggle.open .hamburger-line:nth-child(2) { opacity: 0; }
+.admin-tab-toggle.open .hamburger-line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 .admin-tabs {
   display: flex;
   gap: 0.5rem;
@@ -6607,8 +6636,12 @@ main {
   .admin-profile .admin-info { display: none; }
   .admin-table th, .admin-table td { padding: 0.75rem 0.75rem; font-size: 0.8rem; }
   .actions-col { width: auto; }
-  .admin-tabs { overflow-x: auto; gap: 0.5rem; padding-bottom: 0.25rem; }
-  .admin-tab { padding: 0.6rem 1rem; font-size: 0.8rem; white-space: nowrap; }
+  .admin-tab-toggle { display: flex; }
+  .admin-tabs { display: none; flex-direction: column; gap: 0; border-bottom: none; padding: 0.5rem 0; overflow: visible; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--white); border: 1.5px solid var(--gray-200); border-radius: 12px; box-shadow: var(--shadow); z-index: 50; }
+  .admin-tabs.open { display: flex; }
+  .admin-tab { padding: 0.75rem 1.25rem; font-size: 0.85rem; border-bottom: 1px solid var(--gray-100); margin: 0; }
+  .admin-tab:last-child { border-bottom: none; }
+  .admin-tab.active { border-bottom-color: transparent; background: rgba(26, 43, 94, 0.04); }
   .admin-dash-grid { grid-template-columns: 1fr !important; }
   .admin-split-layout { flex-direction: column; }
   .msg-list-panel { max-height: 300px; }
