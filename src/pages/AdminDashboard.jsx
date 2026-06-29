@@ -13,7 +13,7 @@ import {
     Globe, BookOpen, Check, MessageSquare,
     Trash2, Eye, EyeOff, PieChart, TrendingUp, Star,
     Settings, AlertTriangle, Send, X, Info, Menu, LayoutDashboard,
-    FolderOpen, DollarSign, CreditCard, Plus, Edit3, Package
+    FolderOpen, DollarSign, CreditCard, Plus, Edit3, Package, Lock
 } from 'lucide-react'
 
 const SERVICE_OPTIONS = [
@@ -291,13 +291,39 @@ export default function AdminDashboard() {
     const deleteTx = async (id) => { try { await deleteDoc(doc(db, 'transactions', id)) } catch (err) { console.error('Tx delete error:', err) } }
 
     // ── Settings CRUD ──
+    const ALLOWED_SETTINGS = [
+        'description', 'logoUrl', 'faviconUrl', 'copyright',
+        'supportEmail', 'supportPhone', 'address', 'workingHours', 'headquarters',
+        'whatsappNumbers', 'linkedin', 'twitter', 'youtube', 'instagram', 'facebook',
+        'metaTitle', 'metaDescription', 'metaKeywords', 'googleAnalyticsId',
+    ]
     const saveSettings = async () => {
+        const payload = {}
+        ALLOWED_SETTINGS.forEach(k => { if (k in settingsForm) payload[k] = settingsForm[k] })
+        if (settingsForm.whatsappNumbers) {
+            payload.whatsappNumbers = settingsForm.whatsappNumbers.filter(w => w.number?.trim())
+            payload.whatsappNumbers.forEach(w => { w.number = w.number.replace(/[^0-9+]/g, '') })
+        }
+        if (payload.supportEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.supportEmail)) {
+            return alert('Invalid support email address.')
+        }
+        if (payload.logoUrl && !/^https?:\/\/.+/.test(payload.logoUrl)) {
+            return alert('Logo URL must start with http:// or https://')
+        }
+        if (payload.faviconUrl && !/^https?:\/\/.+/.test(payload.faviconUrl)) {
+            return alert('Favicon URL must start with http:// or https://')
+        }
         try {
-            await setDoc(doc(db, 'settings', 'site'), { ...settingsForm, updated_at: serverTimestamp(), updated_by: currentUser?.email }, { merge: true })
+            await setDoc(doc(db, 'settings', 'site'), { ...payload, updated_at: serverTimestamp(), updated_by: currentUser?.email }, { merge: true })
             setSettingsSaved(true); setTimeout(() => setSettingsSaved(false), 2500)
+            setSettingsForm(prev => ({ ...prev, ...payload }))
         } catch (err) { console.error('Settings save error:', err) }
     }
-    const initSettings = () => setSettingsForm({ ...siteSettings })
+    const initSettings = () => {
+        const clean = {}
+        ALLOWED_SETTINGS.forEach(k => { if (k in siteSettings) clean[k] = siteSettings[k] })
+        setSettingsForm(clean)
+    }
 
     const exportCSV = () => {
         const headers = ['ID', 'Name', 'Email', 'Phone', 'Destination', 'Service', 'Status', 'Submitted', 'Nationality', 'Education']
@@ -642,25 +668,31 @@ export default function AdminDashboard() {
         const sf = (key) => settingsForm[key] !== undefined ? settingsForm[key] : siteSettings?.[key] ?? ''
         const set = (key, val) => setSettingsForm(f => ({ ...f, [key]: val }))
         const whatsAppNumbers = settingsForm.whatsappNumbers || siteSettings?.whatsappNumbers || []
-        const adminEmails = settingsForm.adminEmails || siteSettings?.adminEmails || []
+        const protectedNote = (label, value) => (
+            <div className="form-group">
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Lock size={12} style={{ opacity: 0.5 }} /> {label} <span className="status-badge-live" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Protected</span></label>
+                <div className="protected-value">{value}</div>
+            </div>
+        )
         return (
             <>
                 <div className="admin-filter-bar">
                     <div className="filters-group">
                         <button className="admin-btn-primary" onClick={initSettings}><RefreshCw size={16} /> Reset Form</button>
-                        <button className="admin-btn-success" onClick={saveSettings}><Check size={16} /> Save Settings</button>
-                        {settingsSaved && <span className="save-toast">Saved!</span>}
+                        <button className="admin-btn-success" onClick={saveSettings}><Check size={16} /> Save Changes</button>
+                        {settingsSaved && <span className="save-toast">Settings saved!</span>}
                     </div>
                 </div>
 
-                {/* ── General ── */}
+                {/* ── Branding (read-only) ── */}
                 <div className="admin-table-card">
-                    <div className="card-header"><div className="card-title-group"><Globe size={18} className="title-icon" /><h3>General</h3></div></div>
+                    <div className="card-header"><div className="card-title-group"><Globe size={18} className="title-icon" /><h3>Branding</h3></div></div>
                     <div className="settings-body">
                         <div className="form-row">
-                            <div className="form-group"><label>Site Name</label><input className="admin-note-input" value={sf('siteName')} onChange={e => set('siteName', e.target.value)} /></div>
-                            <div className="form-group"><label>Tagline</label><input className="admin-note-input" value={sf('tagline')} onChange={e => set('tagline', e.target.value)} /></div>
+                            {protectedNote('Site Name', 'TRAVELIUM')}
+                            {protectedNote('Tagline', 'Grobal')}
                         </div>
+                        {protectedNote('Site ID', 'traveliumgrobal')}
                         <div className="form-group"><label>Site Description</label><textarea className="admin-note-input" rows="2" value={sf('description')} onChange={e => set('description', e.target.value)} /></div>
                         <div className="form-row">
                             <div className="form-group"><label>Logo URL</label><input className="admin-note-input" value={sf('logoUrl')} onChange={e => set('logoUrl', e.target.value)} placeholder="https://..." /></div>
@@ -689,7 +721,7 @@ export default function AdminDashboard() {
                                     <div className="form-group"><input className="admin-note-input" placeholder="Label" value={w.label} onChange={e => {
                                         const arr = [...whatsAppNumbers]; arr[i] = { ...arr[i], label: e.target.value }; set('whatsappNumbers', arr)
                                     }} /></div>
-                                    <div className="form-group"><input className="admin-note-input" placeholder="Number" value={w.number} onChange={e => {
+                                    <div className="form-group"><input className="admin-note-input" placeholder="Number (digits only)" value={w.number} onChange={e => {
                                         const arr = [...whatsAppNumbers]; arr[i] = { ...arr[i], number: e.target.value }; set('whatsappNumbers', arr)
                                     }} /></div>
                                     <button className="btn-act rej" onClick={() => set('whatsappNumbers', whatsAppNumbers.filter((_, j) => j !== i))} title="Remove"><X size={14} /></button>
@@ -732,36 +764,21 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                {/* ── Admin ── */}
-                <div className="admin-table-card">
-                    <div className="card-header"><div className="card-title-group"><Shield size={18} className="title-icon" /><h3>Admin Access</h3></div></div>
-                    <div className="settings-body">
-                        <div className="form-group"><label>Authorized Admin Emails (one per line)</label>
-                            <textarea className="admin-note-input" rows="3" value={adminEmails.join('\n')} onChange={e => set('adminEmails', e.target.value.split('\n').map(s => s.trim()).filter(Boolean))} />
-                        </div>
-                        <div className="setting-item">
-                            <div className="setting-info"><span className="setting-label">Current Session</span></div>
-                            <div className="setting-value"><span className="current-user-badge">{currentUser?.email}</span></div>
-                        </div>
-                        <div className="form-group"><label>Maintenance Mode</label>
-                            <select className="admin-note-input" value={sf('maintenanceMode') ? 'yes' : 'no'} onChange={e => set('maintenanceMode', e.target.value === 'yes')}>
-                                <option value="no">Disabled</option><option value="yes">Enabled</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
                 {/* ── System Info ── */}
                 <div className="admin-table-card">
-                    <div className="card-header"><div className="card-title-group"><Info size={18} className="title-icon" /><h3>System Info</h3></div></div>
+                    <div className="card-header"><div className="card-title-group"><Info size={18} className="title-icon" /><h3>System</h3></div></div>
                     <div className="settings-body">
                         <div className="form-row">
-                            <div className="setting-item"><div className="setting-info"><span className="setting-label">Real-time Sync</span></div><div className="setting-value"><span className="status-badge-live">Live</span></div></div>
-                            <div className="setting-item"><div className="setting-info"><span className="setting-label">Total Documents</span></div><div className="setting-value"><strong>{applications.length + contacts.length}</strong></div></div>
+                            <div className="setting-item"><div className="setting-info"><span className="setting-label">Authenticated as</span></div><div className="setting-value"><span className="current-user-badge">{currentUser?.email}</span></div></div>
+                            <div className="setting-item"><div className="setting-info"><span className="setting-label">Real-time Sync</span></div><div className="setting-value"><span className="status-badge-live">Active</span></div></div>
                         </div>
                         <div className="setting-item">
                             <div className="setting-info"><span className="setting-label">Data Collections</span></div>
                             <div className="setting-value"><div className="admin-emails-list"><span className="admin-email-chip">applications</span><span className="admin-email-chip">contacts</span><span className="admin-email-chip">services</span><span className="admin-email-chip">transactions</span><span className="admin-email-chip">settings</span></div></div>
+                        </div>
+                        <div className="setting-item">
+                            <div className="setting-info"><span className="setting-label">Security</span></div>
+                            <div className="setting-value"><span className="status-badge-live" style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80' }}>Protected</span></div>
                         </div>
                     </div>
                 </div>
