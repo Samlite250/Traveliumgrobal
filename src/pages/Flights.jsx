@@ -55,21 +55,23 @@ export default function Flights() {
 
         try {
             let passportUrl = null
-            if (files.passport) {
+            if (files.passport && storage) {
                 passportUrl = await uploadFile(files.passport, `flights/${currentUser?.uid || 'guest'}/passport_${Date.now()}`)
             }
 
-            await addDoc(collection(db, 'applications'), {
-                ...form,
-                user_id: currentUser?.uid || null,
-                user_email: currentUser?.email || form.email,
-                program_type: 'flight_booking',
-                status: 'pending',
-                documents: {
-                    passport: passportUrl
-                },
-                created_at: serverTimestamp(),
-            })
+            if (!db) {
+                const existing = JSON.parse(localStorage.getItem('travelium_flights') || '[]')
+                existing.push({ ...form, program_type: 'flight_booking', status: 'pending', documents: { passport: passportUrl }, created_at: new Date().toISOString(), saved_at: Date.now() })
+                localStorage.setItem('travelium_flights', JSON.stringify(existing))
+            } else {
+                await addDoc(collection(db, 'applications'), {
+                    ...form, user_id: currentUser?.uid || null,
+                    user_email: currentUser?.email || form.email,
+                    program_type: 'flight_booking', status: 'pending',
+                    documents: { passport: passportUrl },
+                    created_at: serverTimestamp(),
+                })
+            }
 
             toast('Flight booking request submitted! Our travel agent will contact you shortly.', 'success')
             setStatus({ type: 'success', msg: 'Flight booking request submitted! Our travel agent will contact you with the best prices shortly.' })
@@ -81,8 +83,10 @@ export default function Flights() {
             })
             setFiles({ passport: null })
         } catch (error) {
-            toast('Submission failed: ' + error.message, 'error')
-            setStatus({ type: 'error', msg: 'Submission failed: ' + error.message })
+            console.error('Flight booking error:', error)
+            const msg = error.message || 'Something went wrong. Please try again.'
+            toast('Submission failed: ' + msg, 'error')
+            setStatus({ type: 'error', msg: 'Submission failed: ' + msg })
         } finally {
             setLoading(false)
         }

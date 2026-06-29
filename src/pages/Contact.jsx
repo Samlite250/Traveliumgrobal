@@ -29,15 +29,22 @@ export default function Contact() {
         setLoading(true)
         setStatus(null)
         try {
-            await addDoc(collection(db, 'contacts'), {
-                ...form,
-                created_at: serverTimestamp()
-            })
+            if (!db) {
+                const existing = JSON.parse(localStorage.getItem('travelium_contacts') || '[]')
+                existing.push({ ...form, created_at: new Date().toISOString(), saved_at: Date.now() })
+                localStorage.setItem('travelium_contacts', JSON.stringify(existing))
+            } else {
+                await addDoc(collection(db, 'contacts'), {
+                    ...form,
+                    created_at: serverTimestamp()
+                })
+            }
             toast('Message sent! We\'ll get back to you within 24 hours.', 'success')
             setStatus({ type: 'success', msg: 'Message sent! We\'ll get back to you within 24 hours.' })
             setForm({ name: '', email: '', phone: '', subject: '', message: '' })
         } catch (error) {
-            toast('Something went wrong. Please try again.', 'error')
+            console.error('Contact form error:', error)
+            toast(error.message || 'Something went wrong. Please try again.', 'error')
             setStatus({ type: 'error', msg: 'Something went wrong. Please try again.' })
         } finally {
             setLoading(false)

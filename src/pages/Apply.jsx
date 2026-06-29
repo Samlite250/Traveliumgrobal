@@ -67,30 +67,22 @@ export default function Apply() {
 
             setUploadProgress('Saving your application...')
 
-            await addDoc(collection(db, 'applications'), {
-                // Personal info
-                full_name:       form.full_name,
-                email:           form.email || currentUser.email,
-                phone:           form.phone,
-                nationality:     form.nationality,
-                // Application details
-                destination:     form.destination,
-                program_type:    form.program_type,
-                education_level: form.education_level,
-                message:         form.message,
-                // Auth linking — CRITICAL for admin visibility
-                user_id:    uid,
-                user_email: currentUser.email,
-                // Status & timestamps
-                status:     'pending',
-                documents: {
-                    passport: passportUrl || null,
-                    diploma:  diplomaUrl  || null,
-                    id_card:  idCardUrl   || null,
-                },
-                created_at: serverTimestamp(),
-                updated_at: serverTimestamp(),
-            })
+            if (!db) {
+                const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
+                existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: { passport: null, diploma: null, id_card: null }, created_at: new Date().toISOString(), saved_at: Date.now() })
+                localStorage.setItem('travelium_applications', JSON.stringify(existing))
+            } else {
+                await addDoc(collection(db, 'applications'), {
+                    full_name: form.full_name, email: form.email || currentUser.email,
+                    phone: form.phone, nationality: form.nationality,
+                    destination: form.destination, program_type: form.program_type,
+                    education_level: form.education_level, message: form.message,
+                    user_id: uid, user_email: currentUser.email,
+                    status: 'pending',
+                    documents: { passport: passportUrl || null, diploma: diplomaUrl || null, id_card: idCardUrl || null },
+                    created_at: serverTimestamp(), updated_at: serverTimestamp(),
+                })
+            }
 
             setStatus({ type: 'success' })
             toast('Application submitted successfully! We\'ll review it shortly.', 'success')
@@ -102,9 +94,7 @@ export default function Apply() {
             setFiles({ passport: null, diploma: null, id_card: null })
         } catch (err) {
             console.error('[Apply] Submission error:', err)
-            const msg = err.code === 'storage/unauthorized'
-                ? 'File upload was blocked. Please contact support or try again.'
-                : 'Submission failed: ' + err.message
+            const msg = 'Submission failed: ' + (err.message || 'Please try again.')
             setStatus({ type: 'error', msg })
             toast(msg, 'error')
         }
