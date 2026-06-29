@@ -295,7 +295,7 @@ export default function AdminDashboard() {
         'description', 'logoUrl', 'faviconUrl', 'copyright',
         'supportEmail', 'supportPhone', 'address', 'workingHours', 'headquarters',
         'whatsappNumbers', 'linkedin', 'twitter', 'youtube', 'instagram', 'facebook',
-        'metaTitle', 'metaDescription', 'metaKeywords', 'googleAnalyticsId',
+
     ]
     const saveSettings = async () => {
         const payload = {}
@@ -748,19 +748,6 @@ export default function AdminDashboard() {
                             <div className="form-group"><label>Facebook</label><input className="admin-note-input" value={sf('facebook')} onChange={e => set('facebook', e.target.value)} placeholder="https://facebook.com/..." /></div>
                             <div className="form-group" />
                         </div>
-                    </div>
-                </div>
-
-                {/* ── SEO ── */}
-                <div className="admin-table-card">
-                    <div className="card-header"><div className="card-title-group"><Search size={18} className="title-icon" /><h3>SEO & Analytics</h3></div></div>
-                    <div className="settings-body">
-                        <div className="form-row">
-                            <div className="form-group"><label>Meta Title</label><input className="admin-note-input" value={sf('metaTitle')} onChange={e => set('metaTitle', e.target.value)} /></div>
-                            <div className="form-group"><label>Google Analytics ID</label><input className="admin-note-input" value={sf('googleAnalyticsId')} onChange={e => set('googleAnalyticsId', e.target.value)} placeholder="G-XXXXXXXXXX" /></div>
-                        </div>
-                        <div className="form-group"><label>Meta Description</label><textarea className="admin-note-input" rows="2" value={sf('metaDescription')} onChange={e => set('metaDescription', e.target.value)} /></div>
-                        <div className="form-group"><label>Meta Keywords</label><input className="admin-note-input" value={sf('metaKeywords')} onChange={e => set('metaKeywords', e.target.value)} placeholder="travel, visa, study abroad" /></div>
                     </div>
                 </div>
 
