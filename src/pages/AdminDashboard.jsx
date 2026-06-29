@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-    collection, doc, updateDoc, deleteDoc, orderBy, query,
+    collection, doc, addDoc, updateDoc, deleteDoc, orderBy, query,
     limit, serverTimestamp, onSnapshot
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
@@ -12,7 +12,8 @@ import {
     Download, ExternalLink, Calendar, Mail, Phone,
     Globe, BookOpen, Check, MessageSquare,
     Trash2, Eye, EyeOff, PieChart, TrendingUp, Star,
-    Settings, AlertTriangle, Send, X, Info, Menu, LayoutDashboard
+    Settings, AlertTriangle, Send, X, Info, Menu, LayoutDashboard,
+    FolderOpen, DollarSign, CreditCard, Plus, Edit3, Package
 } from 'lucide-react'
 
 const SERVICE_OPTIONS = [
@@ -36,6 +37,9 @@ const statusConfig = {
 const navItems = [
     { key: 'overview', label: 'Overview', icon: <PieChart size={20} /> },
     { key: 'applications', label: 'Applications', icon: <ClipboardList size={20} />, badge: 'pending' },
+    { key: 'documents', label: 'Documents', icon: <FolderOpen size={20} /> },
+    { key: 'transactions', label: 'Transactions', icon: <DollarSign size={20} /> },
+    { key: 'services', label: 'Services', icon: <Package size={20} /> },
     { key: 'messages', label: 'Messages', icon: <MessageSquare size={20} />, badge: 'unread' },
     { key: 'users', label: 'Users', icon: <Users size={20} /> },
     { key: 'settings', label: 'Settings', icon: <Settings size={20} /> },
@@ -82,7 +86,18 @@ export default function AdminDashboard() {
 
     const [applications, setApplications] = useState([])
     const [contacts, setContacts] = useState([])
+    const [services, setServices] = useState([])
+    const [transactions, setTransactions] = useState([])
     const [loading, setLoading] = useState(true)
+
+    // Service editor state
+    const [editingService, setEditingService] = useState(null)
+    const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', features: '', active: true })
+    const [showServiceEditor, setShowServiceEditor] = useState(false)
+    // Transaction editor state
+    const [editingTx, setEditingTx] = useState(null)
+    const [txForm, setTxForm] = useState({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
+    const [showTxEditor, setShowTxEditor] = useState(false)
 
     useEffect(() => {
         if (!db) { setLoading(false); return }
@@ -96,7 +111,17 @@ export default function AdminDashboard() {
             (snap) => setContacts(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
             (err) => console.error('Realtime contacts error:', err)
         )
-        return () => { unsubApps(); unsubMsgs() }
+        const unsubServices = onSnapshot(
+            query(collection(db, 'services'), orderBy('created_at', 'desc')),
+            (snap) => setServices(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
+            (err) => console.error('Realtime services error:', err)
+        )
+        const unsubTx = onSnapshot(
+            query(collection(db, 'transactions'), orderBy('created_at', 'desc'), limit(200)),
+            (snap) => setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
+            (err) => console.error('Realtime transactions error:', err)
+        )
+        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx() }
     }, [])
 
     const stats = useMemo(() => ({
@@ -186,6 +211,51 @@ export default function AdminDashboard() {
         try { await deleteDoc(doc(db, 'contacts', id)); setSelectedMsg(null) }
         catch (err) { console.error('Delete message error:', err) }
     }
+
+    // ── Service CRUD ──
+    const saveService = async () => {
+        const data = {
+            ...serviceForm,
+            price: parseFloat(serviceForm.price) || 0,
+            features: serviceForm.features.split('\n').filter(Boolean),
+            updated_at: serverTimestamp()
+        }
+        try {
+            if (editingService) {
+                await updateDoc(doc(db, 'services', editingService.id), data)
+            } else {
+                await addDoc(collection(db, 'services'), { ...data, created_at: serverTimestamp() })
+            }
+            setShowServiceEditor(false); setEditingService(null)
+            setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true })
+        } catch (err) { console.error('Service save error:', err) }
+    }
+    const editService = (s) => {
+        setEditingService(s)
+        setServiceForm({ name: s.name || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), features: (s.features || []).join('\n'), active: s.active !== false })
+        setShowServiceEditor(true)
+    }
+    const deleteService = async (id) => { try { await deleteDoc(doc(db, 'services', id)) } catch (err) { console.error('Service delete error:', err) } }
+
+    // ── Transaction CRUD ──
+    const saveTx = async () => {
+        const data = { ...txForm, amount: parseFloat(txForm.amount) || 0, updated_at: serverTimestamp() }
+        try {
+            if (editingTx) {
+                await updateDoc(doc(db, 'transactions', editingTx.id), data)
+            } else {
+                await addDoc(collection(db, 'transactions'), { ...data, created_at: serverTimestamp() })
+            }
+            setShowTxEditor(false); setEditingTx(null)
+            setTxForm({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
+        } catch (err) { console.error('Tx save error:', err) }
+    }
+    const editTx = (t) => {
+        setEditingTx(t)
+        setTxForm({ applicant_name: t.applicant_name || '', email: t.email || '', service_type: t.service_type || '', amount: String(t.amount || ''), currency: t.currency || 'USD', status: t.status || 'pending', payment_method: t.payment_method || '', notes: t.notes || '' })
+        setShowTxEditor(true)
+    }
+    const deleteTx = async (id) => { try { await deleteDoc(doc(db, 'transactions', id)) } catch (err) { console.error('Tx delete error:', err) } }
 
     const exportCSV = () => {
         const headers = ['ID', 'Name', 'Email', 'Phone', 'Destination', 'Service', 'Status', 'Submitted', 'Nationality', 'Education']
@@ -559,12 +629,242 @@ export default function AdminDashboard() {
                     </div>
                     <div className="setting-item">
                         <div className="setting-info"><span className="setting-label">Data Collections</span><span className="setting-desc">Firestore collections in use</span></div>
-                        <div className="setting-value"><div className="admin-emails-list"><span className="admin-email-chip">applications</span><span className="admin-email-chip">contacts</span></div></div>
+                        <div className="setting-value"><div className="admin-emails-list"><span className="admin-email-chip">applications</span><span className="admin-email-chip">contacts</span><span className="admin-email-chip">services</span><span className="admin-email-chip">transactions</span></div></div>
                     </div>
                 </div>
             </div>
         </div>
     )
+
+    // ── DOCUMENTS TAB ──
+    const renderDocuments = () => {
+        const allDocs = applications.flatMap(a => {
+            const docs = []
+            if (a.documents?.passport) docs.push({ type: 'Passport', url: a.documents.passport, name: a.full_name || 'Unknown', email: a.email, appId: a.id, date: a.created_at, program: a.program_type })
+            if (a.documents?.diploma) docs.push({ type: 'Diploma', url: a.documents.diploma, name: a.full_name || 'Unknown', email: a.email, appId: a.id, date: a.created_at, program: a.program_type })
+            if (a.documents?.id_card) docs.push({ type: 'ID Card', url: a.documents.id_card, name: a.full_name || 'Unknown', email: a.email, appId: a.id, date: a.created_at, program: a.program_type })
+            return docs
+        })
+        return (
+            <div className="admin-table-card">
+                <div className="card-header"><div className="card-title-group"><FolderOpen size={20} className="title-icon" /><h3>Uploaded Documents</h3></div><span className="card-badge">{allDocs.length} files</span></div>
+                {allDocs.length === 0 ? (
+                    <div className="admin-empty"><FileText size={60} /><h3>No documents uploaded</h3><p>Applications with document uploads will appear here.</p></div>
+                ) : (
+                    <>
+                        <div className="admin-table-overflow">
+                            <table className="admin-table">
+                                <thead><tr><th>Type</th><th>Applicant</th><th>Email</th><th>Service</th><th>Date</th><th>Preview</th></tr></thead>
+                                <tbody>
+                                    {allDocs.map((d, i) => (
+                                        <tr key={`${d.appId}-${i}`}>
+                                            <td><span className="doc-type-badge">{d.type}</span></td>
+                                            <td>{d.name}</td>
+                                            <td><span className="text-muted">{d.email}</span></td>
+                                            <td><span className="service-type">{d.program?.replace(/_/g, ' ')}</span></td>
+                                            <td><div className="date-cell"><Calendar size={12} /><span>{formatDateShort(d.date)}</span></div></td>
+                                            <td><a href={d.url} target="_blank" rel="noreferrer" className="doc-link-sm"><FileText size={14} /> View <ExternalLink size={11} /></a></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="admin-table-footer"><span>{allDocs.length} documents across {applications.length} applications</span></div>
+                    </>
+                )}
+            </div>
+        )
+    }
+
+    // ── TRANSACTIONS TAB ──
+    const renderTransactions = () => {
+        const txStatusClass = { paid: 'st-approved', pending: 'st-pending', refunded: 'st-rejected' }
+        return (
+            <>
+                <div className="admin-filter-bar">
+                    <div className="filters-group">
+                        <button className="admin-btn-primary" onClick={() => { setEditingTx(null); setTxForm({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' }); setShowTxEditor(true) }}>
+                            <Plus size={16} /> New Transaction
+                        </button>
+                    </div>
+                    <span className="card-badge">{transactions.length} records</span>
+                </div>
+                <div className="admin-table-card">
+                    {transactions.length === 0 ? (
+                        <div className="admin-empty"><DollarSign size={60} /><h3>No transactions yet</h3><p>Add your first transaction record using the button above.</p></div>
+                    ) : (
+                        <>
+                            <div className="admin-table-overflow">
+                                <table className="admin-table">
+                                    <thead><tr><th>Name</th><th>Email</th><th>Service</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th><th className="actions-col">Actions</th></tr></thead>
+                                    <tbody>
+                                        {transactions.map(t => (
+                                            <tr key={t.id}>
+                                                <td><strong>{t.applicant_name}</strong></td>
+                                                <td><span className="text-muted">{t.email}</span></td>
+                                                <td><span className="service-type">{t.service_type?.replace(/_/g, ' ')}</span></td>
+                                                <td><strong>{t.currency || 'USD'} {t.amount?.toFixed(2)}</strong></td>
+                                                <td><span className="text-muted">{t.payment_method || '\u2014'}</span></td>
+                                                <td><div className={`status-pill-admin ${txStatusClass[t.status] || 'st-pending'}`}>{t.status}</div></td>
+                                                <td><div className="date-cell"><Calendar size={12} /><span>{formatDateShort(t.created_at)}</span></div></td>
+                                                <td>
+                                                    <div className="admin-action-btns">
+                                                        <button className="btn-act pro" onClick={() => editTx(t)} title="Edit"><Edit3 size={14} /></button>
+                                                        <button className="btn-act rej" onClick={() => deleteTx(t.id)} title="Delete"><Trash2 size={14} /></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="admin-table-footer">
+                                <span>{transactions.length} transactions</span>
+                                <span className="last-sync">Total: {transactions.reduce((s, t) => s + (t.amount || 0), 0).toLocaleString()} {transactions[0]?.currency || 'USD'}</span>
+                            </div>
+                        </>
+                    )}
+                </div>
+
+                {/* Transaction Editor Modal */}
+                {showTxEditor && (
+                    <div className="admin-modal-overlay" onClick={() => { setShowTxEditor(false); setEditingTx(null) }}>
+                        <div className="admin-modal admin-modal-sm" onClick={e => e.stopPropagation()}>
+                            <div className="admin-modal-header">
+                                <div className="modal-title-group"><DollarSign size={20} className="title-icon" /><h3>{editingTx ? 'Edit Transaction' : 'New Transaction'}</h3></div>
+                                <button onClick={() => { setShowTxEditor(false); setEditingTx(null) }} className="modal-close-btn"><X size={18} /></button>
+                            </div>
+                            <div className="admin-modal-body">
+                                <div className="form-row">
+                                    <div className="form-group"><label>Applicant Name</label><input className="admin-note-input" value={txForm.applicant_name} onChange={e => setTxForm(f => ({ ...f, applicant_name: e.target.value }))} placeholder="Full name" /></div>
+                                    <div className="form-group"><label>Email</label><input className="admin-note-input" type="email" value={txForm.email} onChange={e => setTxForm(f => ({ ...f, email: e.target.value }))} placeholder="Email address" /></div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group"><label>Service Type</label>
+                                        <select className="admin-note-input" value={txForm.service_type} onChange={e => setTxForm(f => ({ ...f, service_type: e.target.value }))}>
+                                            <option value="">Select service...</option>
+                                            {SERVICE_OPTIONS.filter(s => s.value !== 'all').map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="form-group"><label>Amount</label><input className="admin-note-input" type="number" step="0.01" value={txForm.amount} onChange={e => setTxForm(f => ({ ...f, amount: e.target.value }))} placeholder="0.00" /></div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group"><label>Currency</label>
+                                        <select className="admin-note-input" value={txForm.currency} onChange={e => setTxForm(f => ({ ...f, currency: e.target.value }))}>
+                                            <option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="RWF">RWF</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group"><label>Status</label>
+                                        <select className="admin-note-input" value={txForm.status} onChange={e => setTxForm(f => ({ ...f, status: e.target.value }))}>
+                                            <option value="pending">Pending</option><option value="paid">Paid</option><option value="refunded">Refunded</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-group"><label>Payment Method</label><input className="admin-note-input" value={txForm.payment_method} onChange={e => setTxForm(f => ({ ...f, payment_method: e.target.value }))} placeholder="e.g. Momo, Bank Transfer, Cash" /></div>
+                                <div className="form-group"><label>Notes</label><textarea className="admin-note-input" rows="2" value={txForm.notes} onChange={e => setTxForm(f => ({ ...f, notes: e.target.value }))} placeholder="Optional notes..." /></div>
+                            </div>
+                            <div className="admin-modal-footer">
+                                <button onClick={() => { setShowTxEditor(false); setEditingTx(null) }} className="admin-btn-secondary">Cancel</button>
+                                <button onClick={saveTx} className="admin-btn-primary"><Check size={16} /> {editingTx ? 'Update' : 'Save'} Transaction</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </>
+        )
+    }
+
+    // ── SERVICES TAB ──
+    const renderServices = () => {
+        const grouped = {}
+        services.forEach(s => {
+            if (!grouped[s.type]) grouped[s.type] = []
+            grouped[s.type].push(s)
+        })
+        const typeLabels = { visa: 'Visa Services', flight: 'Flight Services', study: 'Study Abroad', scholarship: 'Scholarship', other: 'Other Services' }
+        return (
+            <>
+                <div className="admin-filter-bar">
+                    <div className="filters-group">
+                        <button className="admin-btn-primary" onClick={() => { setEditingService(null); setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true }); setShowServiceEditor(true) }}>
+                            <Plus size={16} /> New Service
+                        </button>
+                    </div>
+                    <span className="card-badge">{services.length} services</span>
+                </div>
+                {Object.entries(grouped).length === 0 ? (
+                    <div className="admin-table-card">
+                        <div className="admin-empty"><Package size={60} /><h3>No services yet</h3><p>Create visa, flight, study, and other service offerings.</p></div>
+                    </div>
+                ) : (
+                    Object.entries(grouped).map(([type, items]) => (
+                        <div key={type} className="admin-table-card" style={{ marginBottom: '1rem' }}>
+                            <div className="card-header"><div className="card-title-group"><Package size={18} className="title-icon" /><h3>{typeLabels[type] || type}</h3></div><span className="card-badge">{items.length} items</span></div>
+                            <div className="admin-table-overflow">
+                                <table className="admin-table">
+                                    <thead><tr><th>Name</th><th>Description</th><th>Price</th><th>Features</th><th>Status</th><th className="actions-col">Actions</th></tr></thead>
+                                    <tbody>
+                                        {items.map(s => (
+                                            <tr key={s.id}>
+                                                <td><strong>{s.name}</strong></td>
+                                                <td><span className="text-muted" style={{ maxWidth: 200, display: 'inline-block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.description}</span></td>
+                                                <td><strong>{s.price ? `$${s.price}` : '\u2014'}</strong></td>
+                                                <td><span className="text-muted">{(s.features || []).length} features</span></td>
+                                                <td><div className={`status-pill-admin ${s.active !== false ? 'st-approved' : 'st-rejected'}`}>{s.active !== false ? 'Active' : 'Inactive'}</div></td>
+                                                <td>
+                                                    <div className="admin-action-btns">
+                                                        <button className="btn-act pro" onClick={() => editService(s)} title="Edit"><Edit3 size={14} /></button>
+                                                        <button className="btn-act rej" onClick={() => deleteService(s.id)} title="Delete"><Trash2 size={14} /></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    ))
+                )}
+
+                {/* Service Editor Modal */}
+                {showServiceEditor && (
+                    <div className="admin-modal-overlay" onClick={() => { setShowServiceEditor(false); setEditingService(null) }}>
+                        <div className="admin-modal admin-modal-sm" onClick={e => e.stopPropagation()}>
+                            <div className="admin-modal-header">
+                                <div className="modal-title-group"><Package size={20} className="title-icon" /><h3>{editingService ? 'Edit Service' : 'New Service'}</h3></div>
+                                <button onClick={() => { setShowServiceEditor(false); setEditingService(null) }} className="modal-close-btn"><X size={18} /></button>
+                            </div>
+                            <div className="admin-modal-body">
+                                <div className="form-row">
+                                    <div className="form-group"><label>Service Name</label><input className="admin-note-input" value={serviceForm.name} onChange={e => setServiceForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. US Tourist Visa" /></div>
+                                    <div className="form-group"><label>Type</label>
+                                        <select className="admin-note-input" value={serviceForm.type} onChange={e => setServiceForm(f => ({ ...f, type: e.target.value }))}>
+                                            <option value="visa">Visa Services</option><option value="flight">Flight Services</option>
+                                            <option value="study">Study Abroad</option><option value="scholarship">Scholarship</option><option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-group"><label>Description</label><textarea className="admin-note-input" rows="2" value={serviceForm.description} onChange={e => setServiceForm(f => ({ ...f, description: e.target.value }))} placeholder="Brief description of this service..." /></div>
+                                <div className="form-row">
+                                    <div className="form-group"><label>Price (USD)</label><input className="admin-note-input" type="number" step="0.01" value={serviceForm.price} onChange={e => setServiceForm(f => ({ ...f, price: e.target.value }))} placeholder="0.00" /></div>
+                                    <div className="form-group"><label>Active</label>
+                                        <select className="admin-note-input" value={serviceForm.active ? 'yes' : 'no'} onChange={e => setServiceForm(f => ({ ...f, active: e.target.value === 'yes' }))}>
+                                            <option value="yes">Active</option><option value="no">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="form-group"><label>Features (one per line)</label><textarea className="admin-note-input" rows="4" value={serviceForm.features} onChange={e => setServiceForm(f => ({ ...f, features: e.target.value }))} placeholder="Free consultation&#10;Fast processing&#10;Online tracking" /></div>
+                            </div>
+                            <div className="admin-modal-footer">
+                                <button onClick={() => { setShowServiceEditor(false); setEditingService(null) }} className="admin-btn-secondary">Cancel</button>
+                                <button onClick={saveService} className="admin-btn-primary"><Check size={16} /> {editingService ? 'Update' : 'Create'} Service</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </>
+        )
+    }
 
     return (
         <div className="admin-layout">
@@ -637,6 +937,9 @@ export default function AdminDashboard() {
                 <div className="main-content">
                     {activeTab === 'overview' && renderOverview()}
                     {activeTab === 'applications' && renderApplications()}
+                    {activeTab === 'documents' && renderDocuments()}
+                    {activeTab === 'transactions' && renderTransactions()}
+                    {activeTab === 'services' && renderServices()}
                     {activeTab === 'messages' && renderMessages()}
                     {activeTab === 'users' && renderUsers()}
                     {activeTab === 'settings' && renderSettings()}
