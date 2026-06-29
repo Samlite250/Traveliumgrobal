@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
 import {
@@ -55,11 +55,16 @@ export default function Dashboard() {
         }
         const q = query(
             collection(db, 'applications'),
-            where('user_id', '==', currentUser.uid),
-            orderBy('created_at', 'desc')
+            where('user_id', '==', currentUser.uid)
         )
         getDocs(q).then(snap => {
-            setApplications(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+            const apps = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            apps.sort((a, b) => {
+                const ta = a.created_at?.toMillis?.() || a.created_at?.seconds || 0
+                const tb = b.created_at?.toMillis?.() || b.created_at?.seconds || 0
+                return tb - ta
+            })
+            setApplications(apps)
             setLoading(false)
         }).catch(err => {
             console.error("Dashboard data load error:", err)

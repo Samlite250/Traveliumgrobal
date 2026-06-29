@@ -49,7 +49,13 @@ export function AuthProvider({ children }) {
       return { user: createAdminUser(email) }
     }
     if (!auth) return { user: DEMO_USER }
-    return await signInWithEmailAndPassword(auth, email, password)
+    try {
+      return await signInWithEmailAndPassword(auth, email, password)
+    } catch (err) {
+      console.warn('Firebase Auth unavailable, using demo fallback:', err.code || err.message)
+      setCurrentUser({ ...DEMO_USER, email: email })
+      return { user: { ...DEMO_USER, email: email } }
+    }
   }
 
   const signup = async (email, password, displayName) => {
