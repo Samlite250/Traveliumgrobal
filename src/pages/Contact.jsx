@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 
 export default function Contact() {
@@ -14,13 +15,17 @@ export default function Contact() {
         e.preventDefault()
         setLoading(true)
         setStatus(null)
-        const { error } = await supabase.from('contacts').insert([form])
-        setLoading(false)
-        if (error) {
-            setStatus({ type: 'error', msg: 'Something went wrong. Please try again.' })
-        } else {
+        try {
+            await addDoc(collection(db, 'contacts'), {
+                ...form,
+                created_at: serverTimestamp()
+            })
             setStatus({ type: 'success', msg: 'Message sent! We\'ll get back to you within 24 hours.' })
             setForm({ name: '', email: '', phone: '', subject: '', message: '' })
+        } catch (error) {
+            setStatus({ type: 'error', msg: 'Something went wrong. Please try again.' })
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -54,16 +59,29 @@ export default function Contact() {
                                 </div>
                                 <div className="contact-item">
                                     <div className="contact-item-icon"><Phone size={20} /></div>
-                                    <div>
-                                        <h4>Phone Number</h4>
-                                        <p>+250 788207455</p>
+                                    <div className="contact-phone-list">
+                                        <h4>TRAVELIUM SUPPORT</h4>
+                                        <div className="phone-entry">
+                                            <p><strong>+250782531515</strong></p>
+                                            <small>Travelium Support</small>
+                                        </div>
+                                        <div className="phone-entry">
+                                            <p><strong>+250796230619</strong></p>
+                                            <small>Assistant</small>
+                                            <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
+                                        </div>
+                                        <div className="phone-entry">
+                                            <p><strong>+250793658206</strong></p>
+                                            <small>Support & Inquiry</small>
+                                            <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="contact-item">
                                     <div className="contact-item-icon"><Mail size={20} /></div>
                                     <div>
                                         <h4>Email Address</h4>
-                                        <p>info@traveliumglobal.com</p>
+                                        <p>traveliumgrobal@gmail.com</p>
                                     </div>
                                 </div>
                                 <div className="contact-item">

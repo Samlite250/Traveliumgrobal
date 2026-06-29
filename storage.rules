@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Application documents ──────────────────────────────────────────────────
+    // Authenticated users may upload files under their own uid folder.
+    // Admin may read any application file.
+    match /applications/{uid}/{allPaths=**} {
+      allow write: if request.auth != null && request.auth.uid == uid;
+      allow read:  if request.auth != null && (
+        request.auth.uid == uid ||
+        request.auth.token.email in ['traveliumgrobal@gmail.com', 'samlite250@gmail.com']
+      );
+    }
+  }
+}

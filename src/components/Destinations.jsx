@@ -1,66 +1,65 @@
 import { Link } from 'react-router-dom'
-import { School, Landmark, ArrowRight } from 'lucide-react'
+import { Briefcase, TrendingUp, ArrowRight, Star, Sparkles, Globe } from 'lucide-react'
 
 const destinations = [
-    {
-        flag: 'https://flagcdn.com/w80/ca.png', name: 'Canada',
-        img: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=800&auto=format&fit=crop',
-        universities: '80+', tuition: 'CAD 15K – 25K',
-    },
-    {
-        flag: 'https://flagcdn.com/w80/us.png', name: 'United States',
-        img: 'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=800&auto=format&fit=crop',
-        universities: '100+', tuition: 'USD 20K – 45K',
-    },
-    {
-        flag: 'https://flagcdn.com/w80/gb.png', name: 'United Kingdom',
-        img: 'https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?q=80&w=800&auto=format&fit=crop',
-        universities: '80+', tuition: 'GBP 15K – 35K',
-    },
-    {
-        flag: 'https://flagcdn.com/w80/au.png', name: 'Australia',
-        img: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=800&auto=format&fit=crop',
-        universities: '50+', tuition: 'AUD 20K – 35K',
-    },
-    {
-        flag: 'https://flagcdn.com/w80/de.png', name: 'Germany',
-        img: 'https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=800&auto=format&fit=crop',
-        universities: '40+', tuition: 'EUR 5K – 15K',
-    },
+    { id: 'ae', flag: 'https://flagcdn.com/w80/ae.png', name: 'Dubai, UAE', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop', jobs: '10k+', salary: 'AED 8k+', featured: true, tag: 'Most Popular' },
+    { id: 'ca', flag: 'https://flagcdn.com/w80/ca.png', name: 'Canada', img: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=800&auto=format&fit=crop', jobs: '5k+', salary: 'CAD 50k+', featured: true },
+    { id: 'us', flag: 'https://flagcdn.com/w80/us.png', name: 'United States', img: 'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=800&auto=format&fit=crop', jobs: '6k+', salary: 'USD 55k+', featured: true },
+    { id: 'gb', flag: 'https://flagcdn.com/w80/gb.png', name: 'United Kingdom', img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800&auto=format&fit=crop', jobs: '4.5k+', salary: 'GBP 35k+' },
+    { id: 'de', flag: 'https://flagcdn.com/w80/de.png', name: 'Germany', img: 'https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=800&auto=format&fit=crop', jobs: '3k+', salary: 'EUR 35k+' },
+    { id: 'fr', flag: 'https://flagcdn.com/w80/fr.png', name: 'France', img: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop', jobs: '2.5k+', salary: 'EUR 30k+' },
+    { id: 'om', flag: 'https://flagcdn.com/w80/om.png', name: 'Oman', img: 'https://images.unsplash.com/photo-1549474843-ed29a439266e?q=80&w=800&auto=format&fit=crop', jobs: '2k+', salary: 'OMR 500+' },
+    { id: 'cn', flag: 'https://flagcdn.com/w80/cn.png', name: 'China', img: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=800&auto=format&fit=crop', jobs: '8k+', salary: 'CNY 15k+', tag: 'High Demand' },
+    { id: 'jp', flag: 'https://flagcdn.com/w80/jp.png', name: 'Japan', img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop', jobs: '4k+', salary: 'JPY 300k+' },
+    { id: 'nl', flag: 'https://flagcdn.com/w80/nl.png', name: 'Netherlands', img: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=800&auto=format&fit=crop', jobs: '1.5k+', salary: 'EUR 40k+' },
 ]
 
 export default function Destinations() {
     return (
-        <section className="destinations section">
+        <section className="destinations-premium section-padding">
             <div className="container">
-                <div className="section-header">
-                    <div className="section-label">Top Picks</div>
-                    <h2 className="section-title">Popular Destinations</h2>
-                    <p className="section-sub">
-                        Explore top study destinations with world-class universities
+                <div className="premium-section-header text-center">
+                    <span className="p-badge">
+                        <Sparkles size={14} className="icon-gold" /> Global Opportunities
+                    </span>
+                    <h2>Featured Destinations</h2>
+                    <p className="mx-auto">
+                        Explore verified career pathways in the world's most stable economies.
                     </p>
                 </div>
-                <div className="destinations-grid">
+
+                <div className="destinations-grid-premium">
                     {destinations.map(d => (
-                        <div key={d.name} className="destination-card reveal">
-                            <div className="destination-img">
-                                <img src={d.img} alt={d.name} />
-                                <img src={d.flag} className="destination-flag" alt={`${d.name} Flag`} />
-                            </div>
-                            <div className="destination-info">
-                                <div className="destination-name">{d.name}</div>
-                                <div className="destination-meta">
-                                    <School size={14} style={{ marginRight: '4px' }} />
-                                    Top Universities: {d.universities}
+                        <div
+                            key={d.id}
+                            className={`dest-card-v2 animate-reveal ${d.featured ? 'dest-card--featured' : ''}`}
+                        >
+                            <div className="dest-img-wrap">
+                                <img src={d.img} alt={d.name} className="main-img" />
+                                <div className="flag-overlay">
+                                    <img src={d.flag} alt={d.name} />
                                 </div>
-                                <div className="destination-tuition">
-                                    <Landmark size={14} style={{ marginRight: '4px' }} />
-                                    Avg. Tuition/Year: <strong>{d.tuition}</strong>
-                                </div>
+                                {d.tag && (
+                                    <div className="featured-pill">
+                                        <Star size={10} fill="currentColor" /> {d.tag}
+                                    </div>
+                                )}
                             </div>
-                            <Link to="/study-abroad" className="destination-btn">
-                                Explore <ArrowRight size={14} />
-                            </Link>
+
+                            <div className="dest-content">
+                                <h3>{d.name}</h3>
+                                <div className="dest-stats-row">
+                                    <div className="stat-pill">
+                                        <Briefcase size={12} /> {d.jobs}
+                                    </div>
+                                    <div className="stat-pill">
+                                        <TrendingUp size={12} /> {d.salary}
+                                    </div>
+                                </div>
+                                <Link to="/visa-services" className="dest-action-link">
+                                    Explore Program <ArrowRight size={14} />
+                                </Link>
+                            </div>
                         </div>
                     ))}
                 </div>

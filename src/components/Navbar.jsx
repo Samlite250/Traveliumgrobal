@@ -22,36 +22,22 @@ const visaServicesDropdown = [
 ]
 
 const workAbroadDropdown = [
-    {
-        label: 'Dubai',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: 'Hot',
-        sub: 'UAE Work Visa'
-    },
-    {
-        label: 'Tokyo',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: 'New',
-        sub: 'Japan Work Permit'
-    },
-    {
-        label: 'Germany',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: null,
-        sub: 'EU Blue Card'
-    },
-    {
-        label: 'France',
-        href: '/visa-services',
-        icon: <MapPin size={15} />,
-        tag: null,
-        sub: 'Talent Passport Visa'
-    },
+    { label: 'Dubai', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Hot', sub: 'UAE Work Visa' },
+    { label: 'Canada', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Hot', sub: 'Express Entry' },
+    { label: 'USA', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Trending', sub: 'H-1B Work Visa' },
+    { label: 'UK', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Skilled Worker' },
+    { label: 'Germany', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'EU Blue Card' },
+    { label: 'France', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Talent Passport' },
+    { label: 'Oman', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'Oman Work Permit' },
+    { label: 'China', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'China Z-Visa' },
+    { label: 'Japan', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'Work Permit' },
+    { label: 'Netherlands', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Skilled Migrant' },
 ]
 
+const flightsDropdown = [
+    { label: 'Buy Ticket', href: '/buy-ticket', icon: <Send size={15} /> },
+    { label: 'Book Flight', href: '/flights', icon: <Plane size={15} /> },
+];
 const staticLinks = [
     { label: 'About Us', href: '/about', icon: <Info size={16} /> },
     { label: 'Contact Us', href: '/contact', icon: <PhoneCall size={16} /> },
@@ -152,6 +138,7 @@ export default function Navbar() {
     const [studyAbroadOpen, setStudyAbroadOpen] = useState(false)
     const [visaServicesOpen, setVisaServicesOpen] = useState(false)
     const [workAbroadOpen, setWorkAbroadOpen] = useState(false)
+    const [flightsOpen, setFlightsOpen] = useState(false)
     const location = useLocation()
 
     useEffect(() => {
@@ -160,7 +147,13 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', onScroll)
     }, [])
 
-    useEffect(() => { setMenuOpen(false) }, [location])
+    useEffect(() => {
+        setMenuOpen(false)
+        setStudyAbroadOpen(false)
+        setVisaServicesOpen(false)
+        setWorkAbroadOpen(false)
+        setFlightsOpen(false)
+    }, [location])
 
     useEffect(() => {
         if (menuOpen) {
@@ -181,8 +174,8 @@ export default function Navbar() {
             <div className="topbar">
                 <div className="container">
                     <div className="topbar-left">
-                        <a href="mailto:info@traveliumglobal.com" className="topbar-link"><Mail size={12} /> info@traveliumglobal.com</a>
-                        <a href="tel:+250788207455" className="topbar-link"><Phone size={12} /> +250 788207455</a>
+                        <a href="mailto:traveliumgrobal@gmail.com" className="topbar-link"><Mail size={12} /> traveliumgrobal@gmail.com</a>
+                        <a href="tel:+250782531515" className="topbar-link"><Phone size={12} /> +250 782531515</a>
                     </div>
                     <div className="topbar-right">
                         <a href="#" aria-label="LinkedIn"><Globe size={12} /></a>
@@ -210,6 +203,7 @@ export default function Navbar() {
                         <DropdownLink label="Study Abroad" icon={<GraduationCap size={16} />} items={studyAbroadDropdown} />
                         <DropdownLink label="Visa Services" icon={<Landmark size={16} />} items={visaServicesDropdown} />
                         <WorkAbroadDropdown />
+                        <DropdownLink label="Flights" icon={<Plane size={16} />} items={flightsDropdown} />
                         {staticLinks.map(l => (
                             <li key={l.href}>
                                 <Link to={l.href} className={location.pathname === l.href ? 'active' : ''}>
@@ -319,6 +313,30 @@ export default function Navbar() {
                                     <FileText size={15} /> <span className="mobile-link-text">View All Work Visas</span>
                                 </Link>
                             </li>
+                        </ul>
+                    </li>
+
+                    <li className={`mobile-accordion ${flightsOpen ? 'open' : ''}`}>
+                        <button className="mobile-accordion-trigger" onClick={() => setFlightsOpen(!flightsOpen)}>
+                            <span className="trigger-label">
+                                <Plane size={16} /> <span className="mobile-link-text">Flights</span>
+                            </span>
+                            <ChevronDown size={14} className="chevron" />
+                        </button>
+                        <ul className="mobile-accordion-menu">
+                            {flightsDropdown.map(item => (
+                                <li key={item.label}>
+                                    {item.href.startsWith('http') ? (
+                                        <a href={item.href} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)}>
+                                            {item.icon} <span className="mobile-link-text">{item.label}</span>
+                                        </a>
+                                    ) : (
+                                        <Link to={item.href} onClick={() => setMenuOpen(false)}>
+                                            {item.icon} <span className="mobile-link-text">{item.label}</span>
+                                        </Link>
+                                    )}
+                                </li>
+                            ))}
                         </ul>
                     </li>
 

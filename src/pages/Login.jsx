@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
+import { isAdmin } from '../lib/firebase'
 import { Plane, CheckCircle, ArrowRight, Mail, Lock, User } from 'lucide-react'
 
 export default function Login() {
@@ -9,6 +10,7 @@ export default function Login() {
     const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
+    const { login, signup } = useAuth()
 
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
@@ -16,19 +18,16 @@ export default function Login() {
         e.preventDefault()
         setLoading(true)
         setStatus(null)
-
-        if (tab === 'login') {
-            const { error } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
-            if (error) setStatus({ type: 'error', msg: error.message })
-            else navigate('/dashboard')
-        } else {
-            const { error } = await supabase.auth.signUp({
-                email: form.email,
-                password: form.password,
-                options: { data: { full_name: form.full_name } }
-            })
-            if (error) setStatus({ type: 'error', msg: error.message })
-            else setStatus({ type: 'success', msg: 'Account created! Please check your email to verify.' })
+        try {
+            if (tab === 'login') {
+                const { user } = await login(form.email.trim(), form.password.trim())
+                navigate(isAdmin(user) ? '/admin' : '/dashboard')
+            } else {
+                await signup(form.email.trim(), form.password.trim(), form.full_name)
+                navigate('/dashboard')
+            }
+        } catch (err) {
+            setStatus({ type: 'error', msg: err.message })
         }
         setLoading(false)
     }
@@ -88,7 +87,7 @@ export default function Login() {
                                 <label>Password *</label>
                                 <div className="input-with-icon">
                                     <Lock size={18} />
-                                    <input type="password" name="password" value={form.password} onChange={set} required placeholder={tab === 'signup' ? 'Min. 8 characters' : 'Enter your password'} minLength={6} />
+                                    <input type="password" name="password" value={form.password} onChange={set} required placeholder={tab === 'signup' ? 'Min. 6 characters' : 'Enter your password'} minLength={6} />
                                 </div>
                             </div>
                             {tab === 'login' && (
@@ -110,8 +109,8 @@ export default function Login() {
 
                         <p className="auth-link">
                             {tab === 'login'
-                                ? <>Don't have an account? <button className="text-btn" onClick={() => setTab('signup')}>Sign Up</button></>
-                                : <>Already have an account? <button className="text-btn" onClick={() => setTab('login')}>Login</button></>
+                                ? <> Don't have an account? <button className="text-btn" onClick={() => setTab('signup')}>Sign Up</button></>
+                                : <> Already have an account? <button className="text-btn" onClick={() => setTab('login')}>Login</button></>
                             }
                         </p>
                     </div>

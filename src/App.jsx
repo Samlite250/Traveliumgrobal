@@ -1,8 +1,10 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import LoadingScreen from './components/LoadingScreen'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { isAdmin } from './lib/firebase'
 
 const Home = lazy(() => import('./pages/Home'))
 const StudyAbroad = lazy(() => import('./pages/StudyAbroad'))
@@ -13,15 +15,32 @@ const Contact = lazy(() => import('./pages/Contact'))
 const Apply = lazy(() => import('./pages/Apply'))
 const Login = lazy(() => import('./pages/Login'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
-const Admin = lazy(() => import('./pages/Admin'))
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
+const AdminLogin = lazy(() => import('./pages/AdminLogin'))
+const Flights = lazy(() => import('./pages/Flights'))
+const BuyTicket = lazy(() => import('./pages/BuyTicket'))
+
+function ProtectedRoute({ children }) {
+    const { currentUser } = useAuth()
+    if (currentUser === undefined) return <LoadingScreen />
+    if (!currentUser) return <Navigate to="/login" replace />
+    return children
+}
+
+function AdminRoute({ children }) {
+    const { currentUser } = useAuth()
+    if (currentUser === undefined) return <LoadingScreen />
+    if (!currentUser || !isAdmin(currentUser)) return <Navigate to="/" replace />
+    return children
+}
 
 function AppLayout() {
     const location = useLocation()
-    const isAdmin = location.pathname.startsWith('/admin')
+    const hideUI = location.pathname.startsWith('/admin') || location.pathname === '/travelium-admin-login'
 
     return (
         <>
-            {!isAdmin && <Navbar />}
+            {!hideUI && <Navbar />}
             <Suspense fallback={<LoadingScreen />}>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -30,21 +49,32 @@ function AppLayout() {
                     <Route path="/scholarships" element={<Scholarships />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
-                    <Route path="/apply" element={<Apply />} />
+                    <Route path="/flights" element={<Flights />} />
+                    <Route path="/buy-ticket" element={<BuyTicket />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/apply" element={
+                        <ProtectedRoute><Apply /></ProtectedRoute>
+                    } />
+                    <Route path="/dashboard" element={
+                        <ProtectedRoute><Dashboard /></ProtectedRoute>
+                    } />
+                    <Route path="/admin" element={
+                        <AdminRoute><AdminDashboard /></AdminRoute>
+                    } />
+                    <Route path="/travelium-admin-login" element={<AdminLogin />} />
                 </Routes>
             </Suspense>
-            {!isAdmin && <Footer />}
+            {!hideUI && <Footer />}
         </>
     )
 }
 
 export default function App() {
     return (
-        <BrowserRouter>
-            <AppLayout />
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <AuthProvider>
+                <AppLayout />
+            </AuthProvider>
         </BrowserRouter>
     )
 }
