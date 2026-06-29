@@ -67,9 +67,11 @@ export default function Apply() {
 
             setUploadProgress('Saving your application...')
 
+            const docs = { passport: passportUrl, diploma: diplomaUrl, id_card: idCardUrl }
+
             if (!db) {
                 const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
-                existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: { passport: null, diploma: null, id_card: null }, created_at: new Date().toISOString(), saved_at: Date.now() })
+                existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: docs, created_at: new Date().toISOString(), saved_at: Date.now() })
                 localStorage.setItem('travelium_applications', JSON.stringify(existing))
             } else {
                 await addDoc(collection(db, 'applications'), {
@@ -79,7 +81,7 @@ export default function Apply() {
                     education_level: form.education_level, message: form.message,
                     user_id: uid, user_email: currentUser.email,
                     status: 'pending',
-                    documents: { passport: passportUrl || null, diploma: diplomaUrl || null, id_card: idCardUrl || null },
+                    documents: docs,
                     created_at: serverTimestamp(), updated_at: serverTimestamp(),
                 })
             }
@@ -95,7 +97,7 @@ export default function Apply() {
         } catch (err) {
             console.error('[Apply] Submission error:', err)
             const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
-            existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: { passport: null, diploma: null, id_card: null }, created_at: new Date().toISOString(), saved_at: Date.now() })
+            existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: { passport: passportUrl, diploma: diplomaUrl, id_card: idCardUrl }, created_at: new Date().toISOString(), saved_at: Date.now() })
             localStorage.setItem('travelium_applications', JSON.stringify(existing))
             setStatus({ type: 'success' })
             toast('Application saved offline. We\'ll review it once synced.', 'success')

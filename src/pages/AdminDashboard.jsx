@@ -609,6 +609,7 @@ export default function AdminDashboard() {
                                         <th>Contact</th>
                                         <th>Service</th>
                                         <th>Destination</th>
+                                        <th>Docs</th>
                                         <th>Submitted</th>
                                         <th>Status</th>
                                         <th className="actions-col">Actions</th>
@@ -631,6 +632,14 @@ export default function AdminDashboard() {
                                             </td>
                                             <td><span className="service-type">{a.program_type?.replace(/_/g, ' ') || '\u2014'}</span></td>
                                             <td><div className="destination-pill"><Globe size={12} /><span>{a.destination || '\u2014'}</span></div></td>
+                                            <td>
+                                                <div className="doc-indicators">
+                                                    {a.documents?.passport && <span title="Passport uploaded"><FileText size={14} /></span>}
+                                                    {a.documents?.diploma && <span title="Diploma uploaded"><BookOpen size={14} /></span>}
+                                                    {a.documents?.id_card && <span title="ID Card uploaded"><FileText size={14} /></span>}
+                                                    {!a.documents?.passport && !a.documents?.diploma && !a.documents?.id_card && <span className="text-muted" style={{fontSize:'0.75rem'}}>\u2014</span>}
+                                                </div>
+                                            </td>
                                             <td><div className="date-cell"><Calendar size={12} /><span>{formatDate(a.created_at)}</span></div></td>
                                             <td>
                                                 <div className={`status-pill-admin ${statusConfig[a.status]?.class || 'st-pending'}`}>

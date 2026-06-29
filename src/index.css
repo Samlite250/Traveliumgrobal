@@ -7580,3 +7580,16 @@ main {
   font-weight: 500;
   flex-shrink: 0;
 }
+.doc-indicators {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.doc-indicators span {
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+  cursor: default;
+}
+.doc-indicators span:hover { opacity: 1; }
