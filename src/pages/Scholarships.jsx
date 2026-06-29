@@ -1,47 +1,36 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
-import { CalendarDays, ArrowRight } from 'lucide-react'
+import { collection, query, where, onSnapshot } from 'firebase/firestore'
+import { db } from '../lib/firebase'
+import { CalendarDays, ArrowRight, Loader2 } from 'lucide-react'
 
-const scholarships = [
-    {
-        amount: 'Full Fund', title: 'Commonwealth Scholarship',
-        country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png',
-        desc: 'Fully funded scholarships for students from developing countries to study in the UK.',
-        deadline: 'Dec 31, 2026',
-    },
-    {
-        amount: '$25,000', title: 'Chevening Scholarship',
-        country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png',
-        desc: 'UK government global scholarship program for future leaders and influencers.',
-        deadline: 'Nov 15, 2026',
-    },
-    {
-        amount: '$30,000', title: 'Fulbright Program',
-        country: 'United States', flag: 'https://flagcdn.com/w40/us.png',
-        desc: 'Prestigious international educational exchange program sponsored by the US government.',
-        deadline: 'Oct 15, 2026',
-    },
-    {
-        amount: '$20,000', title: 'Vanier Canada Graduate',
-        country: 'Canada', flag: 'https://flagcdn.com/w40/ca.png',
-        desc: 'For doctoral students who demonstrate leadership and academic excellence.',
-        deadline: 'Nov 1, 2026',
-    },
-    {
-        amount: 'Full Fund', title: 'DAAD Scholarship',
-        country: 'Germany', flag: 'https://flagcdn.com/w40/de.png',
-        desc: 'German Academic Exchange Service funding for international students in Germany.',
-        deadline: 'Jan 31, 2027',
-    },
-    {
-        amount: '$15,000', title: 'Australia Awards',
-        country: 'Australia', flag: 'https://flagcdn.com/w40/au.png',
-        desc: 'Long-term development awards funded by the Australian government for global students.',
-        deadline: 'Apr 30, 2027',
-    },
+const fallbackScholarships = [
+    { amount: 'Full Fund', title: 'Commonwealth Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'Fully funded scholarships for students from developing countries.', deadline: 'Dec 31, 2026' },
+    { amount: '$25,000', title: 'Chevening Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'UK government global scholarship program.', deadline: 'Nov 15, 2026' },
+    { amount: '$30,000', title: 'Fulbright Program', country: 'United States', flag: 'https://flagcdn.com/w40/us.png', desc: 'International exchange program sponsored by the US government.', deadline: 'Oct 15, 2026' },
+    { amount: '$20,000', title: 'Vanier Canada Graduate', country: 'Canada', flag: 'https://flagcdn.com/w40/ca.png', desc: 'For doctoral students with leadership excellence.', deadline: 'Nov 1, 2026' },
+    { amount: 'Full Fund', title: 'DAAD Scholarship', country: 'Germany', flag: 'https://flagcdn.com/w40/de.png', desc: 'German Academic Exchange Service funding.', deadline: 'Jan 31, 2027' },
+    { amount: '$15,000', title: 'Australia Awards', country: 'Australia', flag: 'https://flagcdn.com/w40/au.png', desc: 'Awards funded by the Australian government.', deadline: 'Apr 30, 2027' },
 ]
 
 export default function Scholarships() {
+    const [scholarships, setScholarships] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (!db) { setLoading(false); return }
+        const q = query(collection(db, 'services'), where('type', '==', 'scholarship'), where('active', '==', true))
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            setScholarships(data.length ? data : fallbackScholarships)
+            setLoading(false)
+        }, () => { setScholarships(fallbackScholarships); setLoading(false) })
+        return unsub
+    }, [])
+
+    const display = loading ? fallbackScholarships : scholarships
+
     return (
         <main>
             <div className="page-hero">
@@ -62,29 +51,33 @@ export default function Scholarships() {
                         <h2 className="section-title">Find Your Scholarship</h2>
                         <p className="section-sub">Browse top scholarships available for international students across the globe.</p>
                     </div>
+                    {loading && <div className="admin-loading"><Loader2 size={24} className="animate-spin" /><p>Loading scholarships...</p></div>}
                     <div className="scholarships-grid">
-                        {scholarships.map(s => (
-                            <div key={s.title} className="scholarship-card">
-                                <div className="scholarship-amount">{s.amount}</div>
-                                <div className="scholarship-body">
-                                    <h3>{s.title}</h3>
-                                    <div className="scholarship-country">
-                                        <img src={s.flag} alt={s.country} />
-                                        {s.country}
-                                    </div>
-                                    <p>{s.desc}</p>
-                                    <div className="scholarship-footer">
-                                        <span className="scholarship-deadline">
-                                            <CalendarDays size={14} />
-                                            Deadline: <strong>{s.deadline}</strong>
-                                        </span>
-                                        <Link to="/apply" className="btn btn-navy scholarship-apply-btn">
-                                            Apply <ArrowRight size={14} />
-                                        </Link>
+                        {display.map(s => {
+                            const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'Contact us')
+                            return (
+                                <div key={s.title} className="scholarship-card">
+                                    <div className="scholarship-amount">{amount}</div>
+                                    <div className="scholarship-body">
+                                        <h3>{s.title}</h3>
+                                        {s.country && <div className="scholarship-country">
+                                            {s.flag && <img src={s.flag} alt={s.country} />}
+                                            {s.country}
+                                        </div>}
+                                        <p>{s.description || s.desc}</p>
+                                        <div className="scholarship-footer">
+                                            {s.deadline && <span className="scholarship-deadline">
+                                                <CalendarDays size={14} />
+                                                Deadline: <strong>{s.deadline}</strong>
+                                            </span>}
+                                            <Link to="/apply" className="btn btn-navy scholarship-apply-btn">
+                                                Apply <ArrowRight size={14} />
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 </div>
             </section>

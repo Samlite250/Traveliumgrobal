@@ -1,35 +1,36 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Briefcase, Landmark, Palmtree, GraduationCap, ArrowRight } from 'lucide-react'
+import { collection, query, where, onSnapshot } from 'firebase/firestore'
+import { db } from '../lib/firebase'
+import { Briefcase, Landmark, Palmtree, GraduationCap, ArrowRight, Loader2 } from 'lucide-react'
 
-const services = [
-    {
-        icon: <Briefcase size={24} />, title: 'Dubai Work Visa',
-        img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop',
-        desc: 'Fast-track your UAE work visa. We handle the entire process — job offer verification, Emirates ID, and more.',
-        href: '/visa-services',
-        featured: true,
-    },
-    {
-        icon: <Landmark size={24} />, title: 'Work Visa (Global)',
-        img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop',
-        desc: 'Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.',
-        href: '/visa-services',
-    },
-    {
-        icon: <Palmtree size={24} />, title: 'Tourist Visa',
-        img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop',
-        desc: 'Travel the world with ease. We handle your tourist visa process end-to-end.',
-        href: '/visa-services',
-    },
-    {
-        icon: <GraduationCap size={24} />, title: 'Study Abroad',
-        img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop',
-        desc: 'Discover the best universities and programs worldwide with our expert academic guidance.',
-        href: '/study-abroad',
-    },
+const fallbackServices = [
+    { title: 'Dubai Work Visa', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop', desc: 'Fast-track your UAE work visa.', href: '/visa-services', featured: true },
+    { title: 'Work Visa (Global)', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop', desc: 'Employment-based visas for 50+ destinations.', href: '/visa-services' },
+    { title: 'Tourist Visa', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', desc: 'Travel the world with ease.', href: '/visa-services' },
+    { title: 'Study Abroad', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop', desc: 'Discover best universities worldwide.', href: '/study-abroad' },
 ]
 
+const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-abroad', scholarship: '/scholarships' }
+const iconMap = { visa: <Briefcase size={24} />, flight: <Landmark size={24} />, study: <GraduationCap size={24} />, scholarship: <Palmtree size={24} /> }
+
 export default function Services() {
+    const [services, setServices] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (!db) { setLoading(false); return }
+        const q = query(collection(db, 'services'), where('active', '==', true))
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            setServices(data.length ? data : fallbackServices)
+            setLoading(false)
+        }, () => { setServices(fallbackServices); setLoading(false) })
+        return unsub
+    }, [])
+
+    const display = loading ? fallbackServices : services.filter(s => s.active !== false || loading)
+
     return (
         <section className="services section">
             <div className="container">
@@ -40,17 +41,18 @@ export default function Services() {
                         Comprehensive work visa & career relocation support — from Dubai to the world
                     </p>
                 </div>
+                {loading && <div className="admin-loading"><Loader2 size={24} className="animate-spin" /></div>}
                 <div className="services-grid">
-                    {services.map(s => (
+                    {display.slice(0, 8).map(s => (
                         <div key={s.title} className={`service-card reveal${s.featured ? ' service-card--featured' : ''}`}>
                             <div className="service-img">
-                                <img src={s.img} alt={s.title} />
+                                <img src={s.img || 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop'} alt={s.title} />
                             </div>
                             <div className="service-content">
-                                <div className="service-icon">{s.icon}</div>
-                                <h3>{s.title}</h3>
-                                <p>{s.desc}</p>
-                                <Link to={s.href} className="service-link">
+                                <div className="service-icon">{iconMap[s.type] || <Briefcase size={24} />}</div>
+                                <h3>{s.name || s.title}</h3>
+                                <p>{s.description || s.desc}</p>
+                                <Link to={typeHref[s.type] || '/visa-services'} className="service-link">
                                     Learn More <ArrowRight size={16} />
                                 </Link>
                             </div>

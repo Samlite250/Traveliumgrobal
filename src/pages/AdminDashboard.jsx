@@ -92,7 +92,7 @@ export default function AdminDashboard() {
 
     // Service editor state
     const [editingService, setEditingService] = useState(null)
-    const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', features: '', active: true })
+    const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
     const [showServiceEditor, setShowServiceEditor] = useState(false)
     // Transaction editor state
     const [editingTx, setEditingTx] = useState(null)
@@ -227,12 +227,12 @@ export default function AdminDashboard() {
                 await addDoc(collection(db, 'services'), { ...data, created_at: serverTimestamp() })
             }
             setShowServiceEditor(false); setEditingService(null)
-            setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true })
+            setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
         } catch (err) { console.error('Service save error:', err) }
     }
     const editService = (s) => {
         setEditingService(s)
-        setServiceForm({ name: s.name || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), features: (s.features || []).join('\n'), active: s.active !== false })
+        setServiceForm({ name: s.name || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), features: (s.features || []).join('\n'), active: s.active !== false, featured: s.featured || false, country: s.country || '', flag: s.flag || '', deadline: s.deadline || '', img: s.img || '' })
         setShowServiceEditor(true)
     }
     const deleteService = async (id) => { try { await deleteDoc(doc(db, 'services', id)) } catch (err) { console.error('Service delete error:', err) } }
@@ -786,7 +786,7 @@ export default function AdminDashboard() {
             <>
                 <div className="admin-filter-bar">
                     <div className="filters-group">
-                        <button className="admin-btn-primary" onClick={() => { setEditingService(null); setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true }); setShowServiceEditor(true) }}>
+                        <button className="admin-btn-primary" onClick={() => { setEditingService(null); setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' }); setShowServiceEditor(true) }}>
                             <Plus size={16} /> New Service
                         </button>
                     </div>
@@ -853,6 +853,26 @@ export default function AdminDashboard() {
                                         </select>
                                     </div>
                                 </div>
+                                <div className="form-row">
+                                    <div className="form-group"><label>Featured</label>
+                                        <select className="admin-note-input" value={serviceForm.featured ? 'yes' : 'no'} onChange={e => setServiceForm(f => ({ ...f, featured: e.target.value === 'yes' }))}>
+                                            <option value="no">No</option><option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group"><label>Image URL</label><input className="admin-note-input" value={serviceForm.img} onChange={e => setServiceForm(f => ({ ...f, img: e.target.value }))} placeholder="https://images.unsplash.com/..." /></div>
+                                </div>
+                                {serviceForm.type === 'scholarship' && (
+                                    <div className="form-row">
+                                        <div className="form-group"><label>Country</label><input className="admin-note-input" value={serviceForm.country} onChange={e => setServiceForm(f => ({ ...f, country: e.target.value }))} placeholder="e.g. United Kingdom" /></div>
+                                        <div className="form-group"><label>Flag URL</label><input className="admin-note-input" value={serviceForm.flag} onChange={e => setServiceForm(f => ({ ...f, flag: e.target.value }))} placeholder="https://flagcdn.com/w40/gb.png" /></div>
+                                    </div>
+                                )}
+                                {serviceForm.type === 'scholarship' && (
+                                    <div className="form-row">
+                                        <div className="form-group"><label>Deadline</label><input className="admin-note-input" value={serviceForm.deadline} onChange={e => setServiceForm(f => ({ ...f, deadline: e.target.value }))} placeholder="e.g. Dec 31, 2026" /></div>
+                                        <div className="form-group" />
+                                    </div>
+                                )}
                                 <div className="form-group"><label>Features (one per line)</label><textarea className="admin-note-input" rows="4" value={serviceForm.features} onChange={e => setServiceForm(f => ({ ...f, features: e.target.value }))} placeholder="Free consultation&#10;Fast processing&#10;Online tracking" /></div>
                             </div>
                             <div className="admin-modal-footer">

@@ -1,50 +1,19 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
-import { Briefcase, Globe, GraduationCap, Home, CheckCircle, ArrowRight, Star, Zap, Flame } from 'lucide-react'
+import { collection, query, where, onSnapshot } from 'firebase/firestore'
+import { db } from '../lib/firebase'
+import { Briefcase, Globe, GraduationCap, Home, CheckCircle, ArrowRight, Star, Zap, Flame, Loader2 } from 'lucide-react'
 
-const visas = [
-    {
-        icon: <Briefcase size={28} />,
-        title: 'Dubai / UAE Work Visa',
-        img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop',
-        desc: 'Fast-track your UAE work visa. Tax-free salaries, world-class lifestyle, and thousands of open roles across every industry.',
-        price: 'From $299',
-        featured: true,
-        features: ['Job offer verification & matching', 'Emirates ID & residency processing', 'Work permit full documentation', 'Employer liaison & follow-up'],
-    },
-    {
-        icon: <Briefcase size={28} />,
-        title: 'Work Visa (Global)',
-        img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop',
-        desc: 'Employment-based visas for Canada, UK, Germany, USA, Japan and more. Our 98% success rate covers 50+ destinations.',
-        price: 'From $399',
-        features: ['Job offer verification', 'Work permit processing', 'Legal documentation', 'Employer liaison'],
-    },
-    {
-        icon: <Globe size={28} />,
-        title: 'Tourist Visa',
-        img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop',
-        desc: 'Short-term visitor visa for travel, tourism, and exploring new countries without the hassle.',
-        price: 'From $149',
-        features: ['Application filing', 'Travel itinerary planning', 'Hotel booking letter', 'Fast processing'],
-    },
-    {
-        icon: <GraduationCap size={28} />,
-        title: 'Student Visa',
-        img: 'https://images.unsplash.com/photo-1568792923760-d70635a89fdc?q=80&w=800&auto=format&fit=crop',
-        desc: 'Full enrollment student visa for accredited degree programs at partner universities worldwide.',
-        price: 'From $299',
-        features: ['University admission assistance', 'Document preparation', 'Visa interview coaching', 'Follow-up support'],
-    },
-    {
-        icon: <Home size={28} />,
-        title: 'Permanent Residency',
-        img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop',
-        desc: 'Pathway to permanent residency and long-term stay visas in top countries.',
-        price: 'From $999',
-        features: ['Eligibility assessment', 'Points-based system help', 'Family sponsorship', 'Legal counsel'],
-    },
+const fallbackVisas = [
+    { title: 'Dubai / UAE Work Visa', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop', desc: 'Fast-track your UAE work visa.', price: 299, featured: true, features: ['Job offer verification', 'Emirates ID processing'] },
+    { title: 'Work Visa (Global)', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop', desc: 'Employment visas for 50+ destinations.', price: 399, features: ['Work permit processing', 'Legal documentation'] },
+    { title: 'Tourist Visa', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', desc: 'Short-term visitor visa.', price: 149, features: ['Application filing', 'Fast processing'] },
+    { title: 'Student Visa', img: 'https://images.unsplash.com/photo-1568792923760-d70635a89fdc?q=80&w=800&auto=format&fit=crop', desc: 'Full enrollment student visa.', price: 299, features: ['University admission', 'Visa coaching'] },
+    { title: 'Permanent Residency', img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop', desc: 'Pathway to PR.', price: 999, features: ['Eligibility assessment', 'Legal counsel'] },
 ]
+
+const iconMap = { 'Dubai / UAE Work Visa': <Briefcase size={28} />, 'Work Visa (Global)': <Briefcase size={28} />, 'Tourist Visa': <Globe size={28} />, 'Student Visa': <GraduationCap size={28} />, 'Permanent Residency': <Home size={28} /> }
 
 const dubaiHighlights = [
     { icon: '💰', title: 'Tax-Free Income', desc: 'Keep 100% of your earnings — zero income tax in the UAE' },
@@ -54,6 +23,22 @@ const dubaiHighlights = [
 ]
 
 export default function VisaServices() {
+    const [visas, setVisas] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (!db) { setLoading(false); return }
+        const q = query(collection(db, 'services'), where('type', '==', 'visa'), where('active', '==', true))
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            setVisas(data.length ? data : fallbackVisas)
+            setLoading(false)
+        }, () => { setVisas(fallbackVisas); setLoading(false) })
+        return unsub
+    }, [])
+
+    const display = loading ? fallbackVisas : visas
+
     return (
         <main>
             <div className="page-hero">
@@ -104,8 +89,9 @@ export default function VisaServices() {
                         <h2 className="section-title">Visa Types We Handle</h2>
                         <p className="section-sub">Work visas are our speciality — but we've got you covered for every journey type.</p>
                     </div>
+                    {loading && <div className="admin-loading"><Loader2 size={24} className="animate-spin" /><p>Loading services...</p></div>}
                     <div className="visa-types-grid">
-                        {visas.map(v => (
+                        {display.map(v => (
                             <div key={v.title} className={`visa-card${v.featured ? ' visa-card--featured' : ''}`}>
                                 {v.featured && (
                                     <div className="visa-featured-badge">
@@ -113,15 +99,15 @@ export default function VisaServices() {
                                     </div>
                                 )}
                                 <div className="visa-card-img">
-                                    <img src={v.img} alt={v.title} />
+                                    <img src={v.img || 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop'} alt={v.title} />
                                 </div>
                                 <div className="visa-card-body">
-                                    <div className="visa-icon">{v.icon}</div>
+                                    <div className="visa-icon">{iconMap[v.title] || <Briefcase size={28} />}</div>
                                     <h3>{v.title}</h3>
-                                    <p>{v.desc}</p>
-                                    <div className="visa-price">{v.price}</div>
+                                    <p>{v.description || v.desc}</p>
+                                    <div className="visa-price">{v.price ? `From $${v.price}` : 'Contact us'}</div>
                                     <ul className="visa-features">
-                                        {v.features.map(f => (
+                                        {(v.features || []).map(f => (
                                             <li key={f}>
                                                 <CheckCircle size={14} className="check-icon" />
                                                 {f}
