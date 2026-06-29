@@ -36,7 +36,7 @@ function AdminRoute({ children }) {
 
 function AppLayout() {
     const location = useLocation()
-    const hideUI = location.pathname.startsWith('/admin') || location.pathname === '/travelium-admin-login'
+    const hideUI = location.pathname.startsWith('/admin') || location.pathname === '/admi-login'
 
     return (
         <>
@@ -61,7 +61,7 @@ function AppLayout() {
                     <Route path="/admin" element={
                         <AdminRoute><AdminDashboard /></AdminRoute>
                     } />
-                    <Route path="/travelium-admin-login" element={<AdminLogin />} />
+                    <Route path="/admi-login" element={<AdminLogin />} />
                 </Routes>
             </Suspense>
             {!hideUI && <Footer />}
