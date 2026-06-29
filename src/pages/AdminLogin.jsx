@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import { ADMIN_EMAILS } from '../lib/firebase'
 import { ShieldCheck, Mail, Lock, ArrowRight, Home } from 'lucide-react'
 
@@ -11,6 +12,7 @@ export default function AdminLogin() {
     const [loading, setLoading] = useState(false)
     const { login, currentUser } = useAuth()
     const navigate = useNavigate()
+    const toast = useToast()
 
     useEffect(() => {
         if (currentUser && ADMIN_EMAILS.includes(currentUser.email)) {
@@ -27,9 +29,11 @@ export default function AdminLogin() {
             setError('')
             setLoading(true)
             await login(email.trim(), password.trim())
+            toast('Login successful. Welcome back!', 'success')
             navigate('/admin')
         } catch (err) {
             setError('Login failed. Please check your credentials.')
+            toast('Login failed. Please check your credentials.', 'error')
             console.error(err)
         } finally {
             setLoading(false)

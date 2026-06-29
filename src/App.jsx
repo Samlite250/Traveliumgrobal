@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import LoadingScreen from './components/LoadingScreen'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { ToastProvider } from './context/ToastContext'
 import { isAdmin } from './lib/firebase'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
@@ -75,7 +76,9 @@ export default function App() {
     return (
         <BrowserRouter future={{ v7_relativeSplatPath: true }}>
             <AuthProvider>
-                <AppLayout />
+                <ToastProvider>
+                    <AppLayout />
+                </ToastProvider>
             </AuthProvider>
         </BrowserRouter>
     )

@@ -4,6 +4,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import {
     Send, CheckCircle, ArrowRight, Globe, Info, Upload,
     Loader2, AlertCircle, LayoutDashboard, BookOpen
@@ -12,6 +13,7 @@ import {
 export default function Apply() {
     const { currentUser } = useAuth()
     const navigate = useNavigate()
+    const toast = useToast()
 
     const [form, setForm] = useState({
         full_name: '', email: '', phone: '', nationality: '',
@@ -91,6 +93,7 @@ export default function Apply() {
             })
 
             setStatus({ type: 'success' })
+            toast('Application submitted successfully! We\'ll review it shortly.', 'success')
             setForm({
                 full_name: '', email: currentUser.email || '', phone: '',
                 nationality: '', destination: '', program_type: '',
@@ -99,12 +102,11 @@ export default function Apply() {
             setFiles({ passport: null, diploma: null, id_card: null })
         } catch (err) {
             console.error('[Apply] Submission error:', err)
-            setStatus({
-                type: 'error',
-                msg: err.code === 'storage/unauthorized'
-                    ? 'File upload was blocked. Please contact support or try again.'
-                    : 'Submission failed: ' + err.message
-            })
+            const msg = err.code === 'storage/unauthorized'
+                ? 'File upload was blocked. Please contact support or try again.'
+                : 'Submission failed: ' + err.message
+            setStatus({ type: 'error', msg })
+            toast(msg, 'error')
         }
         setUploadProgress('')
         setLoading(false)

@@ -4,6 +4,7 @@ import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/f
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import {
     Plane, Send, CheckCircle, ArrowRight,
     Calendar, MapPin, Users, Upload,
@@ -12,6 +13,7 @@ import {
 
 export default function Flights() {
     const { currentUser } = useAuth()
+    const toast = useToast()
     const [siteSettings, setSiteSettings] = useState(null)
 
     useEffect(() => {
@@ -69,6 +71,7 @@ export default function Flights() {
                 created_at: serverTimestamp(),
             })
 
+            toast('Flight booking request submitted! Our travel agent will contact you shortly.', 'success')
             setStatus({ type: 'success', msg: 'Flight booking request submitted! Our travel agent will contact you with the best prices shortly.' })
             setForm({
                 full_name: '', email: '', phone: '',
@@ -78,6 +81,7 @@ export default function Flights() {
             })
             setFiles({ passport: null })
         } catch (error) {
+            toast('Submission failed: ' + error.message, 'error')
             setStatus({ type: 'error', msg: 'Submission failed: ' + error.message })
         } finally {
             setLoading(false)

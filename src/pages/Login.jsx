@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import { isAdmin } from '../lib/firebase'
 import { Plane, CheckCircle, ArrowRight, Mail, Lock, User } from 'lucide-react'
 
@@ -10,6 +11,7 @@ export default function Login() {
     const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
+    const toast = useToast()
     const { login, signup } = useAuth()
 
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
@@ -21,13 +23,16 @@ export default function Login() {
         try {
             if (tab === 'login') {
                 const { user } = await login(form.email.trim(), form.password.trim())
+                toast('Login successful!', 'success')
                 navigate(isAdmin(user) ? '/admin' : '/dashboard')
             } else {
                 await signup(form.email.trim(), form.password.trim(), form.full_name)
+                toast('Account created successfully!', 'success')
                 navigate('/dashboard')
             }
         } catch (err) {
             setStatus({ type: 'error', msg: err.message })
+            toast(err.message, 'error')
         }
         setLoading(false)
     }

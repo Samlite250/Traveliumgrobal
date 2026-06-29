@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { useToast } from '../context/ToastContext'
 import { CheckCircle, Clock, ShieldCheck, Ticket, ArrowRight, Info } from 'lucide-react'
 
 const WhatsAppIcon = ({ size = 18 }) => (
@@ -11,6 +12,7 @@ const WhatsAppIcon = ({ size = 18 }) => (
 )
 
 export default function BuyTicket() {
+    const toast = useToast()
     const [siteSettings, setSiteSettings] = useState(null)
 
     useEffect(() => {
@@ -96,7 +98,7 @@ export default function BuyTicket() {
                                     <li><CheckCircle size={16} /> Verified E-Tickets</li>
                                 </ul>
 
-                                <a href={`https://wa.me/${waNum}`} className="wa-btn-sm" target="_blank" rel="noopener noreferrer">
+                                <a href={`https://wa.me/${waNum}`} className="wa-btn-sm" target="_blank" rel="noopener noreferrer" onClick={() => toast('Opening WhatsApp chat...', 'info')}>
                                     <WhatsAppIcon size={18} /> Chat with Agent
                                 </a>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { useToast } from '../context/ToastContext'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 
 export default function Contact() {
@@ -9,6 +10,7 @@ export default function Contact() {
     const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
     const [siteSettings, setSiteSettings] = useState(null)
+    const toast = useToast()
 
     useEffect(() => {
         if (!db) return
@@ -31,9 +33,11 @@ export default function Contact() {
                 ...form,
                 created_at: serverTimestamp()
             })
+            toast('Message sent! We\'ll get back to you within 24 hours.', 'success')
             setStatus({ type: 'success', msg: 'Message sent! We\'ll get back to you within 24 hours.' })
             setForm({ name: '', email: '', phone: '', subject: '', message: '' })
         } catch (error) {
+            toast('Something went wrong. Please try again.', 'error')
             setStatus({ type: 'error', msg: 'Something went wrong. Please try again.' })
         } finally {
             setLoading(false)

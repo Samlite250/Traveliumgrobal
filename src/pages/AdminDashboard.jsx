@@ -6,6 +6,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import {
     Shield, LogOut, Users, ClipboardList, CheckCircle, XCircle,
     Clock, Loader2, FileText, Search, Filter, RefreshCw,
@@ -69,6 +70,7 @@ function timeAgo(ts) {
 
 export default function AdminDashboard() {
     const { currentUser, logout } = useAuth()
+    const toast = useToast()
     const navigate = useNavigate()
 
     const [activeTab, setActiveTab] = useState('overview')
@@ -221,28 +223,30 @@ export default function AdminDashboard() {
             const updateData = { status: newStatus, updated_at: serverTimestamp() }
             if (statusNote.trim()) updateData.admin_note = statusNote.trim()
             await updateDoc(doc(db, 'applications', id), updateData)
+            toast(`Application ${newStatus}.`, 'success')
             setStatusNote('')
             setShowNoteInput(null)
-        } catch (err) { console.error('Update error:', err) }
+        } catch (err) { console.error('Update error:', err); toast('Failed to update status.', 'error') }
         setUpdating(null)
     }
 
     const deleteApplication = async (id) => {
         try {
             await deleteDoc(doc(db, 'applications', id))
+            toast('Application deleted.', 'success')
             setDeleteConfirm(null)
             setSelectedApp(null)
-        } catch (err) { console.error('Delete error:', err) }
+        } catch (err) { console.error('Delete error:', err); toast('Failed to delete application.', 'error') }
     }
 
     const markMessageRead = async (id, read = true) => {
-        try { await updateDoc(doc(db, 'contacts', id), { read, read_at: serverTimestamp(), read_by: currentUser?.email }) }
-        catch (err) { console.error('Mark read error:', err) }
+        try { await updateDoc(doc(db, 'contacts', id), { read, read_at: serverTimestamp(), read_by: currentUser?.email }); toast(read ? 'Marked as read.' : 'Marked as unread.', 'info') }
+        catch (err) { console.error('Mark read error:', err); toast('Failed to update message.', 'error') }
     }
 
     const deleteMessage = async (id) => {
-        try { await deleteDoc(doc(db, 'contacts', id)); setSelectedMsg(null) }
-        catch (err) { console.error('Delete message error:', err) }
+        try { await deleteDoc(doc(db, 'contacts', id)); setSelectedMsg(null); toast('Message deleted.', 'success') }
+        catch (err) { console.error('Delete message error:', err); toast('Failed to delete message.', 'error') }
     }
 
     // ── Service CRUD ──
@@ -261,14 +265,18 @@ export default function AdminDashboard() {
             }
             setShowServiceEditor(false); setEditingService(null)
             setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
-        } catch (err) { console.error('Service save error:', err) }
+            toast(editingService ? 'Service updated.' : 'Service created.', 'success')
+        } catch (err) { console.error('Service save error:', err); toast('Failed to save service.', 'error') }
     }
     const editService = (s) => {
         setEditingService(s)
         setServiceForm({ name: s.name || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), features: (s.features || []).join('\n'), active: s.active !== false, featured: s.featured || false, country: s.country || '', flag: s.flag || '', deadline: s.deadline || '', img: s.img || '' })
         setShowServiceEditor(true)
     }
-    const deleteService = async (id) => { try { await deleteDoc(doc(db, 'services', id)) } catch (err) { console.error('Service delete error:', err) } }
+    const deleteService = async (id) => {
+        try { await deleteDoc(doc(db, 'services', id)); toast('Service deleted.', 'success') }
+        catch (err) { console.error('Service delete error:', err); toast('Failed to delete service.', 'error') }
+    }
 
     // ── Transaction CRUD ──
     const saveTx = async () => {
@@ -281,14 +289,18 @@ export default function AdminDashboard() {
             }
             setShowTxEditor(false); setEditingTx(null)
             setTxForm({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
-        } catch (err) { console.error('Tx save error:', err) }
+            toast(editingTx ? 'Transaction updated.' : 'Transaction created.', 'success')
+        } catch (err) { console.error('Tx save error:', err); toast('Failed to save transaction.', 'error') }
     }
     const editTx = (t) => {
         setEditingTx(t)
         setTxForm({ applicant_name: t.applicant_name || '', email: t.email || '', service_type: t.service_type || '', amount: String(t.amount || ''), currency: t.currency || 'USD', status: t.status || 'pending', payment_method: t.payment_method || '', notes: t.notes || '' })
         setShowTxEditor(true)
     }
-    const deleteTx = async (id) => { try { await deleteDoc(doc(db, 'transactions', id)) } catch (err) { console.error('Tx delete error:', err) } }
+    const deleteTx = async (id) => {
+        try { await deleteDoc(doc(db, 'transactions', id)); toast('Transaction deleted.', 'success') }
+        catch (err) { console.error('Tx delete error:', err); toast('Failed to delete transaction.', 'error') }
+    }
 
     // ── Settings CRUD ──
     const ALLOWED_SETTINGS = [
@@ -315,9 +327,9 @@ export default function AdminDashboard() {
         }
         try {
             await setDoc(doc(db, 'settings', 'site'), { ...payload, updated_at: serverTimestamp(), updated_by: currentUser?.email }, { merge: true })
-            setSettingsSaved(true); setTimeout(() => setSettingsSaved(false), 2500)
+            toast('Settings saved.', 'success')
             setSettingsForm(prev => ({ ...prev, ...payload }))
-        } catch (err) { console.error('Settings save error:', err) }
+        } catch (err) { console.error('Settings save error:', err); toast('Failed to save settings.', 'error') }
     }
     const initSettings = () => {
         const clean = {}
@@ -340,7 +352,7 @@ export default function AdminDashboard() {
         a.click(); URL.revokeObjectURL(url)
     }
 
-    const handleLogout = async () => { await logout(); navigate('/') }
+    const handleLogout = async () => { await logout(); toast('Logged out.', 'info'); navigate('/') }
 
     const recentActivity = useMemo(() => {
         const items = []
