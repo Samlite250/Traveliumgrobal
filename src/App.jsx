@@ -5,6 +5,8 @@ import Footer from './components/Footer'
 import LoadingScreen from './components/LoadingScreen'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { isAdmin } from './lib/firebase'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminLogin from './pages/AdminLogin'
 
 const Home = lazy(() => import('./pages/Home'))
 const StudyAbroad = lazy(() => import('./pages/StudyAbroad'))
@@ -15,8 +17,6 @@ const Contact = lazy(() => import('./pages/Contact'))
 const Apply = lazy(() => import('./pages/Apply'))
 const Login = lazy(() => import('./pages/Login'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
-const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
-const AdminLogin = lazy(() => import('./pages/AdminLogin'))
 const Flights = lazy(() => import('./pages/Flights'))
 const BuyTicket = lazy(() => import('./pages/BuyTicket'))
 
@@ -36,11 +36,12 @@ function AdminRoute({ children }) {
 
 function AppLayout() {
     const location = useLocation()
-    const hideUI = location.pathname.startsWith('/admin') || location.pathname === '/admi-login'
+    const adminPaths = ['/admin', '/admi-login']
+    const isAdminPath = adminPaths.includes(location.pathname)
 
     return (
         <>
-            {!hideUI && <Navbar />}
+            {!isAdminPath && <Navbar />}
             <Suspense fallback={<LoadingScreen />}>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -64,14 +65,14 @@ function AppLayout() {
                     <Route path="/admi-login" element={<AdminLogin />} />
                 </Routes>
             </Suspense>
-            {!hideUI && <Footer />}
+            {!isAdminPath && <Footer />}
         </>
     )
 }
 
 export default function App() {
     return (
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <BrowserRouter future={{ v7_relativeSplatPath: true }}>
             <AuthProvider>
                 <AppLayout />
             </AuthProvider>

@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 
@@ -8,6 +8,17 @@ export default function Contact() {
     const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' })
     const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [siteSettings, setSiteSettings] = useState(null)
+
+    useEffect(() => {
+        if (!db) return
+        const unsub = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
+            if (snap.exists()) setSiteSettings(snap.data())
+        })
+        return unsub
+    }, [])
+    const s = siteSettings || {}
+    const w = s.whatsappNumbers || []
 
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
@@ -54,7 +65,7 @@ export default function Contact() {
                                     <div className="contact-item-icon"><MapPin size={20} /></div>
                                     <div>
                                         <h4>Office Address</h4>
-                                        <p>123 Global Avenue, Suite 400,<br />New York, NY 10001, USA</p>
+                                        <p>{s.address || '123 Global Avenue, Suite 400,<br />New York, NY 10001, USA'}</p>
                                     </div>
                                 </div>
                                 <div className="contact-item">
@@ -62,9 +73,17 @@ export default function Contact() {
                                     <div className="contact-phone-list">
                                         <h4>TRAVELIUM SUPPORT</h4>
                                         <div className="phone-entry">
-                                            <p><strong>+250782531515</strong></p>
+                                            <p><strong>{s.supportPhone || '+250782531515'}</strong></p>
                                             <small>Travelium Support</small>
+                                            {s.supportPhone && <a href={`https://wa.me/${s.supportPhone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>}
                                         </div>
+                                        {w.length > 0 ? w.map((n, i) => (
+                                        <div className="phone-entry" key={i}>
+                                            <p><strong>{n.number}</strong></p>
+                                            <small>{n.label || (i === 0 ? 'Assistant' : 'Support & Inquiry')}</small>
+                                            <a href={`https://wa.me/${n.number.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
+                                        </div>
+                                        )) : (<>
                                         <div className="phone-entry">
                                             <p><strong>+250796230619</strong></p>
                                             <small>Assistant</small>
@@ -75,20 +94,21 @@ export default function Contact() {
                                             <small>Support & Inquiry</small>
                                             <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
                                         </div>
+                                        </>)}
                                     </div>
                                 </div>
                                 <div className="contact-item">
                                     <div className="contact-item-icon"><Mail size={20} /></div>
                                     <div>
                                         <h4>Email Address</h4>
-                                        <p>traveliumgrobal@gmail.com</p>
+                                        <p>{s.supportEmail || 'traveliumgrobal@gmail.com'}</p>
                                     </div>
                                 </div>
                                 <div className="contact-item">
                                     <div className="contact-item-icon"><Clock size={20} /></div>
                                     <div>
                                         <h4>Working Hours</h4>
-                                        <p>Mon – Sat: 9:00 AM – 7:00 PM</p>
+                                        <p>{s.workingHours || 'Mon – Sat: 9:00 AM – 7:00 PM'}</p>
                                     </div>
                                 </div>
                             </div>

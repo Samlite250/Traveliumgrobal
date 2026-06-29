@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import {
     Mail, Phone, Globe, Send, Play,
     Plane, GraduationCap, Landmark, Award, Info, PhoneCall,
@@ -135,6 +137,15 @@ function WorkAbroadDropdown() {
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
+    const [siteSettings, setSiteSettings] = useState(null)
+
+    useEffect(() => {
+        if (!db) return
+        const unsub = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
+            if (snap.exists()) setSiteSettings(snap.data())
+        })
+        return unsub
+    }, [])
     const [studyAbroadOpen, setStudyAbroadOpen] = useState(false)
     const [visaServicesOpen, setVisaServicesOpen] = useState(false)
     const [workAbroadOpen, setWorkAbroadOpen] = useState(false)
@@ -175,13 +186,15 @@ export default function Navbar() {
             <div className="topbar">
                 <div className="container">
                     <div className="topbar-left">
-                        <a href="mailto:traveliumgrobal@gmail.com" className="topbar-link"><Mail size={12} /> traveliumgrobal@gmail.com</a>
-                        <a href="tel:+250782531515" className="topbar-link"><Phone size={12} /> +250 782531515</a>
+                        <a href={`mailto:${siteSettings?.supportEmail || 'traveliumgrobal@gmail.com'}`} className="topbar-link"><Mail size={12} /> {siteSettings?.supportEmail || 'traveliumgrobal@gmail.com'}</a>
+                        <a href={`tel:${siteSettings?.supportPhone?.replace(/\s/g, '') || '+250782531515'}`} className="topbar-link"><Phone size={12} /> {siteSettings?.supportPhone || '+250 782531515'}</a>
                     </div>
                     <div className="topbar-right">
-                        <a href="#" aria-label="LinkedIn"><Globe size={12} /></a>
-                        <a href="#" aria-label="Twitter"><Send size={12} /></a>
-                        <a href="#" aria-label="YouTube"><Play size={12} /></a>
+                        {siteSettings?.linkedin && <a href={siteSettings.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Globe size={12} /></a>}
+                        {siteSettings?.twitter && <a href={siteSettings.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter"><Send size={12} /></a>}
+                        {siteSettings?.youtube && <a href={siteSettings.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Play size={12} /></a>}
+                        {siteSettings?.instagram && <a href={siteSettings.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Send size={12} /></a>}
+                        {siteSettings?.facebook && <a href={siteSettings.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Globe size={12} /></a>}
                     </div>
                 </div>
             </div>

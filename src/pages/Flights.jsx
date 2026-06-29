@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
@@ -12,6 +12,18 @@ import {
 
 export default function Flights() {
     const { currentUser } = useAuth()
+    const [siteSettings, setSiteSettings] = useState(null)
+
+    useEffect(() => {
+        if (!db) return
+        const unsub = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
+            if (snap.exists()) setSiteSettings(snap.data())
+        })
+        return unsub
+    }, [])
+    const w = siteSettings?.whatsappNumbers || []
+    const ticketingNum = w.find(n => n.label?.toLowerCase().includes('ticket') || n.label?.toLowerCase().includes('air')) || w[0] || { number: '250793658206' }
+    const waNum = ticketingNum.number.startsWith('+') ? ticketingNum.number.substring(1) : ticketingNum.number.replace(/[^0-9]/g, '')
     const [form, setForm] = useState({
         full_name: '', email: '', phone: '',
         origin: '', destination: '',
@@ -222,7 +234,7 @@ export default function Flights() {
                                 <div className="wa-icon-large"><Send size={32} /></div>
                                 <h4>Instant Assistance</h4>
                                 <p>Talk directly to our travel experts for immediate booking support.</p>
-                                <a href="https://wa.me/250793658206" className="wa-btn-premium">
+                                <a href={`https://wa.me/${waNum}`} className="wa-btn-premium">
                                     Open WhatsApp Chat
                                 </a>
                             </div>

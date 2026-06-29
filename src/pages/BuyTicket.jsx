@@ -1,4 +1,7 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import { CheckCircle, Clock, ShieldCheck, Ticket, ArrowRight, Info } from 'lucide-react'
 
 const WhatsAppIcon = ({ size = 18 }) => (
@@ -8,6 +11,19 @@ const WhatsAppIcon = ({ size = 18 }) => (
 )
 
 export default function BuyTicket() {
+    const [siteSettings, setSiteSettings] = useState(null)
+
+    useEffect(() => {
+        if (!db) return
+        const unsub = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
+            if (snap.exists()) setSiteSettings(snap.data())
+        })
+        return unsub
+    }, [])
+    const w = siteSettings?.whatsappNumbers || []
+    const ticketingNum = w.find(n => n.label?.toLowerCase().includes('ticket') || n.label?.toLowerCase().includes('air')) || w[0] || { number: '250793658206' }
+    const waNum = ticketingNum.number.startsWith('+') ? ticketingNum.number.substring(1) : ticketingNum.number.replace(/[^0-9]/g, '')
+
     const ticketProcess = [
         {
             icon: <Info size={28} />,
@@ -80,7 +96,7 @@ export default function BuyTicket() {
                                     <li><CheckCircle size={16} /> Verified E-Tickets</li>
                                 </ul>
 
-                                <a href="https://wa.me/250793658206" className="wa-btn-sm" target="_blank" rel="noopener noreferrer">
+                                <a href={`https://wa.me/${waNum}`} className="wa-btn-sm" target="_blank" rel="noopener noreferrer">
                                     <WhatsAppIcon size={18} /> Chat with Agent
                                 </a>
 

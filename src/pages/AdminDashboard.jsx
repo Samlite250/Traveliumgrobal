@@ -90,6 +90,11 @@ export default function AdminDashboard() {
     const [transactions, setTransactions] = useState([])
     const [loading, setLoading] = useState(true)
 
+    // Settings state
+    const [siteSettings, setSiteSettings] = useState(null)
+    const [settingsSaved, setSettingsSaved] = useState(false)
+    const [settingsForm, setSettingsForm] = useState({})
+
     // Service editor state
     const [editingService, setEditingService] = useState(null)
     const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
@@ -121,7 +126,13 @@ export default function AdminDashboard() {
             (snap) => setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
             (err) => console.error('Realtime transactions error:', err)
         )
-        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx() }
+        const unsubSettings = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
+            if (snap.exists()) {
+                setSiteSettings(snap.data())
+                setSettingsForm(prev => Object.keys(prev).length ? prev : snap.data())
+            }
+        }, (err) => console.error('Settings error:', err))
+        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubSettings() }
     }, [])
 
     const stats = useMemo(() => ({
@@ -256,6 +267,18 @@ export default function AdminDashboard() {
         setShowTxEditor(true)
     }
     const deleteTx = async (id) => { try { await deleteDoc(doc(db, 'transactions', id)) } catch (err) { console.error('Tx delete error:', err) } }
+
+    // ── Settings CRUD ──
+    const saveSettings = async () => {
+        try {
+            await updateDoc(doc(db, 'settings', 'site'), { ...settingsForm, updated_at: serverTimestamp(), updated_by: currentUser?.email })
+            setSettingsSaved(true); setTimeout(() => setSettingsSaved(false), 2500)
+        } catch (err) { console.error('Settings save error:', err) }
+    }
+    const initSettings = () => {
+        if (!siteSettings) return
+        setSettingsForm({ ...siteSettings })
+    }
 
     const exportCSV = () => {
         const headers = ['ID', 'Name', 'Email', 'Phone', 'Destination', 'Service', 'Status', 'Submitted', 'Nationality', 'Education']
@@ -596,45 +619,137 @@ export default function AdminDashboard() {
         </div>
     )
 
-    const renderSettings = () => (
-        <div className="admin-settings-grid">
-            <div className="admin-table-card">
-                <div className="card-header"><div className="card-title-group"><Shield size={20} className="title-icon" /><h3>Admin Access</h3></div></div>
-                <div className="settings-body">
-                    <div className="setting-item">
-                        <div className="setting-info"><span className="setting-label">Authorized Admin Emails</span><span className="setting-desc">These emails can access the admin panel</span></div>
-                        <div className="setting-value">
-                            <div className="admin-emails-list">
-                                <div className="admin-email-chip"><Mail size={12} /> traveliumgrobal@gmail.com</div>
-                                <div className="admin-email-chip"><Mail size={12} /> samlite250@gmail.com</div>
-                            </div>
+    const renderSettings = () => {
+        const sf = (key) => settingsForm[key] !== undefined ? settingsForm[key] : siteSettings?.[key] ?? ''
+        const set = (key, val) => setSettingsForm(f => ({ ...f, [key]: val }))
+        const whatsAppNumbers = settingsForm.whatsappNumbers || siteSettings?.whatsappNumbers || []
+        const adminEmails = settingsForm.adminEmails || siteSettings?.adminEmails || []
+        if (!siteSettings) return <div className="admin-loading"><Loader2 size={24} className="animate-spin" /><p>Loading settings...</p></div>
+        return (
+            <>
+                <div className="admin-filter-bar">
+                    <div className="filters-group">
+                        <button className="admin-btn-primary" onClick={initSettings}><RefreshCw size={16} /> Reset Form</button>
+                        <button className="admin-btn-success" onClick={saveSettings}><Check size={16} /> Save Settings</button>
+                        {settingsSaved && <span className="save-toast">Saved!</span>}
+                    </div>
+                </div>
+
+                {/* ── General ── */}
+                <div className="admin-table-card">
+                    <div className="card-header"><div className="card-title-group"><Globe size={18} className="title-icon" /><h3>General</h3></div></div>
+                    <div className="settings-body">
+                        <div className="form-row">
+                            <div className="form-group"><label>Site Name</label><input className="admin-note-input" value={sf('siteName')} onChange={e => set('siteName', e.target.value)} /></div>
+                            <div className="form-group"><label>Tagline</label><input className="admin-note-input" value={sf('tagline')} onChange={e => set('tagline', e.target.value)} /></div>
+                        </div>
+                        <div className="form-group"><label>Site Description</label><textarea className="admin-note-input" rows="2" value={sf('description')} onChange={e => set('description', e.target.value)} /></div>
+                        <div className="form-row">
+                            <div className="form-group"><label>Logo URL</label><input className="admin-note-input" value={sf('logoUrl')} onChange={e => set('logoUrl', e.target.value)} placeholder="https://..." /></div>
+                            <div className="form-group"><label>Favicon URL</label><input className="admin-note-input" value={sf('faviconUrl')} onChange={e => set('faviconUrl', e.target.value)} placeholder="https://..." /></div>
+                        </div>
+                        <div className="form-group"><label>Copyright Text</label><input className="admin-note-input" value={sf('copyright')} onChange={e => set('copyright', e.target.value)} /></div>
+                    </div>
+                </div>
+
+                {/* ── Contact ── */}
+                <div className="admin-table-card">
+                    <div className="card-header"><div className="card-title-group"><Mail size={18} className="title-icon" /><h3>Contact</h3></div></div>
+                    <div className="settings-body">
+                        <div className="form-row">
+                            <div className="form-group"><label>Support Email</label><input className="admin-note-input" type="email" value={sf('supportEmail')} onChange={e => set('supportEmail', e.target.value)} /></div>
+                            <div className="form-group"><label>Support Phone</label><input className="admin-note-input" value={sf('supportPhone')} onChange={e => set('supportPhone', e.target.value)} /></div>
+                        </div>
+                        <div className="form-group"><label>Address</label><textarea className="admin-note-input" rows="2" value={sf('address')} onChange={e => set('address', e.target.value)} /></div>
+                        <div className="form-row">
+                            <div className="form-group"><label>Working Hours</label><input className="admin-note-input" value={sf('workingHours')} onChange={e => set('workingHours', e.target.value)} /></div>
+                            <div className="form-group"><label>Headquarters</label><input className="admin-note-input" value={sf('headquarters')} onChange={e => set('headquarters', e.target.value)} /></div>
+                        </div>
+                        <div className="form-group"><label>WhatsApp Numbers</label>
+                            {whatsAppNumbers.map((w, i) => (
+                                <div key={i} className="form-row" style={{ marginBottom: '0.5rem' }}>
+                                    <div className="form-group"><input className="admin-note-input" placeholder="Label" value={w.label} onChange={e => {
+                                        const arr = [...whatsAppNumbers]; arr[i] = { ...arr[i], label: e.target.value }; set('whatsappNumbers', arr)
+                                    }} /></div>
+                                    <div className="form-group"><input className="admin-note-input" placeholder="Number" value={w.number} onChange={e => {
+                                        const arr = [...whatsAppNumbers]; arr[i] = { ...arr[i], number: e.target.value }; set('whatsappNumbers', arr)
+                                    }} /></div>
+                                    <button className="btn-act rej" onClick={() => set('whatsappNumbers', whatsAppNumbers.filter((_, j) => j !== i))} title="Remove"><X size={14} /></button>
+                                </div>
+                            ))}
+                            <button className="admin-btn-secondary" style={{ marginTop: '0.5rem' }} onClick={() => set('whatsappNumbers', [...whatsAppNumbers, { label: '', number: '' }])}><Plus size={14} /> Add Number</button>
                         </div>
                     </div>
-                    <div className="setting-item">
-                        <div className="setting-info"><span className="setting-label">Current Session</span><span className="setting-desc">You are logged in as an administrator</span></div>
-                        <div className="setting-value"><span className="current-user-badge">{currentUser?.email}</span></div>
+                </div>
+
+                {/* ── Social Media ── */}
+                <div className="admin-table-card">
+                    <div className="card-header"><div className="card-title-group"><TrendingUp size={18} className="title-icon" /><h3>Social Media</h3></div></div>
+                    <div className="settings-body">
+                        <div className="form-row">
+                            <div className="form-group"><label>LinkedIn</label><input className="admin-note-input" value={sf('linkedin')} onChange={e => set('linkedin', e.target.value)} placeholder="https://linkedin.com/..." /></div>
+                            <div className="form-group"><label>Twitter / X</label><input className="admin-note-input" value={sf('twitter')} onChange={e => set('twitter', e.target.value)} placeholder="https://twitter.com/..." /></div>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-group"><label>YouTube</label><input className="admin-note-input" value={sf('youtube')} onChange={e => set('youtube', e.target.value)} placeholder="https://youtube.com/..." /></div>
+                            <div className="form-group"><label>Instagram</label><input className="admin-note-input" value={sf('instagram')} onChange={e => set('instagram', e.target.value)} placeholder="https://instagram.com/..." /></div>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-group"><label>Facebook</label><input className="admin-note-input" value={sf('facebook')} onChange={e => set('facebook', e.target.value)} placeholder="https://facebook.com/..." /></div>
+                            <div className="form-group" />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="admin-table-card">
-                <div className="card-header"><div className="card-title-group"><Info size={20} className="title-icon" /><h3>System Info</h3></div></div>
-                <div className="settings-body">
-                    <div className="setting-item">
-                        <div className="setting-info"><span className="setting-label">Real-time Sync</span><span className="setting-desc">Data updates automatically via Firestore listeners</span></div>
-                        <div className="setting-value"><span className="status-badge-live">Live</span></div>
-                    </div>
-                    <div className="setting-item">
-                        <div className="setting-info"><span className="setting-label">Total Documents</span><span className="setting-desc">Applications + Messages</span></div>
-                        <div className="setting-value"><strong>{applications.length + contacts.length}</strong></div>
-                    </div>
-                    <div className="setting-item">
-                        <div className="setting-info"><span className="setting-label">Data Collections</span><span className="setting-desc">Firestore collections in use</span></div>
-                        <div className="setting-value"><div className="admin-emails-list"><span className="admin-email-chip">applications</span><span className="admin-email-chip">contacts</span><span className="admin-email-chip">services</span><span className="admin-email-chip">transactions</span></div></div>
+
+                {/* ── SEO ── */}
+                <div className="admin-table-card">
+                    <div className="card-header"><div className="card-title-group"><Search size={18} className="title-icon" /><h3>SEO & Analytics</h3></div></div>
+                    <div className="settings-body">
+                        <div className="form-row">
+                            <div className="form-group"><label>Meta Title</label><input className="admin-note-input" value={sf('metaTitle')} onChange={e => set('metaTitle', e.target.value)} /></div>
+                            <div className="form-group"><label>Google Analytics ID</label><input className="admin-note-input" value={sf('googleAnalyticsId')} onChange={e => set('googleAnalyticsId', e.target.value)} placeholder="G-XXXXXXXXXX" /></div>
+                        </div>
+                        <div className="form-group"><label>Meta Description</label><textarea className="admin-note-input" rows="2" value={sf('metaDescription')} onChange={e => set('metaDescription', e.target.value)} /></div>
+                        <div className="form-group"><label>Meta Keywords</label><input className="admin-note-input" value={sf('metaKeywords')} onChange={e => set('metaKeywords', e.target.value)} placeholder="travel, visa, study abroad" /></div>
                     </div>
                 </div>
-            </div>
-        </div>
-    )
+
+                {/* ── Admin ── */}
+                <div className="admin-table-card">
+                    <div className="card-header"><div className="card-title-group"><Shield size={18} className="title-icon" /><h3>Admin Access</h3></div></div>
+                    <div className="settings-body">
+                        <div className="form-group"><label>Authorized Admin Emails (one per line)</label>
+                            <textarea className="admin-note-input" rows="3" value={adminEmails.join('\n')} onChange={e => set('adminEmails', e.target.value.split('\n').map(s => s.trim()).filter(Boolean))} />
+                        </div>
+                        <div className="setting-item">
+                            <div className="setting-info"><span className="setting-label">Current Session</span></div>
+                            <div className="setting-value"><span className="current-user-badge">{currentUser?.email}</span></div>
+                        </div>
+                        <div className="form-group"><label>Maintenance Mode</label>
+                            <select className="admin-note-input" value={sf('maintenanceMode') ? 'yes' : 'no'} onChange={e => set('maintenanceMode', e.target.value === 'yes')}>
+                                <option value="no">Disabled</option><option value="yes">Enabled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* ── System Info ── */}
+                <div className="admin-table-card">
+                    <div className="card-header"><div className="card-title-group"><Info size={18} className="title-icon" /><h3>System Info</h3></div></div>
+                    <div className="settings-body">
+                        <div className="form-row">
+                            <div className="setting-item"><div className="setting-info"><span className="setting-label">Real-time Sync</span></div><div className="setting-value"><span className="status-badge-live">Live</span></div></div>
+                            <div className="setting-item"><div className="setting-info"><span className="setting-label">Total Documents</span></div><div className="setting-value"><strong>{applications.length + contacts.length}</strong></div></div>
+                        </div>
+                        <div className="setting-item">
+                            <div className="setting-info"><span className="setting-label">Data Collections</span></div>
+                            <div className="setting-value"><div className="admin-emails-list"><span className="admin-email-chip">applications</span><span className="admin-email-chip">contacts</span><span className="admin-email-chip">services</span><span className="admin-email-chip">transactions</span><span className="admin-email-chip">settings</span></div></div>
+                        </div>
+                    </div>
+                </div>
+            </>
+        )
+    }
 
     // ── DOCUMENTS TAB ──
     const renderDocuments = () => {
