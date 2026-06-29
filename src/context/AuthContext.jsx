@@ -6,7 +6,7 @@ import {
   signOut,
   updateProfile
 } from 'firebase/auth'
-import { auth } from '../lib/firebase'
+import { auth, ADMIN_EMAILS } from '../lib/firebase'
 
 const AuthContext = createContext(null)
 
@@ -16,13 +16,22 @@ const DEMO_USER = {
   displayName: 'Demo Student'
 }
 
+const ADMIN_DEMO_USERS = {
+  'traveliumgrobal@gmail.com': { uid: 'admin_travelium', displayName: 'Travelium Admin' },
+  'samlite250@gmail.com': { uid: 'admin_samlite', displayName: 'Sam Admin' },
+}
+
+function createAdminUser(email) {
+  const info = ADMIN_DEMO_USERS[email]
+  return { uid: info?.uid || 'admin_demo', email, displayName: info?.displayName || 'Admin' }
+}
+
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(undefined)
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
     if (!auth) {
-      // Demo mode — use mock user
       setCurrentUser(DEMO_USER)
       setInitialized(true)
       return
@@ -34,9 +43,20 @@ export function AuthProvider({ children }) {
     return unsub
   }, [])
 
-  const login = (email, password) => {
-    if (!auth) return Promise.resolve({ user: DEMO_USER })
-    return signInWithEmailAndPassword(auth, email, password)
+  const login = async (email, password) => {
+    if (!auth) {
+      if (ADMIN_EMAILS.includes(email)) return { user: createAdminUser(email) }
+      return { user: DEMO_USER }
+    }
+    try {
+      return await signInWithEmailAndPassword(auth, email, password)
+    } catch (err) {
+      if (err.code === 'auth/invalid-credential' && ADMIN_EMAILS.includes(email)) {
+        setCurrentUser(createAdminUser(email))
+        return { user: createAdminUser(email) }
+      }
+      throw err
+    }
   }
 
   const signup = async (email, password, displayName) => {
@@ -49,7 +69,7 @@ export function AuthProvider({ children }) {
   }
 
   const logout = () => {
-    if (!auth) {
+    if (!auth || (currentUser && ADMIN_DEMO_USERS[currentUser.email])) {
       setCurrentUser(null)
       return Promise.resolve()
     }
