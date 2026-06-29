@@ -6011,7 +6011,7 @@ main {
 
 /* MOBILE RESPONSIVENESS FIXES */
 @media (max-width: 768px) {
-  .dash-layout { 
+  .admin-root, .dashboard-layout { 
       flex-direction: column !important; 
   } 
   .dash-sidebar { 
@@ -6041,4 +6041,4 @@ main {
   .admin-login-card { 
       padding: 2rem 1.5rem !important; 
   }
-}
+}
