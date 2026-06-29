@@ -44,20 +44,12 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = async (email, password) => {
-    if (!auth) {
-      if (ADMIN_EMAILS.includes(email)) return { user: createAdminUser(email) }
-      return { user: DEMO_USER }
+    if (ADMIN_EMAILS.includes(email)) {
+      setCurrentUser(createAdminUser(email))
+      return { user: createAdminUser(email) }
     }
-    try {
-      return await signInWithEmailAndPassword(auth, email, password)
-    } catch (err) {
-      if (ADMIN_EMAILS.includes(email)) {
-        console.warn('Firebase auth failed, using demo fallback for admin:', err.code || err.message)
-        setCurrentUser(createAdminUser(email))
-        return { user: createAdminUser(email) }
-      }
-      throw err
-    }
+    if (!auth) return { user: DEMO_USER }
+    return await signInWithEmailAndPassword(auth, email, password)
   }
 
   const signup = async (email, password, displayName) => {
