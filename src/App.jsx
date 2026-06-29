@@ -63,6 +63,7 @@ function AppLayout() {
                         <AdminRoute><AdminDashboard /></AdminRoute>
                     } />
                     <Route path="/admi-login" element={<AdminLogin />} />
+                    <Route path="/admin-login" element={<Navigate to="/admi-login" replace />} />
                 </Routes>
             </Suspense>
             {!isAdminPath && <Footer />}
