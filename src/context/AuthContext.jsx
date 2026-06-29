@@ -45,8 +45,18 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     if (ADMIN_EMAILS.includes(email)) {
-      setCurrentUser(createAdminUser(email))
-      return { user: createAdminUser(email) }
+      if (!auth) {
+        const user = createAdminUser(email)
+        setCurrentUser(user)
+        return { user }
+      }
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password)
+        return cred
+      } catch (err) {
+        console.error('Admin login failed:', err.code)
+        throw err
+      }
     }
     if (!auth) return { user: DEMO_USER }
     try {
@@ -68,7 +78,7 @@ export function AuthProvider({ children }) {
   }
 
   const logout = () => {
-    if (!auth || (currentUser && ADMIN_DEMO_USERS[currentUser.email])) {
+    if (!auth) {
       setCurrentUser(null)
       return Promise.resolve()
     }
