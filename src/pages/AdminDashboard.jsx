@@ -847,7 +847,7 @@ export default function AdminDashboard() {
                 <div className="user-search-bar">
                 <Search size={16} className="user-search-icon" />
                 <input type="text" placeholder="Search by name, email or phone..." value={userSearch} onChange={e => setUserSearch(e.target.value)} />
-                {userSearch && <button className="user-search-clear" onClick={() => setUserSearch(```)``)}><X size={16} /></button>}
+                {userSearch && <button className="user-search-clear" onClick={() => setUserSearch('')}><X size={16} /></button>}
                 <button className="user-search-btn">Search</button>
               </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -1436,6 +1436,10 @@ export default function AdminDashboard() {
         </div>
     )
 }
+
+
+
+
 
 
 
