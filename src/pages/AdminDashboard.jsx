@@ -833,6 +833,7 @@ export default function AdminDashboard() {
         <div className="admin-table-card">
             <div className="card-header">
                 <div className="card-title-group"><Users size={20} className="title-icon" /><h3>Registered Users</h3></div>
+                <input type="text" placeholder="Search by name, email, or phone..." value={userSearch} onChange={e => setUserSearch(e.target.value)} className="user-search-input" />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     {syncMsg && <span style={{ fontSize: '0.8rem', color: 'var(--gray-600)', maxWidth: '220px', textAlign: 'right' }}>{syncMsg}</span>}
                     <button onClick={syncFromAuth} disabled={syncingAuth || !db} className="filter-btn" title="Sync all users from Firebase Authentication (requires deployed Cloud Function)">
@@ -844,7 +845,7 @@ export default function AdminDashboard() {
                     <span className="card-badge">{stats.uniqueUsers} unique</span>
                 </div>
             </div>
-            {usersList.length === 0 ? (
+            {filteredUsers.length === 0 ? (
                 <div className="admin-empty"><Users size={60} /><h3>No users found</h3><p>Users appear after they register an account or submit an application. Make sure Firebase Authentication and the 'users' Firestore collection have data.</p></div>
             ) : (
                 <>
@@ -854,7 +855,7 @@ export default function AdminDashboard() {
                                 <tr><th>User</th><th>Email</th><th>Phone</th><th>Applications</th><th>Last Active</th><th>Status</th></tr>
                             </thead>
                             <tbody>
-                                {usersList.map(u => {
+                                {filteredUsers.map(u => {
                                     const latestStatus = applications.filter(a => (a.user_email || a.email) === u.email)
                                         .sort((a, b) => {
                                             const da = a.updated_at?.toDate?.() || a.created_at?.toDate?.() || new Date(0)
@@ -875,7 +876,7 @@ export default function AdminDashboard() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="admin-table-footer"><span>{usersList.length} unique users</span></div>
+                    <div className="admin-table-footer"><span>{filteredUsers.length} / {usersList.length} total users</span></div>
                 </>
             )}
         </div>
@@ -1419,3 +1420,6 @@ export default function AdminDashboard() {
         </div>
     )
 }
+
+
+

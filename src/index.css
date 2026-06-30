@@ -7734,3 +7734,17 @@ main {
   cursor: default;
 }
 .doc-indicators span:hover { opacity: 1; }
+.user-search-input {
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--gray-300);
+  font-size: 0.85rem;
+  max-width: 200px;
+  background: var(--bg);
+  color: var(--text);
+}
+.user-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-alpha);
+}
