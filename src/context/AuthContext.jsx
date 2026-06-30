@@ -6,7 +6,8 @@ import {
   signOut,
   updateProfile
 } from 'firebase/auth'
-import { auth, ADMIN_EMAILS } from '../lib/firebase'
+import { auth, db, ADMIN_EMAILS } from '../lib/firebase'
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
 
 const AuthContext = createContext(null)
 
@@ -73,6 +74,17 @@ export function AuthProvider({ children }) {
     const cred = await createUserWithEmailAndPassword(auth, email, password)
     if (displayName) {
       await updateProfile(cred.user, { displayName })
+    }
+    try {
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        email,
+        displayName: displayName || '',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        role: 'student',
+      })
+    } catch (err) {
+      console.warn('Failed to create user document:', err)
     }
     return cred
   }

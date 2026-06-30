@@ -92,6 +92,7 @@ export default function AdminDashboard() {
     const [transactions, setTransactions] = useState([])
     const [loading, setLoading] = useState(true)
     const [offlineMode, setOfflineMode] = useState(!db)
+    const [users, setUsers] = useState([])
 
     // Settings state
     const [siteSettings, setSiteSettings] = useState(null)
@@ -118,6 +119,7 @@ export default function AdminDashboard() {
             setContacts(loadLocalData('travelium_contacts_admin'))
             setServices(loadLocalData('travelium_services_admin'))
             setTransactions(loadLocalData('travelium_transactions_admin'))
+            setUsers(loadLocalData('travelium_users_admin'))
             setLoading(false)
             return
         }
@@ -130,12 +132,13 @@ export default function AdminDashboard() {
                 if (name === 'contacts') setContacts(local)
                 if (name === 'services') setServices(local)
                 if (name === 'transactions') setTransactions(local)
+                if (name === 'users') setUsers(local)
             }
             setOfflineMode(true)
             setLoading(false)
         }
         const unsubApps = onSnapshot(
-            query(collection(db, 'applications'), orderBy('created_at', 'desc'), limit(200)),
+            query(collection(db, 'applications'), orderBy('created_at', 'desc')),
             (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setApplications(d); saveLocal('applications', d); setLoading(false); setOfflineMode(false) },
             onError('applications')
         )
@@ -153,6 +156,11 @@ export default function AdminDashboard() {
             query(collection(db, 'transactions'), orderBy('created_at', 'desc'), limit(200)),
             (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setTransactions(d); saveLocal('transactions', d) },
             onError('transactions')
+        )
+        const unsubUsers = onSnapshot(
+            query(collection(db, 'users'), orderBy('created_at', 'desc')),
+            (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setUsers(d); saveLocal('users', d) },
+            onError('users')
         )
         const unsubSettings = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
             const data = snap.exists() ? snap.data() : {}
@@ -183,7 +191,7 @@ export default function AdminDashboard() {
             setSettingsForm(prev => Object.keys(prev).length ? prev : merged)
             setOfflineMode(false)
         }, (err) => { console.error('Settings error:', err); setOfflineMode(true) })
-        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubSettings() }
+        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings() }
     }, [])
 
     const stats = useMemo(() => ({
@@ -193,7 +201,7 @@ export default function AdminDashboard() {
         processing: applications.filter(a => a.status === 'processing').length,
         rejected: applications.filter(a => a.status === 'rejected').length,
         unread: contacts.filter(m => !m.read).length,
-        uniqueUsers: new Set(applications.map(a => a.user_email || a.email).filter(Boolean)).size,
+        uniqueUsers: new Set([...applications.map(a => a.user_email || a.email).filter(Boolean), ...users.map(u => u.email).filter(Boolean)]).size,
         flightBookings: applications.filter(a => a.program_type === 'flight_booking').length,
         visaApps: applications.filter(a => ['study', 'student_visa', 'tourist', 'work', 'residency'].includes(a.program_type)).length,
     }), [applications, contacts])
@@ -241,8 +249,20 @@ export default function AdminDashboard() {
                 entry.lastActive = a.created_at
             }
         })
+        users.forEach(u => {
+            const key = u.email
+            if (!key) return
+            if (!map.has(key)) {
+                map.set(key, { email: key, name: u.displayName || u.fullName || 'Unknown', phone: u.phone || '', userId: u.id, appCount: 0, lastActive: u.createdAt })
+            } else {
+                const entry = map.get(key)
+                if (!entry.name || entry.name === 'Unknown') entry.name = u.displayName || u.fullName || entry.name
+                if (!entry.phone) entry.phone = u.phone || ''
+                if (!entry.userId) entry.userId = u.id
+            }
+        })
         return Array.from(map.values()).sort((a, b) => b.appCount - a.appCount)
-    }, [applications])
+    }, [applications, users])
 
     const saveLocal = (key, data) => {
         try { localStorage.setItem(`travelium_${key}_admin`, JSON.stringify(data)) } catch {}
