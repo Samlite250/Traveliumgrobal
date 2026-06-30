@@ -250,11 +250,13 @@ export default function Dashboard() {
                             <div className="dash-stats-grid">
                                 {/* Card 1 — Total */}
                                 <div className="premium-stat-card navy">
-                                    <div className="stat-icon-wrap">
-                                        <ClipboardList size={22} />
+                                    <div className="stat-header">
+                                        <span className="stat-label">Total Applications</span>
+                                        <div className="stat-icon-wrap">
+                                            <ClipboardList size={20} />
+                                        </div>
                                     </div>
                                     <div className="stat-content">
-                                        <span className="stat-label">Total Applications</span>
                                         <span className="stat-value">{applications.length}</span>
                                         <span className="stat-trend neutral">
                                             <TrendingUp size={12} /> All time
@@ -266,11 +268,13 @@ export default function Dashboard() {
 
                                 {/* Card 2 — In Progress */}
                                 <div className="premium-stat-card gold">
-                                    <div className="stat-icon-wrap">
-                                        <Clock size={22} />
+                                    <div className="stat-header">
+                                        <span className="stat-label">In Progress</span>
+                                        <div className="stat-icon-wrap">
+                                            <Clock size={20} />
+                                        </div>
                                     </div>
                                     <div className="stat-content">
-                                        <span className="stat-label">In Progress</span>
                                         <span className="stat-value">{pendingCount}</span>
                                         <span className="stat-trend pending">
                                             <Clock size={12} /> Awaiting review
@@ -282,11 +286,13 @@ export default function Dashboard() {
 
                                 {/* Card 3 — Approved */}
                                 <div className="premium-stat-card success">
-                                    <div className="stat-icon-wrap">
-                                        <ShieldCheck size={22} />
+                                    <div className="stat-header">
+                                        <span className="stat-label">Approved</span>
+                                        <div className="stat-icon-wrap">
+                                            <ShieldCheck size={20} />
+                                        </div>
                                     </div>
                                     <div className="stat-content">
-                                        <span className="stat-label">Approved</span>
                                         <span className="stat-value">{approvedCount}</span>
                                         <span className="stat-trend success">
                                             <CheckCircle size={12} />
@@ -299,11 +305,13 @@ export default function Dashboard() {
 
                                 {/* Card 4 — Rejected */}
                                 <div className="premium-stat-card rejected">
-                                    <div className="stat-icon-wrap">
-                                        <XCircle size={22} />
+                                    <div className="stat-header">
+                                        <span className="stat-label">Not Approved</span>
+                                        <div className="stat-icon-wrap">
+                                            <XCircle size={20} />
+                                        </div>
                                     </div>
                                     <div className="stat-content">
-                                        <span className="stat-label">Not Approved</span>
                                         <span className="stat-value">{rejectedCount}</span>
                                         <span className="stat-trend danger">
                                             <AlertCircle size={12} />
