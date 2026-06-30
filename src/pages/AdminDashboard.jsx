@@ -244,7 +244,7 @@ export default function AdminDashboard() {
         users.forEach(u => {
             const key = u.email
             if (!key) return
-            map.set(key, { email: key, name: u.displayName || u.fullName || 'Unknown', phone: u.phone || '', userId: u.id, appCount: 0, lastActive: u.createdAt })
+            map.set(key, { email: key, name: u.displayName || u.fullName || 'Unknown', phone: u.phone || '', userId: u.id, appCount: 0, lastActive: u.createdAt, country: u.country || u.nationality || '' })
         })
         applications.forEach(a => {
             const key = a.user_email || a.email
@@ -254,6 +254,9 @@ export default function AdminDashboard() {
                 entry.appCount++
                 if (a.created_at && (!entry.lastActive || (a.created_at.toDate?.() > entry.lastActive.toDate?.()))) {
                     entry.lastActive = a.created_at
+                }
+                if (!entry.country && (a.nationality || a.country)) {
+                    entry.country = a.nationality || a.country
                 }
             }
         })
@@ -888,24 +891,18 @@ export default function AdminDashboard() {
                     <div className="admin-table-overflow">
                         <table className="admin-table">
                             <thead>
-                                <tr><th>User</th><th>Email</th><th>Phone</th><th>Applications</th><th>Last Active</th><th>Status</th><th>Actions</th></tr>
+                                <tr><th>User</th><th>Country</th><th>Email</th><th>Phone</th><th>Applications</th><th>Last Active</th><th>Actions</th></tr>
                             </thead>
                             <tbody>
                                 {filteredUsers.map(u => {
-                                    const latestStatus = applications.filter(a => (a.user_email || a.email) === u.email)
-                                        .sort((a, b) => {
-                                            const da = a.updated_at?.toDate?.() || a.created_at?.toDate?.() || new Date(0)
-                                            const db2 = b.updated_at?.toDate?.() || b.created_at?.toDate?.() || new Date(0)
-                                            return db2 - da
-                                        })[0]?.status
                                     return (
                                         <tr key={u.email}>
                                             <td><div className="user-cell"><div className="u-avatar">{u.name?.charAt(0) || 'U'}</div><div className="u-info"><span className="n">{u.name}</span></div></div></td>
+                                            <td><span className="destination-pill"><Globe size={12} /><span>{u.country || '\u2014'}</span></span></td>
                                             <td><span className="user-email-cell">{u.email}</span></td>
                                             <td><span className="user-phone-cell">{u.phone || '\u2014'}</span></td>
                                             <td><span className="user-count-cell">{u.appCount}</span></td>
                                             <td><div className="date-cell"><Calendar size={12} /><span>{formatDateShort(u.lastActive)}</span></div></td>
-                                            <td>{latestStatus ? <div className={`status-pill-admin ${statusConfig[latestStatus]?.class || 'st-pending'}`}>{statusConfig[latestStatus]?.icon}<span>{statusConfig[latestStatus]?.label || latestStatus}</span></div> : <span className="text-muted">\u2014</span>}</td>
                                             <td><button className="filter-btn" style={{ color: 'var(--error)' }} onClick={() => deleteUser(u.userId, u.email)} title="Delete user"><Trash2 size={14} /></button></td>
                                         </tr>
                                     )
