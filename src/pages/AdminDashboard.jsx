@@ -333,6 +333,35 @@ export default function AdminDashboard() {
         toast('Message deleted (offline).', 'success')
     }
 
+    const deleteUser = async (uid, email) => {
+        if (!confirm(`Are you sure you want to delete user "${email}"? This will also delete their Firebase Authentication account and cannot be undone.`)) return
+        if (db) {
+            try {
+                const functions = getFunctions()
+                const deleteFn = httpsCallable(functions, 'deleteAuthUser')
+                await deleteFn({ uid })
+                toast(`User ${email} deleted from Auth and Firestore.`, 'success')
+                localStorage.removeItem('travelium_users_admin')
+                return
+            } catch (err) {
+                console.error('Delete user error via function:', err)
+                try {
+                    await deleteDoc(doc(db, 'users', uid))
+                    toast(`User doc deleted from Firestore (Auth deletion failed).`, 'warning')
+                    localStorage.removeItem('travelium_users_admin')
+                    return
+                } catch (err2) {
+                    console.error('Firestore delete also failed:', err2)
+                    toast('Failed to delete user.', 'error')
+                    return
+                }
+            }
+        }
+        const next = users.filter(u => u.email !== email)
+        setUsers(next); saveLocal('users', next)
+        toast('User removed from local data.', 'success')
+    }
+
     // ── Service CRUD ──
     const saveService = async () => {
         const data = {
@@ -868,7 +897,7 @@ export default function AdminDashboard() {
                     <div className="admin-table-overflow">
                         <table className="admin-table">
                             <thead>
-                                <tr><th>User</th><th>Email</th><th>Phone</th><th>Applications</th><th>Last Active</th><th>Status</th></tr>
+                                <tr><th>User</th><th>Email</th><th>Phone</th><th>Applications</th><th>Last Active</th><th>Status</th><th>Actions</th></tr>
                             </thead>
                             <tbody>
                                 {filteredUsers.map(u => {
@@ -886,6 +915,7 @@ export default function AdminDashboard() {
                                             <td><span className="user-count-cell">{u.appCount}</span></td>
                                             <td><div className="date-cell"><Calendar size={12} /><span>{formatDateShort(u.lastActive)}</span></div></td>
                                             <td>{latestStatus ? <div className={`status-pill-admin ${statusConfig[latestStatus]?.class || 'st-pending'}`}>{statusConfig[latestStatus]?.icon}<span>{statusConfig[latestStatus]?.label || latestStatus}</span></div> : <span className="text-muted">\u2014</span>}</td>
+                                            <td><button className="filter-btn" style={{ color: 'var(--error)' }} onClick={() => deleteUser(u.userId, u.email)} title="Delete user"><Trash2 size={14} /></button></td>
                                         </tr>
                                     )
                                 })}

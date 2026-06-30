@@ -77,3 +77,45 @@ exports.syncAuthUsers = functions.https.onCall(async (_data, context) => {
     message: `Synced ${created} new user${created !== 1 ? 's' : ''} from Firebase Auth.`,
   }
 })
+
+/**
+ * Callable function: deleteAuthUser
+ *
+ * Deletes a user from both Firebase Authentication and the Firestore "users"
+ * collection. Only callable by admin users.
+ */
+exports.deleteAuthUser = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'You must be signed in.')
+  }
+  const callerEmail = context.auth.token.email
+  if (!callerEmail || !ADMIN_EMAILS.includes(callerEmail)) {
+    throw new functions.https.HttpsError('permission-denied', 'Only administrators can delete users.')
+  }
+
+  const uid = data.uid
+  if (!uid) {
+    throw new functions.https.HttpsError('invalid-argument', 'User UID is required.')
+  }
+
+  const db = admin.firestore()
+  const auth = admin.auth()
+
+  // Delete Firestore document
+  try {
+    await db.collection('users').doc(uid).delete()
+  } catch (err) {
+    console.error('Error deleting Firestore doc:', err)
+  }
+
+  // Delete from Firebase Auth
+  try {
+    await auth.deleteUser(uid)
+  } catch (err) {
+    if (err.code !== 'auth/user-not-found') {
+      throw new functions.https.HttpsError('internal', 'Failed to delete auth user: ' + err.message)
+    }
+  }
+
+  return { success: true, message: 'User deleted successfully.' }
+})
