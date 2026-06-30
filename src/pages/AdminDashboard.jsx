@@ -15,8 +15,9 @@ import {
     Globe, BookOpen, Check, MessageSquare,
     Trash2, Eye, EyeOff, PieChart, TrendingUp, Star,
     Settings, AlertTriangle, Send, X, Info, Menu, LayoutDashboard,
-    FolderOpen, DollarSign, CreditCard, Plus, Edit3, Package, Lock
+    FolderOpen, DollarSign, CreditCard, Plus, Edit3, Package, Lock, Image as ImageIcon
 } from 'lucide-react'
+import { jsPDF } from 'jspdf'
 
 const SERVICE_OPTIONS = [
     { value: 'all', label: 'All Services' },
@@ -85,6 +86,7 @@ export default function AdminDashboard() {
     const [statusNote, setStatusNote] = useState('')
     const [showNoteInput, setShowNoteInput] = useState(null)
     const [messageFilter, setMessageFilter] = useState('all')
+    const [previewImage, setPreviewImage] = useState(null)
 
     const [applications, setApplications] = useState([])
     const [contacts, setContacts] = useState([])
@@ -594,6 +596,31 @@ export default function AdminDashboard() {
         }
         setTimeout(() => setSyncMsg(''), 6000)
         setSyncingAuth(false)
+    }
+
+    const downloadImageAsPDF = (url, name) => {
+        try {
+            const pdf = new jsPDF()
+            // Try to add the base64 image (assumes it's jpeg or png natively from our compression)
+            // A4 page is ~210x297 mm
+            const imgProps = pdf.getImageProperties(url)
+            const pdfWidth = pdf.internal.pageSize.getWidth()
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+
+            pdf.addImage(url, 'JPEG', 0, 0, pdfWidth, pdfHeight)
+            pdf.save(`${name}.pdf`)
+            toast('PDF Downloaded.', 'success')
+        } catch (error) {
+            console.error('PDF Generation Error:', error)
+            toast('Could not generate PDF from this image.', 'error')
+        }
+    }
+
+    const downloadDirectly = (url, name, extension) => {
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${name}.${extension}`
+        link.click()
     }
 
     const pageTitle = navItems.find(n => n.key === activeTab)?.label || 'Dashboard'
@@ -1367,10 +1394,17 @@ export default function AdminDashboard() {
                                                 <div key={key} className="detail-doc-card">
                                                     <div className="detail-doc-label"><FileText size={14} /> {label}</div>
                                                     {isImage ? (
-                                                        <a href={docData} target="_blank" rel="noreferrer" className="detail-doc-preview">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                setPreviewImage({ url: docData, title: label, applicant: selectedApp.full_name || 'Applicant' })
+                                                            }}
+                                                            className="detail-doc-preview"
+                                                            style={{ border: 'none', padding: 0, width: '100%', cursor: 'pointer' }}
+                                                        >
                                                             <img src={docData} alt={label} />
                                                             <span className="detail-doc-overlay"><Eye size={18} /> View Full</span>
-                                                        </a>
+                                                        </button>
                                                     ) : (
                                                         <a href={docData} download={`${selectedApp.full_name || 'document'}_${key}`} className="doc-link"><Download size={16} /> Download {label} <ExternalLink size={12} /></a>
                                                     )}
@@ -1408,6 +1442,49 @@ export default function AdminDashboard() {
                                 <button onClick={() => { setSelectedApp(null); setStatusNote('') }} className="admin-btn-secondary">Close</button>
                                 {selectedApp.status !== 'processing' && <button onClick={() => updateStatus(selectedApp.id, 'processing')} className="admin-btn-primary" disabled={updating === selectedApp.id}><RefreshCw size={16} /> Process</button>}
                                 {selectedApp.status !== 'approved' && <button onClick={() => updateStatus(selectedApp.id, 'approved')} className="admin-btn-success" disabled={updating === selectedApp.id}><Check size={16} /> Approve</button>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Image Preview Modal */}
+            {previewImage && (
+                <div className="admin-modal-overlay" onClick={() => setPreviewImage(null)}>
+                    <div className="admin-modal preview-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '900px' }}>
+                        <div className="admin-modal-header">
+                            <div className="modal-title-group">
+                                <ImageIcon size={22} className="title-icon" />
+                                <h3>{previewImage.title} - {previewImage.applicant}</h3>
+                            </div>
+                            <button onClick={() => setPreviewImage(null)} className="modal-close-btn"><X size={20} /></button>
+                        </div>
+                        <div className="admin-modal-body" style={{ padding: '0', background: '#e2e8f0', textAlign: 'center' }}>
+                            <img
+                                src={previewImage.url}
+                                alt={previewImage.title}
+                                style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', display: 'block', margin: '0 auto' }}
+                            />
+                        </div>
+                        <div className="admin-modal-footer">
+                            <div className="modal-actions-left">
+                                <button className="admin-btn-secondary" onClick={() => setPreviewImage(null)}>Close</button>
+                            </div>
+                            <div className="modal-actions-right">
+                                <button
+                                    className="admin-btn-primary"
+                                    style={{ background: 'var(--navy)', color: '#fff' }}
+                                    onClick={() => downloadDirectly(previewImage.url, `${previewImage.applicant}_${previewImage.title}`, 'jpg')}
+                                >
+                                    <Download size={16} /> Download Image
+                                </button>
+                                <button
+                                    className="admin-btn-primary"
+                                    style={{ background: 'var(--error)', color: '#fff', border: 'none' }}
+                                    onClick={() => downloadImageAsPDF(previewImage.url, `${previewImage.applicant}_${previewImage.title}`)}
+                                >
+                                    <FileText size={16} /> Download as PDF
+                                </button>
                             </div>
                         </div>
                     </div>
