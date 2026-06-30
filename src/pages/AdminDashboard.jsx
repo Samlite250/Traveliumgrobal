@@ -5,6 +5,7 @@ import {
     limit, serverTimestamp, onSnapshot
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import {
@@ -94,6 +95,7 @@ export default function AdminDashboard() {
     const [offlineMode, setOfflineMode] = useState(!db)
     const [users, setUsers] = useState([])
     const [syncing, setSyncing] = useState(false)
+    const [syncingAuth, setSyncingAuth] = useState(false)
     const [syncMsg, setSyncMsg] = useState('')
 
     // Settings state
@@ -537,6 +539,29 @@ export default function AdminDashboard() {
         setSyncing(false)
     }
 
+    const syncFromAuth = async () => {
+        if (syncingAuth) return
+        setSyncingAuth(true)
+        setSyncMsg('Connecting to Auth sync function...')
+        try {
+            const functions = getFunctions()
+            const syncFn = httpsCallable(functions, 'syncAuthUsers')
+            const result = await syncFn()
+            const data = result.data
+            setSyncMsg(data.message || `Synced users from Auth.`)
+            toast(data.message || 'Sync complete.', 'success')
+        } catch (err) {
+            console.error('Sync from Auth failed:', err)
+            const msg = err.code === 'unavailable' || err.code === 'not-found'
+                ? 'Cloud Function not deployed. Run: firebase deploy --only functions'
+                : err.message || 'Sync failed. See console.'
+            setSyncMsg(msg)
+            toast(msg, 'error')
+        }
+        setTimeout(() => setSyncMsg(''), 6000)
+        setSyncingAuth(false)
+    }
+
     const pageTitle = navItems.find(n => n.key === activeTab)?.label || 'Dashboard'
 
     const renderOverview = () => (
@@ -809,7 +834,10 @@ export default function AdminDashboard() {
             <div className="card-header">
                 <div className="card-title-group"><Users size={20} className="title-icon" /><h3>Registered Users</h3></div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    {syncMsg && <span style={{ fontSize: '0.8rem', color: 'var(--gray-600)' }}>{syncMsg}</span>}
+                    {syncMsg && <span style={{ fontSize: '0.8rem', color: 'var(--gray-600)', maxWidth: '220px', textAlign: 'right' }}>{syncMsg}</span>}
+                    <button onClick={syncFromAuth} disabled={syncingAuth || !db} className="filter-btn" title="Sync all users from Firebase Authentication (requires deployed Cloud Function)">
+                        <Users size={16} className={syncingAuth ? 'animate-spin' : ''} />
+                    </button>
                     <button onClick={syncUsersFromApplications} disabled={syncing || !db} className="filter-btn" title="Sync users from applications data">
                         <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
                     </button>
