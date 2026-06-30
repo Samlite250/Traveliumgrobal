@@ -7467,6 +7467,10 @@ main {
     min-height: 100vh;
   }
 
+  .dashboard-layout {
+    flex-direction: column !important;
+  }
+
   /* ─── Sidebar becomes a horizontal tab bar ─── */
   .dash-sidebar {
     width: 100% !important;

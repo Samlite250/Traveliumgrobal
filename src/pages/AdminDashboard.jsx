@@ -158,7 +158,7 @@ export default function AdminDashboard() {
             onError('transactions')
         )
         const unsubUsers = onSnapshot(
-            query(collection(db, 'users'), orderBy('created_at', 'desc')),
+            collection(db, 'users'),
             (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setUsers(d); saveLocal('users', d) },
             onError('users')
         )

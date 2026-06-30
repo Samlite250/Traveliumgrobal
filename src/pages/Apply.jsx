@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
@@ -73,6 +73,14 @@ export default function Apply() {
                 const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
                 existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: docs, created_at: new Date().toISOString(), saved_at: Date.now() })
                 localStorage.setItem('travelium_applications', JSON.stringify(existing))
+                try {
+                    const existingUsers = JSON.parse(localStorage.getItem('travelium_users_admin') || '[]')
+                    const userIdx = existingUsers.findIndex(u => u.email === currentUser.email)
+                    const userData = { email: currentUser.email, displayName: form.full_name || currentUser.displayName || '', phone: form.phone || '', id: uid, createdAt: new Date().toISOString() }
+                    if (userIdx >= 0) existingUsers[userIdx] = { ...existingUsers[userIdx], ...userData }
+                    else existingUsers.push(userData)
+                    localStorage.setItem('travelium_users_admin', JSON.stringify(existingUsers))
+                } catch (e) { console.warn('Failed to save user offline:', e) }
             } else {
                 await addDoc(collection(db, 'applications'), {
                     full_name: form.full_name, email: form.email || currentUser.email,
@@ -84,6 +92,18 @@ export default function Apply() {
                     documents: docs,
                     created_at: serverTimestamp(), updated_at: serverTimestamp(),
                 })
+                try {
+                    await setDoc(doc(db, 'users', uid), {
+                        email: currentUser.email,
+                        displayName: form.full_name || currentUser.displayName || '',
+                        phone: form.phone || '',
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp(),
+                        role: 'student',
+                    }, { merge: true })
+                } catch (userErr) {
+                    console.warn('Failed to upsert user document:', userErr)
+                }
             }
 
             setStatus({ type: 'success' })
