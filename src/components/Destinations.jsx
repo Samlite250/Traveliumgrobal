@@ -8,7 +8,7 @@ const destinations = [
     { id: 'gb', flag: 'https://flagcdn.com/w80/gb.png', name: 'United Kingdom', img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=800&auto=format&fit=crop', jobs: '4.5k+', salary: 'GBP 35k+' },
     { id: 'de', flag: 'https://flagcdn.com/w80/de.png', name: 'Germany', img: 'https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=800&auto=format&fit=crop', jobs: '3k+', salary: 'EUR 35k+' },
     { id: 'fr', flag: 'https://flagcdn.com/w80/fr.png', name: 'France', img: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop', jobs: '2.5k+', salary: 'EUR 30k+' },
-    { id: 'om', flag: 'https://flagcdn.com/w80/om.png', name: 'Oman', img: 'https://images.unsplash.com/photo-1549474843-ed29a439266e?q=80&w=800&auto=format&fit=crop', jobs: '2k+', salary: 'OMR 500+' },
+    { id: 'om', flag: 'https://flagcdn.com/w80/om.png', name: 'Oman', img: 'https://images.unsplash.com/photo-1606813332135-228593b6e201?q=80&w=800&auto=format&fit=crop', jobs: '2k+', salary: 'OMR 500+' },
     { id: 'cn', flag: 'https://flagcdn.com/w80/cn.png', name: 'China', img: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=800&auto=format&fit=crop', jobs: '8k+', salary: 'CNY 15k+', tag: 'High Demand' },
     { id: 'jp', flag: 'https://flagcdn.com/w80/jp.png', name: 'Japan', img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop', jobs: '4k+', salary: 'JPY 300k+' },
     { id: 'nl', flag: 'https://flagcdn.com/w80/nl.png', name: 'Netherlands', img: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=800&auto=format&fit=crop', jobs: '1.5k+', salary: 'EUR 40k+' },
