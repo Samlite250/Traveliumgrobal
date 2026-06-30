@@ -300,7 +300,7 @@ export default function Apply() {
                                                     <Upload size={18} />
                                                     <span>{label}</span>
                                                 </div>
-                                                <input type="file" name={key} onChange={handleFile} accept="image/*,.pdf" required={required} />
+                                                <input type="file" name={key} onChange={handleFile} accept="image/jpeg, image/png, image/webp" required={required} />
                                                 <small style={{ color: '#94a3b8' }}>{hint}</small>
                                                 {files[key] && (
                                                     <small style={{ color: 'var(--navy)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '.3rem', marginTop: '.3rem' }}>
