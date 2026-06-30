@@ -39,12 +39,48 @@ export default function Apply() {
     const fileToBase64 = (file) => {
         return new Promise((resolve, reject) => {
             if (!file) { resolve(null); return }
-            if (file.size > 2 * 1024 * 1024) {
-                reject(new Error(`File "${file.name}" exceeds 2 MB limit.`))
+
+            if (!file.type.startsWith('image/')) {
+                if (file.size > 800 * 1024) {
+                    reject(new Error(`File "${file.name}" exceeds 800 KB limit. Please upload a smaller file or use an image.`))
+                    return
+                }
+                const reader = new FileReader()
+                reader.onload = () => resolve(reader.result)
+                reader.onerror = () => reject(new Error('Failed to read file'))
+                reader.readAsDataURL(file)
                 return
             }
+
             const reader = new FileReader()
-            reader.onload = () => resolve(reader.result)
+            reader.onload = (event) => {
+                const img = new Image()
+                img.onload = () => {
+                    const canvas = document.createElement('canvas')
+                    let width = img.width
+                    let height = img.height
+                    const MAX_DIM = 1200
+
+                    if (width > MAX_DIM || height > MAX_DIM) {
+                        if (width > height) {
+                            height = Math.round((height * MAX_DIM) / width)
+                            width = MAX_DIM
+                        } else {
+                            width = Math.round((width * MAX_DIM) / height)
+                            height = MAX_DIM
+                        }
+                    }
+                    canvas.width = width
+                    canvas.height = height
+                    const ctx = canvas.getContext('2d')
+                    ctx.drawImage(img, 0, 0, width, height)
+
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
+                    resolve(dataUrl)
+                }
+                img.onerror = () => reject(new Error('Failed to compress image'))
+                img.src = event.target.result
+            }
             reader.onerror = () => reject(new Error('Failed to read file'))
             reader.readAsDataURL(file)
         })
@@ -56,11 +92,13 @@ export default function Apply() {
         setLoading(true)
         setStatus(null)
 
+        let uid = null;
+        let passportData = null;
+        let diplomaData = null;
+        let idCardData = null;
+
         try {
-            const uid = currentUser.uid
-            let passportData = null;
-            let diplomaData = null;
-            let idCardData = null;
+            uid = currentUser.uid
 
             try {
                 setUploadProgress('Processing documents...')
