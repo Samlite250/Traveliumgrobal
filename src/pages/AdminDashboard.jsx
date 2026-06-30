@@ -844,7 +844,12 @@ export default function AdminDashboard() {
         <div className="admin-table-card">
             <div className="card-header">
                 <div className="card-title-group"><Users size={20} className="title-icon" /><h3>Registered Users</h3></div>
-                <input type="text" placeholder="Search by name, email, or phone..." value={userSearch} onChange={e => setUserSearch(e.target.value)} className="user-search-input" />
+                <div className="user-search-bar">
+                <Search size={16} className="user-search-icon" />
+                <input type="text" placeholder="Search by name, email or phone..." value={userSearch} onChange={e => setUserSearch(e.target.value)} />
+                {userSearch && <button className="user-search-clear" onClick={() => setUserSearch(```)``)}><X size={16} /></button>}
+                <button className="user-search-btn">Search</button>
+              </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     {syncMsg && <span style={{ fontSize: '0.8rem', color: 'var(--gray-600)', maxWidth: '220px', textAlign: 'right' }}>{syncMsg}</span>}
                     <button onClick={syncFromAuth} disabled={syncingAuth || !db} className="filter-btn" title="Sync all users from Firebase Authentication (requires deployed Cloud Function)">
@@ -1431,6 +1436,7 @@ export default function AdminDashboard() {
         </div>
     )
 }
+
 
 
 
