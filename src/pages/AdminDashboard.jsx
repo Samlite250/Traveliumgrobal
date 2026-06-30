@@ -180,7 +180,7 @@ export default function AdminDashboard() {
                 supportEmail: 'traveliumgrobal@gmail.com', supportPhone: '+250 782 531 515',
                 address: '123 Global Avenue, Suite 400, New York, NY 10001, USA',
                 workingHours: 'Mon – Sat: 9:00 AM – 7:00 PM',
-                headquarters: 'Headquartered in Kigali, Rwanda',
+                headquarters: 'Headquartered in Dubai, UAE',
                 copyright: 'Travelium Global. Licensed Recruitment & Travel Agency.',
                 linkedin: '#', twitter: '#', youtube: '#', instagram: '#', facebook: '#',
                 whatsappNumbers: [

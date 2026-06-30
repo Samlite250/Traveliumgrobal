@@ -133,7 +133,7 @@ export default function Footer() {
                     <div className="legal-links">
                         <Link to="#">Terms of Use</Link>
                         <Link to="#">Privacy Policy</Link>
-                        <span className="location-tag"><Globe size={14} /> {s.headquarters || 'Headquartered in Kigali, Rwanda'}</span>
+                        <span className="location-tag"><Globe size={14} /> {s.headquarters || 'Headquartered in Dubai, UAE'}</span>
                     </div>
                 </div>
             </div>

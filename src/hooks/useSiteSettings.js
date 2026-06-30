@@ -16,7 +16,7 @@ const defaults = {
   supportPhone: '+250 782 531 515',
   address: '123 Global Avenue, Suite 400, New York, NY 10001, USA',
   workingHours: 'Mon \u2013 Sat: 9:00 AM \u2013 7:00 PM',
-  headquarters: 'Headquartered in Kigali, Rwanda',
+  headquarters: 'Headquartered in Dubai, UAE',
   copyright: 'Travelium Global. Licensed Recruitment & Travel Agency.',
   linkedin: '#',
   twitter: '#',
