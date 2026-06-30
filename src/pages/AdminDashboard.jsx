@@ -762,7 +762,7 @@ export default function AdminDashboard() {
                 <span className="card-badge">{stats.uniqueUsers} unique</span>
             </div>
             {usersList.length === 0 ? (
-                <div className="admin-empty"><Users size={60} /><h3>No users yet</h3><p>Users who submit applications will appear here.</p></div>
+                <div className="admin-empty"><Users size={60} /><h3>No users found</h3><p>Users appear after they register an account or submit an application. Make sure Firebase Authentication and the 'users' Firestore collection have data.</p></div>
             ) : (
                 <>
                     <div className="admin-table-overflow">

@@ -58,11 +58,15 @@ export default function Apply() {
 
             try {
                 setUploadProgress('Uploading documents (if provided)...')
-                passportUrl = await uploadFile(files.passport, `applications/${uid}/passport_${Date.now()}`)
-                diplomaUrl = await uploadFile(files.diploma, `applications/${uid}/diploma_${Date.now()}`)
-                idCardUrl = await uploadFile(files.id_card, `applications/${uid}/id_card_${Date.now()}`)
+                if (typeof storage !== 'undefined' && storage !== null) {
+                    passportUrl = await uploadFile(files.passport, `applications/${uid}/passport_${Date.now()}`)
+                    diplomaUrl = await uploadFile(files.diploma, `applications/${uid}/diploma_${Date.now()}`)
+                    idCardUrl = await uploadFile(files.id_card, `applications/${uid}/id_card_${Date.now()}`)
+                } else {
+                    console.warn('[Apply] Firebase Storage not available — skipping file upload.')
+                }
             } catch (storageErr) {
-                console.warn('[Apply] Storage is not initialized or rejected the upload. Proceeding without files.', storageErr);
+                console.warn('[Apply] Storage upload failed. Proceeding without files.', storageErr);
             }
 
             setUploadProgress('Saving your application...')

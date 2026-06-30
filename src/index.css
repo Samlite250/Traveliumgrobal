@@ -2176,6 +2176,53 @@ button {
   transform: none;
 }
 
+@media (max-width: 480px) {
+  .form-card {
+    padding: 1.25rem !important;
+  }
+
+  .form-page {
+    padding: 2rem 0 !important;
+  }
+
+  .form-header h2 {
+    font-size: 1.25rem !important;
+  }
+
+  .file-upload-section {
+    padding: 0.75rem !important;
+  }
+
+  .file-input-card {
+    padding: 0.75rem !important;
+  }
+
+  .file-input-card input[type="file"] {
+    font-size: 0.7rem !important;
+  }
+
+  .select-wrap select {
+    padding-left: 2.25rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  .select-icon {
+    left: 0.65rem !important;
+  }
+
+  .select-wrap .select-icon svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.6rem 0.75rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
 .form-msg {
   padding: 1rem;
   border-radius: var(--radius-sm);
@@ -4586,6 +4633,18 @@ main {
 
   .step-icon {
     margin: 0 auto;
+  }
+
+  .page-hero {
+    padding: 3rem 0 2rem !important;
+  }
+
+  .page-hero h1 {
+    font-size: 1.6rem !important;
+  }
+
+  .page-hero p {
+    font-size: 0.85rem !important;
   }
 }
 
