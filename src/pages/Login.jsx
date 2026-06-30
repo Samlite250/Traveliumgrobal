@@ -3,11 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { isAdmin } from '../lib/firebase'
-import { Plane, CheckCircle, ArrowRight, Mail, Lock, User } from 'lucide-react'
+import { Plane, CheckCircle, ArrowRight, Mail, Lock, User, Phone, Globe } from 'lucide-react'
+
+const COUNTRIES = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Côte d'Ivoire", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Congo-Brazzaville)", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Holy See", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine State", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"]
 
 export default function Login() {
     const [tab, setTab] = useState('login')
-    const [form, setForm] = useState({ email: '', password: '', full_name: '' })
+    const [form, setForm] = useState({ email: '', password: '', full_name: '', phone: '', country: '' })
     const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -26,7 +28,7 @@ export default function Login() {
                 toast('Login successful!', 'success')
                 navigate(isAdmin(user) ? '/admin' : '/dashboard')
             } else {
-                await signup(form.email.trim(), form.password.trim(), form.full_name)
+                await signup(form.email.trim(), form.password.trim(), form.full_name, form.phone, form.country)
                 toast('Account created successfully!', 'success')
                 navigate('/dashboard')
             }
@@ -73,13 +75,32 @@ export default function Login() {
 
                         <form className="form-grid" onSubmit={handleSubmit}>
                             {tab === 'signup' && (
-                                <div className="form-group">
-                                    <label>Full Name *</label>
-                                    <div className="input-with-icon">
-                                        <User size={18} />
-                                        <input name="full_name" value={form.full_name} onChange={set} required placeholder="Your full name" />
+                                <>
+                                    <div className="form-group">
+                                        <label>Full Name *</label>
+                                        <div className="input-with-icon">
+                                            <User size={18} />
+                                            <input name="full_name" value={form.full_name} onChange={set} required placeholder="Your full name" />
+                                        </div>
                                     </div>
-                                </div>
+                                    <div className="form-group">
+                                        <label>Phone Number *</label>
+                                        <div className="input-with-icon">
+                                            <Phone size={18} />
+                                            <input type="tel" name="phone" value={form.phone} onChange={set} required placeholder="e.g. +1 234 567 8900" />
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Country *</label>
+                                        <div className="input-with-icon">
+                                            <Globe size={18} />
+                                            <select name="country" value={form.country} onChange={set} required style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '0.9rem', WebkitAppearance: 'none', appearance: 'none', paddingLeft: '5px' }}>
+                                                <option value="" disabled hidden>Select your country</option>
+                                                {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </>
                             )}
                             <div className="form-group">
                                 <label>Email Address *</label>

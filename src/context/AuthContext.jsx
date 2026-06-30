@@ -69,7 +69,7 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const signup = async (email, password, displayName) => {
+  const signup = async (email, password, displayName, phone, country) => {
     if (!auth) return Promise.resolve({ user: DEMO_USER })
     const cred = await createUserWithEmailAndPassword(auth, email, password)
     if (displayName) {
@@ -79,6 +79,8 @@ export function AuthProvider({ children }) {
       await setDoc(doc(db, 'users', cred.user.uid), {
         email,
         displayName: displayName || '',
+        phone: phone || '',
+        country: country || '',
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         role: 'student',
