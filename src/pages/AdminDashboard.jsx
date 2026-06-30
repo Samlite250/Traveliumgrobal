@@ -39,7 +39,6 @@ const statusConfig = {
 const navItems = [
     { key: 'overview', label: 'Overview', icon: <PieChart size={20} /> },
     { key: 'applications', label: 'Applications', icon: <ClipboardList size={20} />, badge: 'pending' },
-    { key: 'documents', label: 'Documents', icon: <FolderOpen size={20} /> },
     { key: 'transactions', label: 'Transactions', icon: <DollarSign size={20} /> },
     { key: 'services', label: 'Services', icon: <Package size={20} /> },
     { key: 'messages', label: 'Messages', icon: <MessageSquare size={20} />, badge: 'unread' },
@@ -1029,45 +1028,6 @@ export default function AdminDashboard() {
         )
     }
 
-    // ── DOCUMENTS TAB ──
-    const renderDocuments = () => {
-        const allDocs = applications.flatMap(a => {
-            const docs = []
-            if (a.documents?.passport) docs.push({ type: 'Passport', url: a.documents.passport, name: a.full_name || 'Unknown', email: a.email, appId: a.id, date: a.created_at, program: a.program_type })
-            if (a.documents?.diploma) docs.push({ type: 'Diploma', url: a.documents.diploma, name: a.full_name || 'Unknown', email: a.email, appId: a.id, date: a.created_at, program: a.program_type })
-            if (a.documents?.id_card) docs.push({ type: 'ID Card', url: a.documents.id_card, name: a.full_name || 'Unknown', email: a.email, appId: a.id, date: a.created_at, program: a.program_type })
-            return docs
-        })
-        return (
-            <div className="admin-table-card">
-                <div className="card-header"><div className="card-title-group"><FolderOpen size={20} className="title-icon" /><h3>Uploaded Documents</h3></div><span className="card-badge">{allDocs.length} files</span></div>
-                {allDocs.length === 0 ? (
-                    <div className="admin-empty"><FileText size={60} /><h3>No documents uploaded</h3><p>Applications with document uploads will appear here.</p></div>
-                ) : (
-                    <>
-                        <div className="admin-table-overflow">
-                            <table className="admin-table">
-                                <thead><tr><th>Type</th><th>Applicant</th><th>Email</th><th>Service</th><th>Date</th><th>Preview</th></tr></thead>
-                                <tbody>
-                                    {allDocs.map((d, i) => (
-                                        <tr key={`${d.appId}-${i}`}>
-                                            <td><span className="doc-type-badge">{d.type}</span></td>
-                                            <td>{d.name}</td>
-                                            <td><span className="text-muted">{d.email}</span></td>
-                                            <td><span className="service-type">{d.program?.replace(/_/g, ' ')}</span></td>
-                                            <td><div className="date-cell"><Calendar size={12} /><span>{formatDateShort(d.date)}</span></div></td>
-                                            <td><a href={d.url} target="_blank" rel="noreferrer" className="doc-link-sm"><FileText size={14} /> View <ExternalLink size={11} /></a></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="admin-table-footer"><span>{allDocs.length} documents across {applications.length} applications</span></div>
-                    </>
-                )}
-            </div>
-        )
-    }
 
     // ── TRANSACTIONS TAB ──
     const renderTransactions = () => {
@@ -1355,7 +1315,7 @@ export default function AdminDashboard() {
                 <div className="main-content">
                     {activeTab === 'overview' && renderOverview()}
                     {activeTab === 'applications' && renderApplications()}
-                    {activeTab === 'documents' && renderDocuments()}
+
                     {activeTab === 'transactions' && renderTransactions()}
                     {activeTab === 'services' && renderServices()}
                     {activeTab === 'messages' && renderMessages()}
@@ -1398,16 +1358,33 @@ export default function AdminDashboard() {
                             {selectedApp.message && (
                                 <div className="detail-section"><h4>Additional Message</h4><div className="detail-message-box"><p>{selectedApp.message}</p></div></div>
                             )}
-                            {selectedApp.documents && (
+                            {selectedApp.documents && (selectedApp.documents.passport || selectedApp.documents.diploma || selectedApp.documents.id_card) && (
                                 <div className="detail-section">
-                                    <h4>Documents</h4>
-                                    <div className="detail-docs">
-                                        {selectedApp.documents.passport && <a href={selectedApp.documents.passport} target="_blank" rel="noreferrer" className="doc-link"><FileText size={16} /> View Passport <ExternalLink size={12} /></a>}
-                                        {selectedApp.documents.diploma && <a href={selectedApp.documents.diploma} target="_blank" rel="noreferrer" className="doc-link"><FileText size={16} /> View Diploma <ExternalLink size={12} /></a>}
-                                        {selectedApp.documents.id_card && <a href={selectedApp.documents.id_card} target="_blank" rel="noreferrer" className="doc-link"><FileText size={16} /> View ID Card <ExternalLink size={12} /></a>}
-                                        {!selectedApp.documents.passport && !selectedApp.documents.diploma && !selectedApp.documents.id_card && <span className="text-muted">No documents uploaded</span>}
+                                    <h4>Uploaded Documents</h4>
+                                    <div className="detail-docs-grid">
+                                        {[{ key: 'passport', label: 'Passport' }, { key: 'diploma', label: 'Diploma' }, { key: 'id_card', label: 'ID Card' }].map(({ key, label }) => {
+                                            const docData = selectedApp.documents?.[key]
+                                            if (!docData) return null
+                                            const isImage = docData.startsWith('data:image')
+                                            return (
+                                                <div key={key} className="detail-doc-card">
+                                                    <div className="detail-doc-label"><FileText size={14} /> {label}</div>
+                                                    {isImage ? (
+                                                        <a href={docData} target="_blank" rel="noreferrer" className="detail-doc-preview">
+                                                            <img src={docData} alt={label} />
+                                                            <span className="detail-doc-overlay"><Eye size={18} /> View Full</span>
+                                                        </a>
+                                                    ) : (
+                                                        <a href={docData} download={`${selectedApp.full_name || 'document'}_${key}`} className="doc-link"><Download size={16} /> Download {label} <ExternalLink size={12} /></a>
+                                                    )}
+                                                </div>
+                                            )
+                                        })}
                                     </div>
                                 </div>
+                            )}
+                            {selectedApp.documents && !selectedApp.documents.passport && !selectedApp.documents.diploma && !selectedApp.documents.id_card && (
+                                <div className="detail-section"><h4>Documents</h4><span className="text-muted">No documents uploaded</span></div>
                             )}
                             {selectedApp.program_type === 'flight_booking' && (
                                 <div className="detail-section">
