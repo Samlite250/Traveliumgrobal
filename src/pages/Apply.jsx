@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { db, storage } from '../lib/firebase'
+import { db } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import {
@@ -19,9 +18,9 @@ export default function Apply() {
         full_name: '', email: '', phone: '', nationality: '',
         destination: '', program_type: '', education_level: '', message: ''
     })
-    const [files, setFiles]               = useState({ passport: null, diploma: null, id_card: null })
-    const [status, setStatus]             = useState(null)
-    const [loading, setLoading]           = useState(false)
+    const [files, setFiles] = useState({ passport: null, diploma: null, id_card: null })
+    const [status, setStatus] = useState(null)
+    const [loading, setLoading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState('')
 
     // Auto-fill email from logged-in user
@@ -37,11 +36,18 @@ export default function Apply() {
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
     const handleFile = e => setFiles(f => ({ ...f, [e.target.name]: e.target.files[0] }))
 
-    const uploadFile = async (file, path) => {
-        if (!file) return null
-        const storageRef = ref(storage, path)
-        await uploadBytes(storageRef, file)
-        return getDownloadURL(storageRef)
+    const fileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            if (!file) { resolve(null); return }
+            if (file.size > 2 * 1024 * 1024) {
+                reject(new Error(`File "${file.name}" exceeds 2 MB limit.`))
+                return
+            }
+            const reader = new FileReader()
+            reader.onload = () => resolve(reader.result)
+            reader.onerror = () => reject(new Error('Failed to read file'))
+            reader.readAsDataURL(file)
+        })
     }
 
     const handleSubmit = async e => {
@@ -52,26 +58,25 @@ export default function Apply() {
 
         try {
             const uid = currentUser.uid
-            let passportUrl = null;
-            let diplomaUrl = null;
-            let idCardUrl = null;
+            let passportData = null;
+            let diplomaData = null;
+            let idCardData = null;
 
             try {
-                setUploadProgress('Uploading documents (if provided)...')
-                if (typeof storage !== 'undefined' && storage !== null) {
-                    passportUrl = await uploadFile(files.passport, `applications/${uid}/passport_${Date.now()}`)
-                    diplomaUrl = await uploadFile(files.diploma, `applications/${uid}/diploma_${Date.now()}`)
-                    idCardUrl = await uploadFile(files.id_card, `applications/${uid}/id_card_${Date.now()}`)
-                } else {
-                    console.warn('[Apply] Firebase Storage not available — skipping file upload.')
-                }
-            } catch (storageErr) {
-                console.warn('[Apply] Storage upload failed. Proceeding without files.', storageErr);
+                setUploadProgress('Processing documents...')
+                passportData = await fileToBase64(files.passport)
+                diplomaData = await fileToBase64(files.diploma)
+                idCardData = await fileToBase64(files.id_card)
+            } catch (fileErr) {
+                console.warn('[Apply] File processing failed:', fileErr);
+                setStatus({ type: 'error', msg: fileErr.message })
+                setLoading(false)
+                return
             }
 
             setUploadProgress('Saving your application...')
 
-            const docs = { passport: passportUrl, diploma: diplomaUrl, id_card: idCardUrl }
+            const docs = { passport: passportData, diploma: diplomaData, id_card: idCardData }
 
             if (!db) {
                 const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
@@ -121,7 +126,7 @@ export default function Apply() {
         } catch (err) {
             console.error('[Apply] Submission error:', err)
             const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
-            existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: { passport: passportUrl, diploma: diplomaUrl, id_card: idCardUrl }, created_at: new Date().toISOString(), saved_at: Date.now() })
+            existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: { passport: passportData, diploma: diplomaData, id_card: idCardData }, created_at: new Date().toISOString(), saved_at: Date.now() })
             localStorage.setItem('travelium_applications', JSON.stringify(existing))
             setStatus({ type: 'success' })
             toast('Application saved offline. We\'ll review it once synced.', 'success')
@@ -208,9 +213,9 @@ export default function Apply() {
                                             <select name="destination" value={form.destination} onChange={set} required>
                                                 <option value="">Select country</option>
                                                 {['Dubai', 'Canada', 'United States', 'United Kingdom',
-                                                  'Germany', 'France', 'Oman', 'China', 'Japan', 'Netherlands'].map(c => (
-                                                    <option key={c}>{c}</option>
-                                                ))}
+                                                    'Germany', 'France', 'Oman', 'China', 'Japan', 'Netherlands'].map(c => (
+                                                        <option key={c}>{c}</option>
+                                                    ))}
                                             </select>
                                         </div>
                                     </div>
@@ -248,9 +253,9 @@ export default function Apply() {
                                     </label>
                                     <div className="file-grid">
                                         {[
-                                            { key: 'passport', label: 'Passport Photo *',        hint: 'Bio-data page copy', required: true  },
-                                            { key: 'diploma',  label: 'Latest Diploma / Certificate *', hint: 'Highest qualification', required: true  },
-                                            { key: 'id_card',  label: 'National ID (optional)',  hint: 'Front and back copy', required: false },
+                                            { key: 'passport', label: 'Passport Photo *', hint: 'Bio-data page copy', required: true },
+                                            { key: 'diploma', label: 'Latest Diploma / Certificate *', hint: 'Highest qualification', required: true },
+                                            { key: 'id_card', label: 'National ID (optional)', hint: 'Front and back copy', required: false },
                                         ].map(({ key, label, hint, required }) => (
                                             <div className="file-input-card" key={key}>
                                                 <div className="file-info">
