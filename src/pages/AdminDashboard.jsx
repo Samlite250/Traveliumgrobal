@@ -94,6 +94,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true)
     const [offlineMode, setOfflineMode] = useState(!db)
     const [users, setUsers] = useState([])
+    const [userSearch, setUserSearch] = useState('')
     const [syncing, setSyncing] = useState(false)
     const [syncingAuth, setSyncingAuth] = useState(false)
     const [syncMsg, setSyncMsg] = useState('')
@@ -1420,6 +1421,7 @@ export default function AdminDashboard() {
         </div>
     )
 }
+
 
 
 
