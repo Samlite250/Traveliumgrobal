@@ -269,6 +269,16 @@ export default function AdminDashboard() {
         return Array.from(map.values()).sort((a, b) => b.appCount - a.appCount)
     }, [applications, users])
 
+    const filteredUsers = useMemo(() => {
+        if (!userSearch.trim()) return usersList
+        const q = userSearch.toLowerCase()
+        return usersList.filter(u =>
+            u.name?.toLowerCase().includes(q) ||
+            u.email?.toLowerCase().includes(q) ||
+            u.phone?.toLowerCase().includes(q)
+        )
+    }, [usersList, userSearch])
+
     const saveLocal = (key, data) => {
         try { localStorage.setItem(`travelium_${key}_admin`, JSON.stringify(data)) } catch {}
     }
@@ -1421,6 +1431,7 @@ export default function AdminDashboard() {
         </div>
     )
 }
+
 
 
 
