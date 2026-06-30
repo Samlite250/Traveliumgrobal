@@ -242,28 +242,20 @@ export default function AdminDashboard() {
 
     const usersList = useMemo(() => {
         const map = new Map()
-        applications.forEach(a => {
-            const key = a.user_email || a.email
-            if (!key) return
-            if (!map.has(key)) {
-                map.set(key, { email: key, name: a.full_name || 'Unknown', phone: a.phone || '', userId: a.user_id, appCount: 0, lastActive: a.created_at })
-            }
-            const entry = map.get(key)
-            entry.appCount++
-            if (a.created_at && (!entry.lastActive || a.created_at.toDate?.() > entry.lastActive.toDate?.())) {
-                entry.lastActive = a.created_at
-            }
-        })
         users.forEach(u => {
             const key = u.email
             if (!key) return
-            if (!map.has(key)) {
-                map.set(key, { email: key, name: u.displayName || u.fullName || 'Unknown', phone: u.phone || '', userId: u.id, appCount: 0, lastActive: u.createdAt })
-            } else {
+            map.set(key, { email: key, name: u.displayName || u.fullName || 'Unknown', phone: u.phone || '', userId: u.id, appCount: 0, lastActive: u.createdAt })
+        })
+        applications.forEach(a => {
+            const key = a.user_email || a.email
+            if (!key) return
+            if (map.has(key)) {
                 const entry = map.get(key)
-                if (!entry.name || entry.name === 'Unknown') entry.name = u.displayName || u.fullName || entry.name
-                if (!entry.phone) entry.phone = u.phone || ''
-                if (!entry.userId) entry.userId = u.id
+                entry.appCount++
+                if (a.created_at && (!entry.lastActive || (a.created_at.toDate?.() > entry.lastActive.toDate?.()))) {
+                    entry.lastActive = a.created_at
+                }
             }
         })
         return Array.from(map.values()).sort((a, b) => b.appCount - a.appCount)
@@ -280,7 +272,7 @@ export default function AdminDashboard() {
     }, [usersList, userSearch])
 
     const saveLocal = (key, data) => {
-        try { localStorage.setItem(`travelium_${key}_admin`, JSON.stringify(data)) } catch {}
+        try { localStorage.setItem(`travelium_${key}_admin`, JSON.stringify(data)) } catch { }
     }
 
     const updateStatus = async (id, newStatus) => {
@@ -484,7 +476,7 @@ export default function AdminDashboard() {
                 return
             } catch (err) { console.error('Settings save error:', err) }
         }
-        try { localStorage.setItem('travelium_settings_admin', JSON.stringify(payload)) } catch {}
+        try { localStorage.setItem('travelium_settings_admin', JSON.stringify(payload)) } catch { }
         toast('Settings saved (offline).', 'success')
         setSettingsForm(prev => ({ ...prev, ...payload }))
     }
@@ -771,7 +763,7 @@ export default function AdminDashboard() {
                                                     {a.documents?.passport && <span title="Passport uploaded"><FileText size={14} /></span>}
                                                     {a.documents?.diploma && <span title="Diploma uploaded"><BookOpen size={14} /></span>}
                                                     {a.documents?.id_card && <span title="ID Card uploaded"><FileText size={14} /></span>}
-                                                    {!a.documents?.passport && !a.documents?.diploma && !a.documents?.id_card && <span className="text-muted" style={{fontSize:'0.75rem'}}>\u2014</span>}
+                                                    {!a.documents?.passport && !a.documents?.diploma && !a.documents?.id_card && <span className="text-muted" style={{ fontSize: '0.75rem' }}>\u2014</span>}
                                                 </div>
                                             </td>
                                             <td><div className="date-cell"><Calendar size={12} /><span>{formatDate(a.created_at)}</span></div></td>
@@ -874,11 +866,11 @@ export default function AdminDashboard() {
             <div className="card-header">
                 <div className="card-title-group"><Users size={20} className="title-icon" /><h3>Registered Users</h3></div>
                 <div className="user-search-bar">
-                <Search size={16} className="user-search-icon" />
-                <input type="text" placeholder="Search by name, email or phone..." value={userSearch} onChange={e => setUserSearch(e.target.value)} />
-                {userSearch && <button className="user-search-clear" onClick={() => setUserSearch('')}><X size={16} /></button>}
-                <button className="user-search-btn">Search</button>
-              </div>
+                    <Search size={16} className="user-search-icon" />
+                    <input type="text" placeholder="Search by name, email or phone..." value={userSearch} onChange={e => setUserSearch(e.target.value)} />
+                    {userSearch && <button className="user-search-clear" onClick={() => setUserSearch('')}><X size={16} /></button>}
+                    <button className="user-search-btn">Search</button>
+                </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     {syncMsg && <span style={{ fontSize: '0.8rem', color: 'var(--gray-600)', maxWidth: '220px', textAlign: 'right' }}>{syncMsg}</span>}
                     <button onClick={syncFromAuth} disabled={syncingAuth || !db} className="filter-btn" title="Sync all users from Firebase Authentication (requires deployed Cloud Function)">
