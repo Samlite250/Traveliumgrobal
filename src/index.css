@@ -3557,7 +3557,6 @@ tr:hover td {
 
 /* ===== MOBILE FIXES ===== */
 #root {
-  overflow-x: hidden;
   width: 100%;
 }
 
