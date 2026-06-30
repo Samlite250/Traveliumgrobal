@@ -93,6 +93,8 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true)
     const [offlineMode, setOfflineMode] = useState(!db)
     const [users, setUsers] = useState([])
+    const [syncing, setSyncing] = useState(false)
+    const [syncMsg, setSyncMsg] = useState('')
 
     // Settings state
     const [siteSettings, setSiteSettings] = useState(null)
@@ -488,6 +490,53 @@ export default function AdminDashboard() {
         setSidebarOpen(false)
     }
 
+    const syncUsersFromApplications = async () => {
+        if (!db || syncing) return
+        setSyncing(true)
+        setSyncMsg('Scanning applications...')
+        const existingEmails = new Set(users.map(u => u.email).filter(Boolean))
+        const appUsers = new Map()
+        applications.forEach(a => {
+            const key = a.user_email || a.email
+            if (!key || existingEmails.has(key)) return
+            if (!appUsers.has(key)) {
+                appUsers.set(key, {
+                    email: key,
+                    displayName: a.full_name || a.name || '',
+                    phone: a.phone || '',
+                    userId: a.user_id || a.id,
+                })
+            }
+        })
+        if (appUsers.size === 0) {
+            setSyncMsg('No new users found to sync.')
+            setTimeout(() => setSyncMsg(''), 3000)
+            setSyncing(false)
+            return
+        }
+        let created = 0
+        for (const [email, data] of appUsers) {
+            try {
+                const uid = data.userId || `auto_${email.replace(/[^a-zA-Z0-9]/g, '_')}`
+                await setDoc(doc(db, 'users', uid), {
+                    email,
+                    displayName: data.displayName,
+                    phone: data.phone,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp(),
+                    role: 'student',
+                }, { merge: true })
+                created++
+                setSyncMsg(`Synced ${created}/${appUsers.size}...`)
+            } catch (err) {
+                console.warn('Failed to sync user', email, err)
+            }
+        }
+        setSyncMsg(`Synced ${created} user${created !== 1 ? 's' : ''} from applications.`)
+        setTimeout(() => setSyncMsg(''), 4000)
+        setSyncing(false)
+    }
+
     const pageTitle = navItems.find(n => n.key === activeTab)?.label || 'Dashboard'
 
     const renderOverview = () => (
@@ -759,7 +808,13 @@ export default function AdminDashboard() {
         <div className="admin-table-card">
             <div className="card-header">
                 <div className="card-title-group"><Users size={20} className="title-icon" /><h3>Registered Users</h3></div>
-                <span className="card-badge">{stats.uniqueUsers} unique</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    {syncMsg && <span style={{ fontSize: '0.8rem', color: 'var(--gray-600)' }}>{syncMsg}</span>}
+                    <button onClick={syncUsersFromApplications} disabled={syncing || !db} className="filter-btn" title="Sync users from applications data">
+                        <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
+                    </button>
+                    <span className="card-badge">{stats.uniqueUsers} unique</span>
+                </div>
             </div>
             {usersList.length === 0 ? (
                 <div className="admin-empty"><Users size={60} /><h3>No users found</h3><p>Users appear after they register an account or submit an application. Make sure Firebase Authentication and the 'users' Firestore collection have data.</p></div>

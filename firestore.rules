@@ -20,9 +20,21 @@ service cloud.firestore {
       allow delete: if false; // never allow deletion
     }
 
-    // ── User profiles (future) ────────────────────────────────────────────────
+    // ── User profiles ─────────────────────────────────────────────────────────
+    // Users may READ their own profile.
+    // Admin (by email) may READ any user profile.
+    // Users may WRITE their own profile.
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read: if request.auth != null && (
+        request.auth.uid == uid ||
+        request.auth.token.email in ['traveliumgrobal@gmail.com', 'samlite250@gmail.com']
+      );
+      allow create: if request.auth != null && (
+        request.auth.uid == uid ||
+        request.auth.token.email in ['traveliumgrobal@gmail.com', 'samlite250@gmail.com']
+      );
+      allow update: if request.auth != null && request.auth.uid == uid;
+      allow delete: if false;
     }
   }
 }
