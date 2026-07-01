@@ -288,7 +288,7 @@ export default function Hero() {
                                         <input
                                             type="text"
                                             id="hero-name"
-                                            placeholder="John Doe"
+                                            placeholder="Sam Dev"
                                             required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}

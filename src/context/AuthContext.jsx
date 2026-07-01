@@ -60,13 +60,8 @@ export function AuthProvider({ children }) {
       }
     }
     if (!auth) return { user: DEMO_USER }
-    try {
-      return await signInWithEmailAndPassword(auth, email, password)
-    } catch (err) {
-      console.warn('Firebase Auth unavailable, using demo fallback:', err.code || err.message)
-      setCurrentUser({ ...DEMO_USER, email: email })
-      return { user: { ...DEMO_USER, email: email } }
-    }
+    // Real Firebase is configured — never silently fall back to demo for real users
+    return await signInWithEmailAndPassword(auth, email, password)
   }
 
   const signup = async (email, password, displayName, phone, country) => {

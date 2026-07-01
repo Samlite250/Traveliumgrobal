@@ -36,52 +36,64 @@ export default function Apply() {
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
     const handleFile = e => setFiles(f => ({ ...f, [e.target.name]: e.target.files[0] }))
 
+    // Hard limits
+    const MAX_FILE_BYTES = 5 * 1024 * 1024  // 5 MB pre-compression
+    const MAX_DIM = 1000                      // px — keeps JPEG output well under 700 KB
+    const JPEG_QUALITY = 0.55
+    const READ_TIMEOUT_MS = 15000            // 15 s — avoids infinite hang on bad files
+
     const fileToBase64 = (file) => {
         return new Promise((resolve, reject) => {
             if (!file) { resolve(null); return }
 
+            // 1. Pre-validate: only images accepted
             if (!file.type.startsWith('image/')) {
-                if (file.size > 800 * 1024) {
-                    reject(new Error(`File "${file.name}" exceeds 800 KB limit. Please upload a smaller file or use an image.`))
-                    return
-                }
-                const reader = new FileReader()
-                reader.onload = () => resolve(reader.result)
-                reader.onerror = () => reject(new Error('Failed to read file'))
-                reader.readAsDataURL(file)
+                reject(new Error(`Only image files (JPEG, PNG, WebP) are accepted. "${file.name}" is not an image.`))
                 return
             }
 
+            // 2. Pre-validate: hard size cap before reading
+            if (file.size > MAX_FILE_BYTES) {
+                reject(new Error(`"${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum allowed is 5 MB.`))
+                return
+            }
+
+            // 3. Timeout guard — reject if the read stalls
+            let settled = false
+            const timeoutId = setTimeout(() => {
+                if (!settled) { settled = true; reject(new Error(`Reading "${file.name}" timed out. Please try again or use a different file.`)) }
+            }, READ_TIMEOUT_MS)
+
+            const done = (val) => { clearTimeout(timeoutId); if (!settled) { settled = true; resolve(val) } }
+            const fail = (msg) => { clearTimeout(timeoutId); if (!settled) { settled = true; reject(new Error(msg)) } }
+
+            // 4. Read → compress via Canvas
             const reader = new FileReader()
             reader.onload = (event) => {
                 const img = new Image()
                 img.onload = () => {
-                    const canvas = document.createElement('canvas')
-                    let width = img.width
-                    let height = img.height
-                    const MAX_DIM = 1200
-
-                    if (width > MAX_DIM || height > MAX_DIM) {
-                        if (width > height) {
-                            height = Math.round((height * MAX_DIM) / width)
-                            width = MAX_DIM
-                        } else {
-                            width = Math.round((width * MAX_DIM) / height)
-                            height = MAX_DIM
+                    try {
+                        const canvas = document.createElement('canvas')
+                        let { width, height } = img
+                        if (width > MAX_DIM || height > MAX_DIM) {
+                            if (width > height) { height = Math.round((height * MAX_DIM) / width); width = MAX_DIM }
+                            else { width = Math.round((width * MAX_DIM) / height); height = MAX_DIM }
                         }
+                        canvas.width = width
+                        canvas.height = height
+                        const ctx = canvas.getContext('2d')
+                        if (!ctx) { fail('Canvas context unavailable — please try a different browser.'); return }
+                        ctx.drawImage(img, 0, 0, width, height)
+                        const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
+                        done(dataUrl)
+                    } catch (canvasErr) {
+                        fail(`Could not process "${file.name}". Please try a different image.`)
                     }
-                    canvas.width = width
-                    canvas.height = height
-                    const ctx = canvas.getContext('2d')
-                    ctx.drawImage(img, 0, 0, width, height)
-
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
-                    resolve(dataUrl)
                 }
-                img.onerror = () => reject(new Error('Failed to compress image'))
+                img.onerror = () => fail(`Could not load "${file.name}" as an image. The file may be corrupted.`)
                 img.src = event.target.result
             }
-            reader.onerror = () => reject(new Error('Failed to read file'))
+            reader.onerror = () => fail(`Could not read "${file.name}". Please check the file and try again.`)
             reader.readAsDataURL(file)
         })
     }
@@ -109,6 +121,7 @@ export default function Apply() {
                 console.warn('[Apply] File processing failed:', fileErr);
                 setStatus({ type: 'error', msg: fileErr.message })
                 setLoading(false)
+                setUploadProgress('')
                 return
             }
 
@@ -117,9 +130,17 @@ export default function Apply() {
             const docs = { passport: passportData, diploma: diplomaData, id_card: idCardData }
 
             if (!db) {
-                const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
-                existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: docs, created_at: new Date().toISOString(), saved_at: Date.now() })
-                localStorage.setItem('travelium_applications', JSON.stringify(existing))
+                // Offline mode — save metadata ONLY (no blobs) to avoid localStorage quota errors
+                const metaOnly = { ...form, user_id: uid, user_email: currentUser.email, status: 'pending', created_at: new Date().toISOString(), saved_at: Date.now(), offline: true }
+                try {
+                    const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
+                    existing.push(metaOnly)
+                    localStorage.setItem('travelium_applications', JSON.stringify(existing))
+                } catch (quotaErr) {
+                    console.warn('[Apply] localStorage quota reached, clearing and retrying:', quotaErr)
+                    try { localStorage.removeItem('travelium_applications') } catch (_) {}
+                    localStorage.setItem('travelium_applications', JSON.stringify([metaOnly]))
+                }
                 try {
                     const existingUsers = JSON.parse(localStorage.getItem('travelium_users_admin') || '[]')
                     const userIdx = existingUsers.findIndex(u => u.email === currentUser.email)
@@ -163,11 +184,18 @@ export default function Apply() {
             setFiles({ passport: null, diploma: null, id_card: null })
         } catch (err) {
             console.error('[Apply] Submission error:', err)
-            const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
-            existing.push({ ...form, user_id: uid, user_email: currentUser.email, status: 'pending', documents: { passport: passportData, diploma: diplomaData, id_card: idCardData }, created_at: new Date().toISOString(), saved_at: Date.now() })
-            localStorage.setItem('travelium_applications', JSON.stringify(existing))
+            // Firestore save failed — save metadata-only offline (no blobs = no quota risk)
+            const metaOnly = { ...form, user_id: uid, user_email: currentUser?.email, status: 'pending', created_at: new Date().toISOString(), saved_at: Date.now(), offline: true }
+            try {
+                const existing = JSON.parse(localStorage.getItem('travelium_applications') || '[]')
+                existing.push(metaOnly)
+                localStorage.setItem('travelium_applications', JSON.stringify(existing))
+            } catch (quotaErr) {
+                try { localStorage.removeItem('travelium_applications') } catch (_) {}
+                localStorage.setItem('travelium_applications', JSON.stringify([metaOnly]))
+            }
             setStatus({ type: 'success' })
-            toast('Application saved offline. We\'ll review it once synced.', 'success')
+            toast('Application saved! We\'ll sync it once connection is restored.', 'success')
             setForm({
                 full_name: '', email: currentUser.email || '', phone: '',
                 nationality: '', destination: '', program_type: '',

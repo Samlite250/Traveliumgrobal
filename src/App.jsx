@@ -37,8 +37,8 @@ function AdminRoute({ children }) {
 
 function AppLayout() {
     const location = useLocation()
-    const adminPaths = ['/admin', '/admi-login']
-    const isAdminPath = adminPaths.includes(location.pathname)
+    const adminPaths = ['/admin', '/admin-login', '/admi-login']
+    const isAdminPath = adminPaths.some(p => location.pathname === p || location.pathname.startsWith('/admin'))
 
     return (
         <>
