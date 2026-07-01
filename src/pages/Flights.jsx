@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { db, storage } from '../lib/firebase'
+import { db } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import {
@@ -41,12 +40,26 @@ export default function Flights() {
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
     const handleFile = e => setFiles(f => ({ ...f, [e.target.name]: e.target.files[0] }))
 
-    const uploadFile = async (file, path) => {
-        if (!file) return null
-        const storageRef = ref(storage, path)
-        await uploadBytes(storageRef, file)
-        return getDownloadURL(storageRef)
-    }
+    // Compress image via canvas and return Base64 (keeps file ~50-150KB, well under Firestore 1MB limit)
+    const compressImage = (file, maxWidth = 1200, quality = 0.75) => new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = (e) => {
+            const img = new Image()
+            img.src = e.target.result
+            img.onload = () => {
+                const canvas = document.createElement('canvas')
+                const scale = Math.min(1, maxWidth / img.width)
+                canvas.width = img.width * scale
+                canvas.height = img.height * scale
+                const ctx = canvas.getContext('2d')
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+                resolve(canvas.toDataURL('image/jpeg', quality))
+            }
+            img.onerror = reject
+        }
+        reader.onerror = reject
+    })
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -55,8 +68,8 @@ export default function Flights() {
 
         try {
             let passportUrl = null
-            if (files.passport && storage) {
-                passportUrl = await uploadFile(files.passport, `flights/${currentUser?.uid || 'guest'}/passport_${Date.now()}`)
+            if (files.passport) {
+                passportUrl = await compressImage(files.passport)
             }
 
             if (!db) {
