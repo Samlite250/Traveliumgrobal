@@ -99,6 +99,26 @@ export default function AdminDashboard() {
     const [syncing, setSyncing] = useState(false)
     const [syncingAuth, setSyncingAuth] = useState(false)
     const [syncMsg, setSyncMsg] = useState('')
+    const [adminsList, setAdminsList] = useState([])
+    const [adminForm, setAdminForm] = useState({ email: '', role: 'agent' })
+
+    const saveAdminRole = async () => {
+        if (!adminForm.email) return toast('Email is required', 'error')
+        if (db) {
+            try {
+                await setDoc(doc(db, 'admins', adminForm.email), { role: adminForm.role, created_at: serverTimestamp() })
+                toast(`Added admin ${adminForm.email}`, 'success')
+                setAdminForm({ email: '', role: 'agent' })
+            } catch (e) { toast('Error adding admin', 'error'); console.error(e) }
+        }
+    }
+    const removeAdminRole = async (email) => {
+        if (email === currentUser?.email) return toast('Cannot remove yourself', 'error')
+        if (confirm(`Remove ${email} from admins?`) && db) {
+            try { await deleteDoc(doc(db, 'admins', email)); toast('Removed admin', 'success') }
+            catch (e) { toast('Error removing admin', 'error') }
+        }
+    }
 
     // Settings state
     const [siteSettings, setSiteSettings] = useState(null)
@@ -126,6 +146,7 @@ export default function AdminDashboard() {
             setServices(loadLocalData('travelium_services_admin'))
             setTransactions(loadLocalData('travelium_transactions_admin'))
             setUsers(loadLocalData('travelium_users_admin'))
+            setAdminsList(loadLocalData('travelium_admins_admin'))
             setLoading(false)
             return
         }
@@ -168,6 +189,11 @@ export default function AdminDashboard() {
             (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setUsers(d); saveLocal('users', d) },
             onError('users')
         )
+        const unsubAdmins = onSnapshot(
+            collection(db, 'admins'),
+            (snap) => { const d = snap.docs.map(dd => ({ email: dd.id, ...dd.data() })); setAdminsList(d); saveLocal('admins', d) },
+            onError('admins')
+        )
         const unsubSettings = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
             const data = snap.exists() ? snap.data() : {}
             const defaults = {
@@ -197,7 +223,7 @@ export default function AdminDashboard() {
             setSettingsForm(prev => Object.keys(prev).length ? prev : merged)
             setOfflineMode(false)
         }, (err) => { console.error('Settings error:', err); setOfflineMode(true) })
-        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings() }
+        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings(); unsubAdmins() }
     }, [])
 
     const stats = useMemo(() => ({
@@ -295,6 +321,27 @@ export default function AdminDashboard() {
         setApplications(next); saveLocal('applications', next)
         toast(`Application ${newStatus} (offline).`, 'success')
         setStatusNote(''); setShowNoteInput(null); setUpdating(null)
+    }
+
+    const updateDocStatus = async (appId, docKey, newStatus) => {
+        const updateData = { [`doc_status.${docKey}`]: newStatus, updated_at: new Date().toISOString() }
+        if (db) {
+            try {
+                await updateDoc(doc(db, 'applications', appId), { [`doc_status.${docKey}`]: newStatus, updated_at: serverTimestamp() })
+                toast(`Document marked as ${newStatus}`, 'success')
+                setSelectedApp(prev => ({ ...prev, doc_status: { ...(prev?.doc_status || {}), [docKey]: newStatus } }))
+                return
+            } catch (err) { toast('Error updating document status', 'error'); console.error(err) }
+        }
+        const next = applications.map(a => {
+            if (a.id === appId) {
+                return { ...a, doc_status: { ...(a.doc_status || {}), [docKey]: newStatus }, updated_at: new Date().toISOString() }
+            }
+            return a
+        })
+        setApplications(next); saveLocal('applications', next)
+        setSelectedApp(prev => ({ ...prev, doc_status: { ...(prev?.doc_status || {}), [docKey]: newStatus } }))
+        toast(`Document marked as ${newStatus} (offline).`, 'success')
     }
 
     const deleteApplication = async (id) => {
@@ -1030,6 +1077,42 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
+                {/* ── Staff & Roles ── */}
+                <div className="admin-table-card">
+                    <div className="card-header"><div className="card-title-group"><Users size={18} className="title-icon" /><h3>Staff & Access Roles</h3></div></div>
+                    <div className="settings-body">
+                        <div className="admin-table-overflow" style={{ marginBottom: '1.5rem' }}>
+                            <table className="admin-table">
+                                <thead><tr><th>Staff Email</th><th>Role</th><th>Added</th><th>Actions</th></tr></thead>
+                                <tbody>
+                                    {adminsList.map(a => (
+                                        <tr key={a.email}>
+                                            <td><strong>{a.email}</strong> {a.email === currentUser?.email && <span className="status-badge-live" style={{ fontSize: '0.65rem', padding: '1px 6px', marginLeft: 6 }}>You</span>}</td>
+                                            <td><span className="user-role" style={{ textTransform: 'capitalize' }}>{a.role || 'Super Admin'}</span></td>
+                                            <td><Calendar size={12} style={{ opacity: 0.5, marginRight: 4 }} />{formatDateShort(a.created_at)}</td>
+                                            <td>
+                                                <button onClick={() => removeAdminRole(a.email)} className="filter-btn" style={{ color: 'var(--error)' }} title="Remove access"><Trash2 size={14} /></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {adminsList.length === 0 && (
+                                        <tr><td colSpan="4" style={{ textAlign: 'center', opacity: 0.5 }}>Using legacy firestore rules for admin access. Add an admin below to migrate.</td></tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-group"><label>New Staff Email</label><input className="admin-note-input" value={adminForm.email} onChange={e => setAdminForm(f => ({ ...f, email: e.target.value }))} placeholder="staff@travelium.com" /></div>
+                            <div className="form-group"><label>Role</label>
+                                <select className="admin-note-input" value={adminForm.role} onChange={e => setAdminForm(f => ({ ...f, role: e.target.value }))}>
+                                    <option value="agent">Support Agent</option><option value="admin">Super Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onClick={saveAdminRole} className="admin-btn-secondary"><Plus size={16} /> Add Staff Member</button>
+                    </div>
+                </div>
+
                 {/* ── System Info ── */}
                 <div className="admin-table-card">
                     <div className="card-header"><div className="card-title-group"><Info size={18} className="title-icon" /><h3>System</h3></div></div>
@@ -1390,9 +1473,14 @@ export default function AdminDashboard() {
                                             const docData = selectedApp.documents?.[key]
                                             if (!docData) return null
                                             const isImage = docData.startsWith('data:image')
+                                            const docStatus = selectedApp.doc_status?.[key] || 'pending'
                                             return (
                                                 <div key={key} className="detail-doc-card">
-                                                    <div className="detail-doc-label"><FileText size={14} /> {label}</div>
+                                                    <div className="detail-doc-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <span><FileText size={14} /> {label}</span>
+                                                        {docStatus === 'verified' && <CheckCircle size={14} color="#10b981" title="Verified" />}
+                                                        {docStatus === 'rejected' && <XCircle size={14} color="#ef4444" title="Rejected" />}
+                                                    </div>
                                                     {isImage ? (
                                                         <button
                                                             onClick={(e) => {
@@ -1408,6 +1496,10 @@ export default function AdminDashboard() {
                                                     ) : (
                                                         <a href={docData} download={`${selectedApp.full_name || 'document'}_${key}`} className="doc-link"><Download size={16} /> Download {label} <ExternalLink size={12} /></a>
                                                     )}
+                                                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                                                        <button onClick={() => updateDocStatus(selectedApp.id, key, 'verified')} className="admin-btn-success" style={{ flex: 1, padding: '0.4rem', fontSize: '0.75rem', opacity: docStatus === 'verified' ? 1 : 0.6 }}><Check size={14} /> Verify</button>
+                                                        <button onClick={() => updateDocStatus(selectedApp.id, key, 'rejected')} className="admin-btn-danger" style={{ flex: 1, padding: '0.4rem', fontSize: '0.75rem', opacity: docStatus === 'rejected' ? 1 : 0.6 }}><X size={14} /> Reject</button>
+                                                    </div>
                                                 </div>
                                             )
                                         })}

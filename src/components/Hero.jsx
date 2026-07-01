@@ -196,7 +196,7 @@ export default function Hero() {
                         alt=""
                         className={`hero-bg-img${activeBg === i && loadedImages.has(i) ? ' hero-bg-img--active' : ''}`}
                         loading={i === 0 ? 'eager' : 'lazy'}
-                        fetchPriority={i === 0 ? 'high' : 'auto'}
+                        fetchpriority={i === 0 ? 'high' : 'auto'}
                         decoding={i === 0 ? 'sync' : 'async'}
                         onLoad={() => handleImageLoad(i)}
                     />

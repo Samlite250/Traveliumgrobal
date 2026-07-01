@@ -43,8 +43,8 @@ export default function Services() {
                 </div>
                 {loading && <div className="admin-loading"><Loader2 size={24} className="animate-spin" /></div>}
                 <div className="services-grid">
-                    {display.slice(0, 8).map(s => (
-                        <div key={s.title} className={`service-card reveal${s.featured ? ' service-card--featured' : ''}`}>
+                    {display.slice(0, 8).map((s, i) => (
+                        <div key={s.id || s.title || i} className={`service-card reveal${s.featured ? ' service-card--featured' : ''}`}>
                             <div className="service-img">
                                 <img src={s.img || 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop'} alt={s.title} />
                             </div>

@@ -7,7 +7,7 @@ import {
     LayoutDashboard, PlusCircle, LogOut, ClipboardList,
     CheckCircle, AlertCircle, Loader2, ArrowRight, User,
     FileText, Clock, ShieldCheck, HelpCircle, ChevronRight,
-    Settings, Search, Filter, TrendingUp, XCircle
+    Settings, Search, Filter, TrendingUp, XCircle, CreditCard, DollarSign
 } from 'lucide-react'
 
 const statusInfo = {

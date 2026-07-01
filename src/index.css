@@ -3374,8 +3374,7 @@ tr:hover td {
 
   .stat-item:last-child {
     grid-column: span 2;
-    max-width: 280px;
-    margin: 0 auto;
+    width: 100%;
   }
 
   /* ── Services ── */
@@ -8473,4 +8472,88 @@ main {
 
 .user-search-btn:active {
   transform: scale(0.96);
+}
+
+/* ===== STATS BAR (Home KPI Cards) ===== */
+.stats-bar {
+  background: var(--navy-dark);
+  padding: 2.5rem 0;
+}
+
+.stats-bar .container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+/* Every stat-item is a card */
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.4rem 1.6rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.stat-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-3px);
+}
+
+/* Last card center-aligned */
+.stat-item:last-child {
+  justify-content: center;
+}
+
+/* Icon wrapper */
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--gold-light);
+}
+
+/* Animated number value */
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Label below the number */
+.stat-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: 0.3rem;
+}
+
+/* Divider between cards — hidden since we use grid */
+.stat-divider {
+  display: none;
+}
+
+/* Responsive: single column on mobile — last card full width */
+@media (max-width: 640px) {
+  .stats-bar .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stat-item:last-child {
+    grid-column: 1 / -1;
+  }
 }
