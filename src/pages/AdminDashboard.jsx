@@ -102,6 +102,7 @@ export default function AdminDashboard() {
     const [syncMsg, setSyncMsg] = useState('')
     const [adminsList, setAdminsList] = useState([])
     const [adminForm, setAdminForm] = useState({ email: '', role: 'agent' })
+    const [adminsPermissionError, setAdminsPermissionError] = useState(false)
 
     const saveAdminRole = async () => {
         if (!adminForm.email) return toast('Email is required', 'error')
@@ -161,8 +162,13 @@ export default function AdminDashboard() {
                 if (name === 'services') setServices(local)
                 if (name === 'transactions') setTransactions(local)
                 if (name === 'users') setUsers(local)
+                if (name === 'admins') setAdminsList(local)
             }
-            setOfflineMode(true)
+            if (name === 'admins') {
+                setAdminsPermissionError(true)
+            } else {
+                setOfflineMode(true)
+            }
             setLoading(false)
         }
         const unsubApps = onSnapshot(
@@ -1083,6 +1089,15 @@ export default function AdminDashboard() {
                 <div className="admin-table-card">
                     <div className="card-header"><div className="card-title-group"><Users size={18} className="title-icon" /><h3>Staff & Access Roles</h3></div></div>
                     <div className="settings-body">
+                        {adminsPermissionError && (
+                            <div className="status-alert info" style={{ marginBottom: '1.5rem', background: 'rgba(239, 68, 68, 0.1)', color: '#fca5a5', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'flex-start', gap: '0.75rem', padding: '1rem', borderRadius: '8px' }}>
+                                <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: '2px', color: '#f87171' }} />
+                                <div>
+                                    <strong style={{ display: 'block', marginBottom: '4px', fontSize: '0.9rem', color: '#f87171' }}>Access Restricted (firestore.rules)</strong>
+                                    <span style={{ fontSize: '0.85rem', lineHeight: '1.4', opacity: 0.9 }}>To view or manage other administrators, please add your email to the <code>isAdmin()</code> list in your <code>firestore.rules</code> and deploy them to Firebase. Fallback local data is active.</span>
+                                </div>
+                            </div>
+                        )}
                         <div className="admin-table-overflow" style={{ marginBottom: '1.5rem' }}>
                             <table className="admin-table">
                                 <thead><tr><th>Staff Email</th><th>Role</th><th>Added</th><th>Actions</th></tr></thead>
