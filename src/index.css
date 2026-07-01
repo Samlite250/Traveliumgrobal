@@ -1405,9 +1405,9 @@ button {
 
 /* ===== HOW IT WORKS ===== */
 .steps-grid {
-  display: flex;
-  justify-content: space-between;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
   position: relative;
   max-width: 1000px;
   margin: 0 auto;
@@ -3227,7 +3227,7 @@ tr:hover td {
   }
 
   .steps-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .steps-grid::before {
@@ -3413,7 +3413,7 @@ tr:hover td {
 
   /* ── How It Works ── */
   .steps-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .steps-grid::before {
@@ -7505,11 +7505,11 @@ main {
 }
 
 .stat-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--gray-400);
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: var(--gray-600) !important;
 }
 
 .stat-icon-wrap {
@@ -7533,10 +7533,10 @@ main {
 }
 
 .stat-value {
-  font-size: 2.5rem;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--navy);
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  color: var(--navy) !important;
 }
 
 .stat-trend {
