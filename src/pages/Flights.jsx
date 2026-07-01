@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
-import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -41,12 +41,12 @@ export default function Flights() {
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
     const handleFile = e => setFiles(f => ({ ...f, [e.target.name]: e.target.files[0] }))
 
-    const fileToBase64 = (file) => new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => resolve(reader.result)
-        reader.onerror = error => reject(error)
-    })
+    const uploadFile = async (file, path) => {
+        if (!file) return null
+        const storageRef = ref(storage, path)
+        await uploadBytes(storageRef, file)
+        return getDownloadURL(storageRef)
+    }
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -55,8 +55,8 @@ export default function Flights() {
 
         try {
             let passportUrl = null
-            if (files.passport) {
-                passportUrl = await fileToBase64(files.passport)
+            if (files.passport && storage) {
+                passportUrl = await uploadFile(files.passport, `flights/${currentUser?.uid || 'guest'}/passport_${Date.now()}`)
             }
 
             if (!db) {

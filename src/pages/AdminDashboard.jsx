@@ -1236,6 +1236,92 @@ export default function AdminDashboard() {
         )
     }
 
+        function renderFlights() {
+        const flightApps = applications.filter(a => a.program_type === 'flight_booking')
+        const flightSearch = search.toLowerCase()
+        const displayFlights = flightSearch
+            ? flightApps.filter(a =>
+                a.full_name?.toLowerCase().includes(flightSearch) ||
+                a.email?.toLowerCase().includes(flightSearch) ||
+                a.origin?.toLowerCase().includes(flightSearch) ||
+                a.destination?.toLowerCase().includes(flightSearch)
+              )
+            : flightApps
+
+        return (
+            <>
+                <div className="admin-filter-bar">
+                    <div className="filters-group">
+                        <div className="search-box">
+                            <Search size={16} />
+                            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search bookings..." />
+                        </div>
+                        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+                            <option value="all">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="approved">Confirmed</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <span className="card-badge">{displayFlights.length} bookings</span>
+                </div>
+
+                <div className="admin-table-card">
+                    {displayFlights.length === 0 ? (
+                        <div className="admin-empty"><Plane size={60} /><h3>No flight bookings yet</h3><p>Submitted flight requests will appear here.</p></div>
+                    ) : (
+                        <div className="admin-table-overflow">
+                            <table className="admin-table">
+                                <thead><tr>
+                                    <th>Passenger</th>
+                                    <th>Route</th>
+                                    <th>Date</th>
+                                    <th>Trip Type</th>
+                                    <th>Passport</th>
+                                    <th>Status</th>
+                                    <th>Received</th>
+                                    <th className="actions-col">Actions</th>
+                                </tr></thead>
+                                <tbody>
+                                    {displayFlights.filter(a => filterStatus === 'all' || a.status === filterStatus).map(a => (
+                                        <tr key={a.id}>
+                                            <td>
+                                                <div className="applicant-info">
+                                                    <strong>{a.full_name || '—'}</strong>
+                                                    <span className="text-muted">{a.email}</span>
+                                                </div>
+                                            </td>
+                                            <td><span style={{fontWeight:600}}>{a.origin || '—'}</span> → <span style={{fontWeight:600}}>{a.destination || '—'}</span></td>
+                                            <td>{a.departure_date || '—'}</td>
+                                            <td><span className="service-type">{a.trip_type || 'one-way'}</span></td>
+                                            <td>
+                                                {a.documents?.passport
+                                                    ? <button className="btn-act pro" onClick={() => setPreviewImage({ url: a.documents.passport, title: 'Passport', applicant: a.full_name || 'Applicant' })}><Eye size={14} /> View</button>
+                                                    : <span className="text-muted">None</span>}
+                                            </td>
+                                            <td><div className={`status-pill-admin ${statusConfig[a.status]?.class || 'st-pending'}`}>{statusConfig[a.status]?.icon}<span>{statusConfig[a.status]?.label || a.status}</span></div></td>
+                                            <td><span className="text-muted">{formatDateShort(a.created_at)}</span></td>
+                                            <td>
+                                                <div className="admin-action-btns">
+                                                    <button className="btn-act pro" onClick={() => setSelectedApp(a)} title="View Details"><Eye size={14} /></button>
+                                                    {a.status !== 'approved' && <button className="btn-act app" onClick={() => updateStatus(a.id, 'approved')} title="Confirm" disabled={updating === a.id}><Check size={14} /></button>}
+                                                    {a.status !== 'rejected' && <button className="btn-act rej" onClick={() => updateStatus(a.id, 'rejected')} title="Reject" disabled={updating === a.id}><XCircle size={14} /></button>}
+                                                    <button className="btn-act rej" onClick={() => setDeleteConfirm(a.id)} title="Delete"><Trash2 size={14} /></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </>
+        )
+    }
+
+        const grouped = {}
     // ── SERVICES TAB ──
     const renderServices = () => {
         const seedDefaultServices = async () => {
@@ -1358,92 +1444,6 @@ export default function AdminDashboard() {
             }
         } // End of seedDefaultServices
 
-        function renderFlights() {
-        const flightApps = applications.filter(a => a.program_type === 'flight_booking')
-        const flightSearch = search.toLowerCase()
-        const displayFlights = flightSearch
-            ? flightApps.filter(a =>
-                a.full_name?.toLowerCase().includes(flightSearch) ||
-                a.email?.toLowerCase().includes(flightSearch) ||
-                a.origin?.toLowerCase().includes(flightSearch) ||
-                a.destination?.toLowerCase().includes(flightSearch)
-              )
-            : flightApps
-
-        return (
-            <>
-                <div className="admin-filter-bar">
-                    <div className="filters-group">
-                        <div className="search-box">
-                            <Search size={16} />
-                            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search bookings..." />
-                        </div>
-                        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
-                            <option value="all">All Statuses</option>
-                            <option value="pending">Pending</option>
-                            <option value="processing">Processing</option>
-                            <option value="approved">Confirmed</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
-                    </div>
-                    <span className="card-badge">{displayFlights.length} bookings</span>
-                </div>
-
-                <div className="admin-table-card">
-                    {displayFlights.length === 0 ? (
-                        <div className="admin-empty"><Plane size={60} /><h3>No flight bookings yet</h3><p>Submitted flight requests will appear here.</p></div>
-                    ) : (
-                        <div className="admin-table-overflow">
-                            <table className="admin-table">
-                                <thead><tr>
-                                    <th>Passenger</th>
-                                    <th>Route</th>
-                                    <th>Date</th>
-                                    <th>Trip Type</th>
-                                    <th>Passport</th>
-                                    <th>Status</th>
-                                    <th>Received</th>
-                                    <th className="actions-col">Actions</th>
-                                </tr></thead>
-                                <tbody>
-                                    {displayFlights.filter(a => filterStatus === 'all' || a.status === filterStatus).map(a => (
-                                        <tr key={a.id}>
-                                            <td>
-                                                <div className="applicant-info">
-                                                    <strong>{a.full_name || '—'}</strong>
-                                                    <span className="text-muted">{a.email}</span>
-                                                </div>
-                                            </td>
-                                            <td><span style={{fontWeight:600}}>{a.origin || '—'}</span> → <span style={{fontWeight:600}}>{a.destination || '—'}</span></td>
-                                            <td>{a.departure_date || '—'}</td>
-                                            <td><span className="service-type">{a.trip_type || 'one-way'}</span></td>
-                                            <td>
-                                                {a.documents?.passport
-                                                    ? <button className="btn-act pro" onClick={() => setPreviewImage({ url: a.documents.passport, title: 'Passport', applicant: a.full_name || 'Applicant' })}><Eye size={14} /> View</button>
-                                                    : <span className="text-muted">None</span>}
-                                            </td>
-                                            <td><div className={`status-pill-admin ${statusConfig[a.status]?.class || 'st-pending'}`}>{statusConfig[a.status]?.icon}<span>{statusConfig[a.status]?.label || a.status}</span></div></td>
-                                            <td><span className="text-muted">{formatDateShort(a.created_at)}</span></td>
-                                            <td>
-                                                <div className="admin-action-btns">
-                                                    <button className="btn-act pro" onClick={() => setSelectedApp(a)} title="View Details"><Eye size={14} /></button>
-                                                    {a.status !== 'approved' && <button className="btn-act app" onClick={() => updateStatus(a.id, 'approved')} title="Confirm" disabled={updating === a.id}><Check size={14} /></button>}
-                                                    {a.status !== 'rejected' && <button className="btn-act rej" onClick={() => updateStatus(a.id, 'rejected')} title="Reject" disabled={updating === a.id}><XCircle size={14} /></button>}
-                                                    <button className="btn-act rej" onClick={() => setDeleteConfirm(a.id)} title="Delete"><Trash2 size={14} /></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
-            </>
-        )
-    }
-
-        const grouped = {}
         services.forEach(s => {
             if (!grouped[s.type]) grouped[s.type] = []
             grouped[s.type].push(s)
