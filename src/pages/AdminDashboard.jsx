@@ -937,10 +937,6 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                 </div>
-            ) : (
-                <div className="admin-table-card msg-detail-panel msg-select-hint">
-                    <div className="admin-empty"><Mail size={50} /><h3>Select a message</h3><p>Click on a message from the list to view its details.</p></div>
-                </div>
             )}
         </div>
     )
