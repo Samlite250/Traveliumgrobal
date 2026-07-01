@@ -1236,12 +1236,134 @@ export default function AdminDashboard() {
 
     // ── SERVICES TAB ──
     const renderServices = () => {
+        const seedDefaultServices = async () => {
+            if (!db) return toast('Database not connected', 'error')
+            const servicesToSeed = [
+                {
+                    name: "Dubai / UAE Work Visa",
+                    type: "visa",
+                    description: "Fast-track your UAE work visa. We handle the entire process — job offer verification, Emirates ID, and more.",
+                    price: 299,
+                    features: ["Job offer matching & verification", "Emirates ID & residency processing", "Full legal authorization & liaison"],
+                    active: true,
+                    featured: true,
+                    img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop",
+                    country: "United Arab Emirates",
+                    flag: "https://flagcdn.com/w40/ae.png",
+                    deadline: ""
+                },
+                {
+                    name: "Work Visa (Global)",
+                    type: "visa",
+                    description: "Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.",
+                    price: 399,
+                    features: ["Job offer verification", "Work permit processing", "Legal documentation support", "Employer liaison"],
+                    active: true,
+                    featured: false,
+                    img: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop",
+                    country: "",
+                    flag: "",
+                    deadline: ""
+                },
+                {
+                    name: "Tourist Visa",
+                    type: "visa",
+                    description: "Travel the world with ease. We handle your tourist visa process end-to-end.",
+                    price: 149,
+                    features: ["Application filing & assembly", "Travel itinerary matching", "Hotel booking confirmation letter", "Fast-track processing review"],
+                    active: true,
+                    featured: false,
+                    img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop",
+                    country: "",
+                    flag: "",
+                    deadline: ""
+                },
+                {
+                    name: "Student Visa",
+                    type: "visa",
+                    description: "Full enrollment student visa for accredited degree programs at partner universities worldwide.",
+                    price: 299,
+                    features: ["University admission coaching", "Document filing & verification", "Visa interview preparation", "Follow-up support"],
+                    active: true,
+                    featured: false,
+                    img: "https://images.unsplash.com/photo-1568792923760-d70635a89fdc?q=80&w=800&auto=format&fit=crop",
+                    country: "",
+                    flag: "",
+                    deadline: ""
+                },
+                {
+                    name: "Permanent Residency",
+                    type: "visa",
+                    description: "Pathway to Permanent Residency. Secure your future in Canada, Australia, Europe or another destination.",
+                    price: 999,
+                    features: ["Eligibility assessment", "Point scoring optimizers", "Legal counsel & full application representation"],
+                    active: true,
+                    featured: false,
+                    img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop",
+                    country: "",
+                    flag: "",
+                    deadline: ""
+                },
+                {
+                    name: "Study Abroad",
+                    type: "study",
+                    description: "Discover the best universities and degree programs worldwide with our expert academic guidance.",
+                    price: 199,
+                    features: ["Global university search", "Scholarship application matching", "Admission essay review"],
+                    active: true,
+                    featured: false,
+                    img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop",
+                    country: "",
+                    flag: "",
+                    deadline: ""
+                },
+                {
+                    name: "Flight Booking",
+                    type: "flight",
+                    description: "Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.",
+                    price: 50,
+                    features: ["Best routing search", "Ticket issues & changes support", "Global 24/7 client hotline"],
+                    active: true,
+                    featured: false,
+                    img: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop",
+                    country: "",
+                    flag: "",
+                    deadline: ""
+                }
+            ];
+
+            toast('Seeding default services...', 'info')
+            let seeded = 0
+            for (const svc of servicesToSeed) {
+                const exists = services.some(s => (s.name || s.title || '').toLowerCase().trim() === svc.name.toLowerCase().trim())
+                if (!exists) {
+                    try {
+                        await addDoc(collection(db, 'services'), {
+                            ...svc,
+                            created_at: serverTimestamp(),
+                            updated_at: serverTimestamp()
+                        })
+                        seeded++
+                    } catch (e) {
+                        console.error('Seed error:', e)
+                    }
+                }
+            }
+            if (seeded > 0) {
+                toast(`Seeded ${seeded} services successfully!`, 'success')
+            } else {
+                toast('Default services already exist.', 'info')
+            }
+        }
+
         const grouped = {}
         services.forEach(s => {
             if (!grouped[s.type]) grouped[s.type] = []
             grouped[s.type].push(s)
         })
         const typeLabels = { visa: 'Visa Services', flight: 'Flight Services', study: 'Study Abroad', scholarship: 'Scholarship', other: 'Other Services' }
+        const showSeedPrompt = services.length < 3 || !services.some(s => (s.name || s.title || '').toLowerCase().includes('dubai'))
+
         return (
             <>
                 <div className="admin-filter-bar">
@@ -1249,6 +1371,11 @@ export default function AdminDashboard() {
                         <button className="admin-btn-primary" onClick={() => { setEditingService(null); setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' }); setShowServiceEditor(true) }}>
                             <Plus size={16} /> New Service
                         </button>
+                        {showSeedPrompt && (
+                            <button className="admin-btn-success" onClick={seedDefaultServices}>
+                                <Package size={16} /> Seed Default Services
+                            </button>
+                        )}
                     </div>
                     <span className="card-badge">{services.length} services</span>
                 </div>
