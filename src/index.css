@@ -7547,16 +7547,26 @@ main {
   font-weight: 600;
   color: var(--text-light);
 }
+.stat-trend.neutral { color: var(--gray-500); }
+.stat-trend.pending { color: #d97706; }
+.stat-trend.success { color: #16a34a; }
+.stat-trend.danger  { color: #dc2626; }
 
 .stat-bar {
   position: absolute;
   bottom: 0;
   left: 0;
   height: 3px;
-  background: rgba(255,255,255,0.35);
+  background: var(--navy);
   border-radius: 0 3px 0 0;
   transition: width 1s ease;
+  opacity: 0.15;
 }
+
+.premium-stat-card.navy .stat-bar { background: var(--navy); }
+.premium-stat-card.gold .stat-bar { background: var(--gold-dark); }
+.premium-stat-card.success .stat-bar { background: #16a34a; }
+.premium-stat-card.rejected .stat-bar { background: #dc2626; }
 
 .stat-decoration {
   position: absolute;
@@ -7565,8 +7575,9 @@ main {
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.05);
+  background: var(--gray-100);
   pointer-events: none;
+  opacity: 0.5;
 }
 
 /* ── Dashboard Content Cards ── */
