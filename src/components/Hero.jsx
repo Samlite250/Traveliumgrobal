@@ -103,6 +103,8 @@ const proofAvatars = [
 
 export default function Hero() {
     const [activeBg, setActiveBg] = useState(0)
+    const [loadedImages, setLoadedImages] = useState(new Set([]))
+    const handleImageLoad = (i) => setLoadedImages(prev => { const s = new Set(prev); s.add(i); return s; })
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -167,11 +169,11 @@ export default function Hero() {
         }
     };
 
-    // Cycle background image every 60 seconds
+    // Cycle background image every 30 seconds
     useEffect(() => {
         const timer = setInterval(() => {
             setActiveBg(prev => (prev + 1) % heroBgImages.length)
-        }, 60000)
+        }, 30000)
         return () => clearInterval(timer)
     }, [])
 
@@ -192,8 +194,11 @@ export default function Hero() {
                         key={i}
                         src={src}
                         alt=""
-                        className={`hero-bg-img${activeBg === i ? ' hero-bg-img--active' : ''}`}
+                        className={`hero-bg-img${activeBg === i && loadedImages.has(i) ? ' hero-bg-img--active' : ''}`}
                         loading={i === 0 ? 'eager' : 'lazy'}
+                        fetchPriority={i === 0 ? 'high' : 'auto'}
+                        decoding={i === 0 ? 'sync' : 'async'}
+                        onLoad={() => handleImageLoad(i)}
                     />
                 ))}
                 {/* Frosted overlay */}

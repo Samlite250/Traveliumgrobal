@@ -787,6 +787,7 @@ button {
   height: 100%;
   overflow: hidden;
   z-index: 0;
+  background: #0a1436; /* dark navy fallback — prevents white flash before first image loads */
 }
 
 /* === HERO BACKGROUND SLIDESHOW === */
