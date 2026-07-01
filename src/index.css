@@ -1262,18 +1262,21 @@ button {
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
   align-items: stretch;
 }
 
 .service-card {
   background: var(--white);
-  border-radius: var(--radius);
-  border: 1px solid var(--gray-200);
-  transition: var(--transition);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(26, 43, 94, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .service-card::after {
@@ -1300,7 +1303,7 @@ button {
 }
 
 .service-img {
-  height: 190px;
+  height: 220px;
   overflow: hidden;
   position: relative;
 }
@@ -1327,7 +1330,24 @@ button {
 }
 
 .service-content {
-  padding: 1.5rem;
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.service-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.75rem;
+}
+
+.service-content p {
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  flex: 1;
+  font-size: 0.95rem;
 }
 
 .service-icon {
@@ -3196,9 +3216,7 @@ tr:hover td {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  /* services grid auto handles its own responsive scale */
 
   .destinations-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -3379,12 +3397,8 @@ tr:hover td {
   }
 
   /* ── Services ── */
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .service-card--featured {
-    grid-column: span 2;
+    grid-column: span 1;
   }
 
   /* ── Destinations ── */
@@ -3522,9 +3536,7 @@ tr:hover td {
     padding: 3.5rem 0;
   }
 
-  .services-grid {
-    grid-template-columns: 1fr;
-  }
+  /* auto grid handles layout natively */
 
   .service-card--featured {
     grid-column: span 1;
