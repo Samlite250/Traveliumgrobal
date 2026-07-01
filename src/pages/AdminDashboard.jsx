@@ -1356,7 +1356,7 @@ export default function AdminDashboard() {
             } else {
                 toast('Default services already exist.', 'info')
             }
-        }
+        } // End of seedDefaultServices
 
         function renderFlights() {
         const flightApps = applications.filter(a => a.program_type === 'flight_booking')
