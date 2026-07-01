@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -39,6 +39,21 @@ function AppLayout() {
     const location = useLocation()
     const adminPaths = ['/admin', '/admin-login', '/admi-login']
     const isAdminPath = adminPaths.some(p => location.pathname === p || location.pathname.startsWith('/admin'))
+
+    // Global scroll-reveal observer — adds .visible to all .reveal elements on scroll
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const els = document.querySelectorAll('.reveal')
+            if (!els.length) return
+            const observer = new IntersectionObserver(
+                (entries) => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } }),
+                { threshold: 0.1 }
+            )
+            els.forEach(el => observer.observe(el))
+            return () => observer.disconnect()
+        }, 100) // small delay lets React finish rendering
+        return () => clearTimeout(timer)
+    }, [location.pathname])
 
     return (
         <>

@@ -1262,8 +1262,9 @@ button {
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
+  align-items: stretch;
 }
 
 .service-card {
@@ -3379,7 +3380,11 @@ tr:hover td {
 
   /* ── Services ── */
   .services-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .service-card--featured {
+    grid-column: span 2;
   }
 
   /* ── Destinations ── */
@@ -3519,6 +3524,10 @@ tr:hover td {
 
   .services-grid {
     grid-template-columns: 1fr;
+  }
+
+  .service-card--featured {
+    grid-column: span 1;
   }
 
   .destinations-grid {
@@ -4130,6 +4139,11 @@ main {
   border: 2px solid var(--gold);
   box-shadow: 0 0 0 4px rgba(200, 168, 75, 0.12), var(--shadow-lg);
   position: relative;
+  grid-column: span 2;
+}
+
+.service-card--featured .service-img {
+  height: 240px;
 }
 
 /* Featured Visa Card */
