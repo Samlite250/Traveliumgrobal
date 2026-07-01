@@ -31,6 +31,28 @@ export default function Services() {
 
     const display = loading ? fallbackServices : services.filter(s => s.active !== false || loading)
 
+    // Local scroll-reveal observer specifically for async loaded service cards
+    useEffect(() => {
+        if (loading) return
+        const timer = setTimeout(() => {
+            const els = document.querySelectorAll('.services-grid .reveal')
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting) {
+                            e.target.classList.add('visible')
+                            observer.unobserve(e.target)
+                        }
+                    })
+                },
+                { threshold: 0.1 }
+            )
+            els.forEach(el => observer.observe(el))
+            return () => observer.disconnect()
+        }, 50)
+        return () => clearTimeout(timer)
+    }, [loading])
+
     return (
         <section className="services section">
             <div className="container">
