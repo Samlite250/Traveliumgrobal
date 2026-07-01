@@ -5,10 +5,12 @@ import { db } from '../lib/firebase'
 import { Briefcase, Landmark, Palmtree, GraduationCap, ArrowRight, Loader2 } from 'lucide-react'
 
 const fallbackServices = [
-    { title: 'Dubai Work Visa', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop', desc: 'Fast-track your UAE work visa.', href: '/visa-services', featured: true },
-    { title: 'Work Visa (Global)', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop', desc: 'Employment-based visas for 50+ destinations.', href: '/visa-services' },
-    { title: 'Tourist Visa', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', desc: 'Travel the world with ease.', href: '/visa-services' },
-    { title: 'Study Abroad', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop', desc: 'Discover best universities worldwide.', href: '/study-abroad' },
+    { title: 'Flight Booking', img: 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', featured: true, type: 'flight' },
+    { title: 'Work Visa (Global)', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop', desc: 'Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.', href: '/visa-services', type: 'visa' },
+    { title: 'Tourist Visa', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', desc: 'Travel the world with ease. We handle your tourist visa process end-to-end.', href: '/visa-services', type: 'visa' },
+    { title: 'Permanent Residency', img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop', desc: 'Pathway to Permanent Residency. Secure your future in Canada, Australia, Europe or another destination.', href: '/visa-services', type: 'visa' },
+    { title: 'Study Abroad', img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800&auto=format&fit=crop', desc: 'Discover the best universities and degree programs worldwide with our expert academic guidance.', href: '/study-abroad', type: 'study' },
+    { title: 'Consultation & Advisory', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop', desc: 'Expert one-on-one guidance to plan your international journey, from visa to settlement.', href: '/contact', type: 'visa' },
 ]
 
 const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-abroad', scholarship: '/scholarships' }
