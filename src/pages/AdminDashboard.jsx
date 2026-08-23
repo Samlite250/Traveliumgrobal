@@ -267,11 +267,41 @@ export default function AdminDashboard() {
             setOfflineMode(false)
         }, (err) => { console.error('Settings error:', err); setOfflineMode(true) })
 
+        const countTotalJobs = (data) => {
+            if (!Array.isArray(data)) return 0
+            return data.reduce((acc, c) => acc + (c.highPayableJobs?.length || 0) + (c.partTimeJobs?.length || 0), 0)
+        }
+
         const unsubJobs = onSnapshot(doc(db, 'settings', 'jobs'), (snap) => {
+            let localSaved = []
+            try {
+                const raw = localStorage.getItem('travelium_jobs_config')
+                if (raw) localSaved = JSON.parse(raw)
+            } catch { }
+
             if (snap.exists() && snap.data()?.jobs) {
-                const liveJobs = snap.data().jobs
-                setJobsData(liveJobs)
-                try { localStorage.setItem('travelium_jobs_config', JSON.stringify(liveJobs)) } catch { }
+                const cloudJobs = snap.data().jobs
+                const cloudCount = countTotalJobs(cloudJobs)
+                const localCount = countTotalJobs(localSaved)
+
+                if (localCount > cloudCount && db) {
+                    setDoc(doc(db, 'settings', 'jobs'), {
+                        jobs: localSaved,
+                        updated_at: serverTimestamp()
+                    }).catch(err => console.warn("Auto-sync local jobs error:", err))
+                    setJobsData(localSaved)
+                } else {
+                    setJobsData(cloudJobs)
+                    try { localStorage.setItem('travelium_jobs_config', JSON.stringify(cloudJobs)) } catch { }
+                }
+            } else {
+                const dataToUpload = localSaved.length ? localSaved : jobsData
+                if (db && dataToUpload.length) {
+                    setDoc(doc(db, 'settings', 'jobs'), {
+                        jobs: dataToUpload,
+                        updated_at: serverTimestamp()
+                    }).catch(err => console.warn("Initial jobs sync error:", err))
+                }
             }
         }, (err) => { console.warn('Jobs realtime sync notice:', err) })
 
