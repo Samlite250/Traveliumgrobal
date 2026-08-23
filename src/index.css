@@ -9966,3 +9966,48 @@ main {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== ADMIN ACTION BUTTONS (Jobs & Careers table) ===== */
+.admin-action-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.btn-act.pro {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.btn-act.pro:hover {
+  background: #1d4ed8;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+
+.btn-act.rej {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-act.rej:hover {
+  background: #b91c1c;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
+}
