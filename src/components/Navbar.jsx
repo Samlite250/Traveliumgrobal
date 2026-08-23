@@ -188,7 +188,7 @@ export default function Navbar() {
                     <div className="container">
                         <div className="topbar-left">
                             <a href={`mailto:${siteSettings?.supportEmail || 'traveliumgrobal@gmail.com'}`} className="topbar-link"><Mail size={12} /> {siteSettings?.supportEmail || 'traveliumgrobal@gmail.com'}</a>
-                            <a href={`tel:${siteSettings?.supportPhone?.replace(/\s/g, '') || '+250782531515'}`} className="topbar-link"><Phone size={12} /> {siteSettings?.supportPhone || '+250 782531515'}</a>
+                            <a href={`tel:${siteSettings?.supportPhone?.replace(/\s/g, '') || '+250786189460'}`} className="topbar-link"><Phone size={12} /> {siteSettings?.supportPhone || '+250 786 189 460'}</a>
                         </div>
                         <div className="topbar-right">
                             {siteSettings?.linkedin && <a href={siteSettings.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Globe size={12} /></a>}

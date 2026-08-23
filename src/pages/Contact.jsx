@@ -88,27 +88,32 @@ export default function Contact() {
                                     <div className="contact-phone-list">
                                         <h4>TRAVELIUM SUPPORT</h4>
                                         <div className="phone-entry">
-                                            <p><strong>{s.supportPhone || '+250782531515'}</strong></p>
-                                            <small>Travelium Support</small>
+                                            <p><strong>{s.supportPhone || '+250 786 189 460'}</strong></p>
+                                            <small>Visas &amp; General Support</small>
                                             {s.supportPhone && <a href={`https://wa.me/${s.supportPhone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>}
                                         </div>
                                         {w.length > 0 ? w.map((n, i) => (
-                                        <div className="phone-entry" key={i}>
-                                            <p><strong>{n.number}</strong></p>
-                                            <small>{n.label || (i === 0 ? 'Assistant' : 'Support & Inquiry')}</small>
-                                            <a href={`https://wa.me/${n.number.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
-                                        </div>
+                                            <div className="phone-entry" key={i}>
+                                                <p><strong>{n.number}</strong></p>
+                                                <small>{n.label || (i === 0 ? 'Assistant' : 'Support & Inquiry')}</small>
+                                                <a href={`https://wa.me/${n.number.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
+                                            </div>
                                         )) : (<>
-                                        <div className="phone-entry">
-                                            <p><strong>+250796230619</strong></p>
-                                            <small>Assistant</small>
-                                            <a href="https://wa.me/250796230619" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
-                                        </div>
-                                        <div className="phone-entry">
-                                            <p><strong>+250793658206</strong></p>
-                                            <small>Support & Inquiry</small>
-                                            <a href="https://wa.me/250793658206" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
-                                        </div>
+                                            <div className="phone-entry">
+                                                <p><strong>+257 65 84 02 80</strong></p>
+                                                <small>Regional Support (Burundi)</small>
+                                                <a href="https://wa.me/25765840280" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
+                                            </div>
+                                            <div className="phone-entry">
+                                                <p><strong>+250 733 387 135</strong></p>
+                                                <small>Jobs &amp; Recruitment</small>
+                                                <a href="https://wa.me/250733387135" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
+                                            </div>
+                                            <div className="phone-entry">
+                                                <p><strong>+250 732 580 014</strong></p>
+                                                <small>Air Ticketing &amp; Visas</small>
+                                                <a href="https://wa.me/250732580014" target="_blank" rel="noopener noreferrer" className="whatsapp-link"><Send size={13} /></a>
+                                            </div>
                                         </>)}
                                     </div>
                                 </div>

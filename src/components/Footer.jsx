@@ -18,8 +18,8 @@ export default function Footer() {
     const whatsAppNumbers = s.whatsappNumbers || []
     const getFirstPhone = () => {
         if (s.supportPhone) return s.supportPhone
-        if (whatsAppNumbers.length > 0) return whatsAppNumbers[0].number?.replace(/^\+/, '') || '+250 782 531 515'
-        return '+250 782 531 515'
+        if (whatsAppNumbers.length > 0) return whatsAppNumbers[0].number?.replace(/^\+/, '') || '+250 786 189 460'
+        return '+250 786 189 460'
     }
     return (
         <footer className="footer-premium">
@@ -102,22 +102,33 @@ export default function Footer() {
                                     <div className="contact-block">
                                         <div className="block-head">
                                             <div className="block-icon"><Globe size={16} /></div>
+                                            <span style={{ color: 'white' }}>Regional (Burundi)</span>
+                                        </div>
+                                        <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
+                                                <Phone size={14} color="var(--gold)" /> <span>+257 65 84 02 80</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="contact-block">
+                                        <div className="block-head">
+                                            <div className="block-icon"><Globe size={16} /></div>
                                             <span style={{ color: 'white' }}>Jobs & Recruitment</span>
                                         </div>
                                         <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                                <Phone size={14} color="var(--gold)" /> <span>+250 796 230 619</span>
+                                                <Phone size={14} color="var(--gold)" /> <span>+250 733 387 135</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="contact-block">
                                         <div className="block-head">
                                             <div className="block-icon"><Plane size={16} /></div>
-                                            <span style={{ color: 'white' }}>Air Ticketing</span>
+                                            <span style={{ color: 'white' }}>Air Ticketing & Visas</span>
                                         </div>
                                         <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                                <Phone size={14} color="var(--gold)" /> <span>+250 793 658 206</span>
+                                                <Phone size={14} color="var(--gold)" /> <span>+250 732 580 014</span>
                                             </div>
                                         </div>
                                     </div>
