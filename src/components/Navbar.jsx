@@ -268,6 +268,44 @@ export default function Navbar() {
                         <X size={24} />
                     </button>
                 </div>
+
+                {/* ── Language strip ── */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '0.5rem 0',
+                    marginBottom: '0.75rem',
+                    borderBottom: '1px solid rgba(10,18,45,0.08)',
+                    paddingBottom: '1rem',
+                }}>
+                    <Globe size={13} style={{ color: 'var(--gold)', flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-light)', letterSpacing: '0.06em', textTransform: 'uppercase', marginRight: '4px' }}>
+                        {t('navbar.language', 'Language')}
+                    </span>
+                    {[{ code: 'en', label: 'EN' }, { code: 'fr', label: 'FR' }, { code: 'rw', label: 'RW' }].map(lang => (
+                        <button
+                            key={lang.code}
+                            onClick={() => i18n.changeLanguage(lang.code)}
+                            style={{
+                                padding: '3px 10px',
+                                borderRadius: '20px',
+                                fontSize: '0.72rem',
+                                fontWeight: 700,
+                                fontFamily: 'inherit',
+                                border: '1.5px solid',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                borderColor: i18n.resolvedLanguage === lang.code ? 'var(--navy)' : 'var(--gray-200)',
+                                background: i18n.resolvedLanguage === lang.code ? 'var(--navy)' : 'transparent',
+                                color: i18n.resolvedLanguage === lang.code ? '#fff' : 'var(--gray-600)',
+                            }}
+                        >
+                            {lang.label}
+                        </button>
+                    ))}
+                </div>
+
                 <ul className="mobile-nav-links">
                     <li>
                         <Link to="/" className={location.pathname === '/' ? 'active' : ''} onClick={() => setMenuOpen(false)}>
@@ -377,41 +415,6 @@ export default function Navbar() {
                     </li>
                 </ul>
                 <div className="mobile-actions">
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        padding: '0.6rem 1rem',
-                        background: 'var(--navy)',
-                        borderRadius: '8px',
-                        marginBottom: '0.5rem',
-                    }}>
-                        <Globe size={14} style={{ color: 'rgba(255,255,255,0.8)' }} />
-                        <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>
-                            {t('navbar.language', 'Language')}:
-                        </span>
-                        <select
-                            value={i18n.resolvedLanguage || 'en'}
-                            onChange={e => i18n.changeLanguage(e.target.value)}
-                            style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: 'white',
-                                fontSize: '0.85rem',
-                                fontWeight: 700,
-                                fontFamily: 'inherit',
-                                cursor: 'pointer',
-                                outline: 'none',
-                                appearance: 'none',
-                                WebkitAppearance: 'none',
-                            }}
-                        >
-                            <option value="en" style={{ background: '#1a2b5e' }}>English (EN)</option>
-                            <option value="fr" style={{ background: '#1a2b5e' }}>Français (FR)</option>
-                            <option value="rw" style={{ background: '#1a2b5e' }}>Kinyarwanda (RW)</option>
-                        </select>
-                    </div>
                     <Link to="/login" className="btn btn-navy" onClick={() => setMenuOpen(false)}>{t('navbar.login')}</Link>
                     <Link to="/apply" className="btn btn-primary" onClick={() => setMenuOpen(false)}>{t('navbar.applyNow')} <ArrowRight size={16} /></Link>
                 </div>
