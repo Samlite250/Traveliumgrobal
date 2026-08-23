@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
     Briefcase, DollarSign, Clock, MapPin, Building, Search, Filter,
     CheckCircle, ArrowRight, ShieldCheck, Star, Sparkles, Send, X, Globe, UserCheck
@@ -672,12 +672,27 @@ export const JOBS_DATA = [
 
 export default function Jobs() {
     const { toast } = useToast()
+    const [searchParams] = useSearchParams()
     const [activeCountry, setActiveCountry] = useState(JOBS_DATA[0].id)
     const [searchQuery, setSearchQuery] = useState('')
     const [filterType, setFilterType] = useState('all') // 'all', 'highPayable', 'partTime'
     const [selectedJob, setSelectedJob] = useState(null)
     const [isApplying, setIsApplying] = useState(false)
     const [submitted, setSubmitted] = useState(false)
+
+    // Auto-select country from URL query parameter if present
+    useEffect(() => {
+        const queryCountry = searchParams.get('country')
+        if (queryCountry) {
+            const found = JOBS_DATA.find(c =>
+                c.country.toLowerCase().includes(queryCountry.toLowerCase()) ||
+                c.id.toLowerCase().includes(queryCountry.toLowerCase())
+            )
+            if (found) {
+                setActiveCountry(found.id)
+            }
+        }
+    }, [searchParams])
 
     const [form, setForm] = useState({
         fullName: '',

@@ -24,16 +24,16 @@ const visaServicesDropdown = [
 ]
 
 const workAbroadDropdown = [
-    { label: 'Dubai', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Hot', sub: 'UAE Work Visa' },
-    { label: 'Canada', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Hot', sub: 'Express Entry' },
-    { label: 'USA', href: '/visa-services', icon: <MapPin size={15} />, tag: 'Trending', sub: 'H-1B Work Visa' },
-    { label: 'UK', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Skilled Worker' },
-    { label: 'Germany', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'EU Blue Card' },
-    { label: 'France', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Talent Passport' },
-    { label: 'Oman', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'Oman Work Permit' },
-    { label: 'China', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'China Z-Visa' },
-    { label: 'Japan', href: '/visa-services', icon: <MapPin size={15} />, tag: 'New', sub: 'Work Permit' },
-    { label: 'Netherlands', href: '/visa-services', icon: <MapPin size={15} />, tag: null, sub: 'Skilled Migrant' },
+    { label: 'Dubai', href: '/jobs?country=Dubai', icon: <MapPin size={15} />, tag: 'Hot', sub: 'Jobs & Work Visas' },
+    { label: 'Canada', href: '/jobs?country=Canada', icon: <MapPin size={15} />, tag: 'Hot', sub: 'Jobs & Express Entry' },
+    { label: 'USA', href: '/jobs?country=USA', icon: <MapPin size={15} />, tag: 'Trending', sub: 'Jobs & H-1B Visa' },
+    { label: 'UK', href: '/jobs?country=UK', icon: <MapPin size={15} />, tag: null, sub: 'Jobs & Skilled Worker' },
+    { label: 'Germany', href: '/jobs?country=Germany', icon: <MapPin size={15} />, tag: null, sub: 'Jobs & EU Blue Card' },
+    { label: 'France', href: '/jobs?country=France', icon: <MapPin size={15} />, tag: null, sub: 'Jobs & Talent Visa' },
+    { label: 'Oman', href: '/jobs?country=Oman', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Work Permits' },
+    { label: 'China', href: '/jobs?country=China', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Z-Visa' },
+    { label: 'Japan', href: '/jobs?country=Japan', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Work Permits' },
+    { label: 'Netherlands', href: '/jobs?country=Netherlands', icon: <MapPin size={15} />, tag: null, sub: 'Jobs & Skilled Migrant' },
 ]
 
 const flightsDropdown = [
@@ -41,7 +41,6 @@ const flightsDropdown = [
     { label: 'Book Flight', href: '/flights', icon: <Plane size={15} /> },
 ];
 const staticLinks = [
-    { label: 'Jobs & Careers', href: '/jobs', icon: <Briefcase size={16} /> },
     { label: 'About Us', href: '/about', icon: <Info size={16} /> },
     { label: 'Contact Us', href: '/contact', icon: <PhoneCall size={16} /> },
 ]
@@ -101,14 +100,14 @@ function WorkAbroadDropdown() {
                 aria-expanded={open}
             >
                 <Briefcase size={16} />
-                Work Abroad
+                Jobs &amp; Careers
                 <ChevronDown size={14} className={`chevron${open ? ' open' : ''}`} />
             </button>
             {open && (
                 <div className="work-abroad-mega">
                     <div className="work-abroad-mega-header">
-                        <h4>Work Abroad Destinations</h4>
-                        <p>Find the right work visa for your dream destination</p>
+                        <h4>Global Jobs &amp; Careers Hub</h4>
+                        <p>Browse high-payable &amp; part-time jobs across top global destinations</p>
                     </div>
                     <ul className="work-abroad-list">
                         {workAbroadDropdown.map(item => (
