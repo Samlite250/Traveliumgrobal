@@ -357,73 +357,73 @@ export default function Dashboard() {
                             {/* Stats Row — 4 cards */}
                             <div className="dash-stats-grid">
                                 {/* Card 1 — Total */}
-                                <div className="premium-stat-card navy">
-                                    <div className="stat-header">
-                                        <span className="stat-label">Total Applications</span>
-                                        <div className="stat-icon-wrap">
+                                <div className="premium-stat-card navy" style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                                    <div className="stat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Applications</span>
+                                        <div className="stat-icon-wrap" style={{ background: '#e0e7ff', color: '#3730a3', padding: '0.5rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <ClipboardList size={20} />
                                         </div>
                                     </div>
-                                    <div className="stat-content">
-                                        <span className="stat-value">{applications.length}</span>
-                                        <span className="stat-trend neutral">
-                                            <TrendingUp size={12} /> All time
+                                    <div className="stat-content" style={{ marginTop: '0.75rem' }}>
+                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2rem', display: 'block', lineHeight: '1' }}>{applications.length}</span>
+                                        <span className="stat-trend neutral" style={{ color: '#475569', fontWeight: '700', fontSize: '0.8rem', marginTop: '0.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                            <TrendingUp size={14} /> All time
                                         </span>
                                     </div>
-                                    <div className="stat-bar" style={{ width: '100%' }}></div>
+                                    <div className="stat-bar" style={{ width: '100%', height: '4px', background: '#3730a3', borderRadius: '2px', marginTop: '0.75rem' }}></div>
                                 </div>
 
                                 {/* Card 2 — In Progress */}
-                                <div className="premium-stat-card gold">
-                                    <div className="stat-header">
-                                        <span className="stat-label">In Progress</span>
-                                        <div className="stat-icon-wrap">
+                                <div className="premium-stat-card gold" style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                                    <div className="stat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>In Progress</span>
+                                        <div className="stat-icon-wrap" style={{ background: '#fef3c7', color: '#b45309', padding: '0.5rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <Clock size={20} />
                                         </div>
                                     </div>
-                                    <div className="stat-content">
-                                        <span className="stat-value">{pendingCount}</span>
-                                        <span className="stat-trend pending">
-                                            <Clock size={12} /> Live tracking
+                                    <div className="stat-content" style={{ marginTop: '0.75rem' }}>
+                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2rem', display: 'block', lineHeight: '1' }}>{pendingCount}</span>
+                                        <span className="stat-trend pending" style={{ color: '#b45309', fontWeight: '700', fontSize: '0.8rem', marginTop: '0.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                            <Clock size={14} /> Live tracking
                                         </span>
                                     </div>
-                                    <div className="stat-bar" style={{ width: applications.length ? `${(pendingCount / applications.length) * 100}%` : '0%' }}></div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(pendingCount / applications.length) * 100}%` : '0%', height: '4px', background: '#b45309', borderRadius: '2px', marginTop: '0.75rem' }}></div>
                                 </div>
 
                                 {/* Card 3 — Approved */}
-                                <div className="premium-stat-card success">
-                                    <div className="stat-header">
-                                        <span className="stat-label">Approved</span>
-                                        <div className="stat-icon-wrap">
+                                <div className="premium-stat-card success" style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                                    <div className="stat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Approved</span>
+                                        <div className="stat-icon-wrap" style={{ background: '#d1fae5', color: '#047857', padding: '0.5rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <ShieldCheck size={20} />
                                         </div>
                                     </div>
-                                    <div className="stat-content">
-                                        <span className="stat-value">{approvedCount}</span>
-                                        <span className="stat-trend success">
-                                            <CheckCircle size={12} />
+                                    <div className="stat-content" style={{ marginTop: '0.75rem' }}>
+                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2rem', display: 'block', lineHeight: '1' }}>{approvedCount}</span>
+                                        <span className="stat-trend success" style={{ color: '#047857', fontWeight: '700', fontSize: '0.8rem', marginTop: '0.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                            <CheckCircle size={14} />
                                             {applications.length ? `${Math.round((approvedCount / applications.length) * 100)}% rate` : 'Ready'}
                                         </span>
                                     </div>
-                                    <div className="stat-bar" style={{ width: applications.length ? `${(approvedCount / applications.length) * 100}%` : '0%' }}></div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(approvedCount / applications.length) * 100}%` : '0%', height: '4px', background: '#047857', borderRadius: '2px', marginTop: '0.75rem' }}></div>
                                 </div>
 
                                 {/* Card 4 — Rejected */}
-                                <div className="premium-stat-card rejected">
-                                    <div className="stat-header">
-                                        <span className="stat-label">Action Needed</span>
-                                        <div className="stat-icon-wrap">
+                                <div className="premium-stat-card rejected" style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                                    <div className="stat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Action Needed</span>
+                                        <div className="stat-icon-wrap" style={{ background: '#fee2e2', color: '#b91c1c', padding: '0.5rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <XCircle size={20} />
                                         </div>
                                     </div>
-                                    <div className="stat-content">
-                                        <span className="stat-value">{rejectedCount}</span>
-                                        <span className="stat-trend danger">
-                                            <AlertCircle size={12} />
+                                    <div className="stat-content" style={{ marginTop: '0.75rem' }}>
+                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2rem', display: 'block', lineHeight: '1' }}>{rejectedCount}</span>
+                                        <span className="stat-trend danger" style={{ color: '#b91c1c', fontWeight: '700', fontSize: '0.8rem', marginTop: '0.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                            <AlertCircle size={14} />
                                             {rejectedCount > 0 ? 'Review notes' : 'All clear'}
                                         </span>
                                     </div>
-                                    <div className="stat-bar" style={{ width: applications.length ? `${(rejectedCount / applications.length) * 100}%` : '0%' }}></div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(rejectedCount / applications.length) * 100}%` : '0%', height: '4px', background: '#b91c1c', borderRadius: '2px', marginTop: '0.75rem' }}></div>
                                 </div>
                             </div>
 
