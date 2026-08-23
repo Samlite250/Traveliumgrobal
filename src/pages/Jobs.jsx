@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 import {
     Briefcase, DollarSign, Clock, MapPin, Building, Search, Filter,
-    CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award
+    CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award, UploadCloud, FileText
 } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
 
@@ -730,34 +732,64 @@ export default function Jobs() {
         setSubmitted(false)
     }
 
-    const handleFormSubmit = (e) => {
+    const handleFormSubmit = async (e) => {
         e.preventDefault()
         if (!form.fullName || !form.email || !form.phone) {
             toast('Please fill out all required fields', 'error')
             return
         }
 
-        setSubmitted(true)
-        toast('Application submitted successfully! Our job team will review and contact you.', 'success')
+        const newAppRecord = {
+            applicant_name: form.fullName,
+            name: form.fullName,
+            email: form.email,
+            phone: form.phone,
+            service_type: 'work',
+            service_title: selectedJob ? `${selectedJob.title} (${selectedJob.countryName})` : 'Work Visa & Job Placement',
+            jobId: selectedJob?.id || '',
+            jobTitle: selectedJob?.title || '',
+            country: selectedJob?.countryName || '',
+            salary: selectedJob?.salary || '',
+            company: selectedJob?.company || '',
+            experienceYears: form.experienceYears || 'Entry Level',
+            coverNote: form.coverNote || '',
+            fileName: form.fileName || '',
+            status: 'pending',
+            created_at: new Date().toISOString(),
+            created_at_str: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        }
 
-        // Save local backup application
+        // 1. Submit to Firestore if connected
+        if (db) {
+            try {
+                await addDoc(collection(db, 'applications'), {
+                    ...newAppRecord,
+                    created_at: serverTimestamp()
+                })
+            } catch (err) {
+                console.error('Firestore application error:', err)
+            }
+        }
+
+        // 2. Local Storage Admin Sync Backup
         try {
-            const existing = JSON.parse(localStorage.getItem('travelium_job_applications') || '[]')
-            existing.push({
-                ...form,
-                jobId: selectedJob?.id,
-                jobTitle: selectedJob?.title,
-                country: selectedJob?.countryName,
-                submittedAt: new Date().toISOString()
-            })
-            localStorage.setItem('travelium_job_applications', JSON.stringify(existing))
+            const adminApps = JSON.parse(localStorage.getItem('travelium_applications_admin') || '[]')
+            adminApps.unshift({ id: `job-${Date.now()}`, ...newAppRecord })
+            localStorage.setItem('travelium_applications_admin', JSON.stringify(adminApps))
+
+            const existingJobApps = JSON.parse(localStorage.getItem('travelium_job_applications') || '[]')
+            existingJobApps.unshift({ id: `job-${Date.now()}`, ...newAppRecord })
+            localStorage.setItem('travelium_job_applications', JSON.stringify(existingJobApps))
         } catch (err) { }
+
+        setSubmitted(true)
+        toast('Application submitted directly to central admin! Our team will review and contact you.', 'success')
 
         setTimeout(() => {
             setIsApplying(false)
             setSubmitted(false)
-            setForm({ fullName: '', email: '', phone: '', experienceYears: '1-2 years', coverNote: '' })
-        }, 2500)
+            setForm({ fullName: '', email: '', phone: '', experienceYears: '1-2 years', coverNote: '', fileName: '' })
+        }, 2200)
     }
 
     return (
@@ -1070,6 +1102,22 @@ export default function Jobs() {
                                     </div>
 
                                     <div className="form-group-custom">
+                                        <label>Attach CV / Resume / Passport Copy (Optional)</label>
+                                        <div className="file-upload-box">
+                                            <input
+                                                type="file"
+                                                id="job-cv-upload"
+                                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                                onChange={(e) => setForm({ ...form, fileName: e.target.files[0]?.name || '' })}
+                                            />
+                                            <label htmlFor="job-cv-upload" className="file-upload-label">
+                                                <UploadCloud size={20} />
+                                                <span>{form.fileName ? `Selected: ${form.fileName}` : 'Upload CV, Resume, or Passport (PDF, DOCX, IMG)'}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group-custom">
                                         <label>Cover Note / Short Message (Optional)</label>
                                         <textarea
                                             rows="3"
@@ -1077,6 +1125,10 @@ export default function Jobs() {
                                             value={form.coverNote}
                                             onChange={(e) => setForm({ ...form, coverNote: e.target.value })}
                                         />
+                                    </div>
+
+                                    <div className="modal-trust-seal">
+                                        <ShieldCheck size={16} /> <span>100% Direct Agency Recruitment • Verified Employers Only</span>
                                     </div>
 
                                     <div className="form-actions-row">

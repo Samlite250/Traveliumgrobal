@@ -21,10 +21,10 @@ import { jsPDF } from 'jspdf'
 
 const SERVICE_OPTIONS = [
     { value: 'all', label: 'All Services' },
+    { value: 'work', label: 'Jobs & Careers Placement' },
     { value: 'study', label: 'Study Abroad' },
     { value: 'student_visa', label: 'Student Visa' },
     { value: 'tourist', label: 'Tourist Visa' },
-    { value: 'work', label: 'Work Visa' },
     { value: 'scholarship', label: 'Scholarship' },
     { value: 'flight_booking', label: 'Flight Booking' },
     { value: 'residency', label: 'Permanent Residency' },
@@ -1247,7 +1247,7 @@ export default function AdminDashboard() {
         )
     }
 
-        function renderFlights() {
+    function renderFlights() {
         const flightApps = applications.filter(a => a.program_type === 'flight_booking')
         const flightSearch = search.toLowerCase()
         const displayFlights = flightSearch
@@ -1256,7 +1256,7 @@ export default function AdminDashboard() {
                 a.email?.toLowerCase().includes(flightSearch) ||
                 a.origin?.toLowerCase().includes(flightSearch) ||
                 a.destination?.toLowerCase().includes(flightSearch)
-              )
+            )
             : flightApps
 
         return (
@@ -1303,7 +1303,7 @@ export default function AdminDashboard() {
                                                     <span className="text-muted">{a.email}</span>
                                                 </div>
                                             </td>
-                                            <td><span style={{fontWeight:600}}>{a.origin || '—'}</span> → <span style={{fontWeight:600}}>{a.destination || '—'}</span></td>
+                                            <td><span style={{ fontWeight: 600 }}>{a.origin || '—'}</span> → <span style={{ fontWeight: 600 }}>{a.destination || '—'}</span></td>
                                             <td>{a.departure_date || '—'}</td>
                                             <td><span className="service-type">{a.trip_type || 'one-way'}</span></td>
                                             <td>
@@ -1332,7 +1332,7 @@ export default function AdminDashboard() {
         )
     }
 
-        const grouped = {}
+    const grouped = {}
     // ── SERVICES TAB ──
     const renderServices = () => {
         const seedDefaultServices = async () => {
@@ -1679,16 +1679,22 @@ export default function AdminDashboard() {
                             <div className="detail-section">
                                 <h4>Application Details</h4>
                                 <div className="detail-grid">
-                                    <div className="detail-item"><label>Service Type</label><span className="service-type">{selectedApp.program_type?.replace(/_/g, ' ') || '\u2014'}</span></div>
-                                    <div className="detail-item"><label>Destination</label><span><Globe size={14} /> {selectedApp.destination || '\u2014'}</span></div>
+                                    <div className="detail-item"><label>Service / Job Title</label><span className="service-type">{selectedApp.service_title || selectedApp.jobTitle || selectedApp.program_type?.replace(/_/g, ' ') || '\u2014'}</span></div>
+                                    <div className="detail-item"><label>Destination / Country</label><span><Globe size={14} /> {selectedApp.country || selectedApp.destination || '\u2014'}</span></div>
+                                    {selectedApp.salary && <div className="detail-item"><label>Salary Range</label><span><DollarSign size={14} /> {selectedApp.salary}</span></div>}
+                                    {selectedApp.company && <div className="detail-item"><label>Company / Employer</label><span><Building size={14} /> {selectedApp.company}</span></div>}
+                                    {selectedApp.experienceYears && <div className="detail-item"><label>Experience Level</label><span><Briefcase size={14} /> {selectedApp.experienceYears}</span></div>}
+                                    {selectedApp.fileName && <div className="detail-item"><label>Attached Resume/CV</label><span><FileText size={14} /> {selectedApp.fileName}</span></div>}
                                     <div className="detail-item"><label>Status</label><div className={`status-pill-admin ${statusConfig[selectedApp.status]?.class || 'st-pending'}`}>{statusConfig[selectedApp.status]?.icon}<span>{statusConfig[selectedApp.status]?.label || selectedApp.status}</span></div></div>
                                     <div className="detail-item"><label>Submitted</label><span>{formatDate(selectedApp.created_at)}</span></div>
-                                    <div className="detail-item"><label>Last Updated</label><span>{formatDate(selectedApp.updated_at)}</span></div>
                                     {selectedApp.admin_note && <div className="detail-item"><label>Admin Note</label><span className="admin-note-text">{selectedApp.admin_note}</span></div>}
                                 </div>
                             </div>
-                            {selectedApp.message && (
-                                <div className="detail-section"><h4>Additional Message</h4><div className="detail-message-box"><p>{selectedApp.message}</p></div></div>
+                            {(selectedApp.coverNote || selectedApp.message) && (
+                                <div className="detail-section">
+                                    <h4>Cover Note / Message</h4>
+                                    <div className="detail-message-box"><p>{selectedApp.coverNote || selectedApp.message}</p></div>
+                                </div>
                             )}
                             {selectedApp.documents && (selectedApp.documents.passport || selectedApp.documents.diploma || selectedApp.documents.id_card) && (
                                 <div className="detail-section">
