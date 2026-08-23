@@ -41,6 +41,7 @@ const flightsDropdown = [
     { label: 'Book Flight', href: '/flights', icon: <Plane size={15} /> },
 ];
 const staticLinks = [
+    { label: 'Jobs & Careers', href: '/jobs', icon: <Briefcase size={16} /> },
     { label: 'About Us', href: '/about', icon: <Info size={16} /> },
     { label: 'Contact Us', href: '/contact', icon: <PhoneCall size={16} /> },
 ]
@@ -124,8 +125,8 @@ function WorkAbroadDropdown() {
                         ))}
                     </ul>
                     <div className="work-abroad-mega-footer">
-                        <Link to="/visa-services" onClick={() => setOpen(false)} className="work-mega-cta">
-                            View All Work Visas <ArrowRight size={13} />
+                        <Link to="/jobs" onClick={() => setOpen(false)} className="work-mega-cta">
+                            Browse All Country Jobs &amp; Work Visas <ArrowRight size={13} />
                         </Link>
                     </div>
                 </div>
@@ -183,68 +184,68 @@ export default function Navbar() {
     return (
         <>
             <header className="site-header">
-            <div className="topbar">
-                <div className="container">
-                    <div className="topbar-left">
-                        <a href={`mailto:${siteSettings?.supportEmail || 'traveliumgrobal@gmail.com'}`} className="topbar-link"><Mail size={12} /> {siteSettings?.supportEmail || 'traveliumgrobal@gmail.com'}</a>
-                        <a href={`tel:${siteSettings?.supportPhone?.replace(/\s/g, '') || '+250782531515'}`} className="topbar-link"><Phone size={12} /> {siteSettings?.supportPhone || '+250 782531515'}</a>
-                    </div>
-                    <div className="topbar-right">
-                        {siteSettings?.linkedin && <a href={siteSettings.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Globe size={12} /></a>}
-                        {siteSettings?.twitter && <a href={siteSettings.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter"><Send size={12} /></a>}
-                        {siteSettings?.youtube && <a href={siteSettings.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Play size={12} /></a>}
-                        {siteSettings?.instagram && <a href={siteSettings.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Send size={12} /></a>}
-                        {siteSettings?.facebook && <a href={siteSettings.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Globe size={12} /></a>}
+                <div className="topbar">
+                    <div className="container">
+                        <div className="topbar-left">
+                            <a href={`mailto:${siteSettings?.supportEmail || 'traveliumgrobal@gmail.com'}`} className="topbar-link"><Mail size={12} /> {siteSettings?.supportEmail || 'traveliumgrobal@gmail.com'}</a>
+                            <a href={`tel:${siteSettings?.supportPhone?.replace(/\s/g, '') || '+250782531515'}`} className="topbar-link"><Phone size={12} /> {siteSettings?.supportPhone || '+250 782531515'}</a>
+                        </div>
+                        <div className="topbar-right">
+                            {siteSettings?.linkedin && <a href={siteSettings.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Globe size={12} /></a>}
+                            {siteSettings?.twitter && <a href={siteSettings.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter"><Send size={12} /></a>}
+                            {siteSettings?.youtube && <a href={siteSettings.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Play size={12} /></a>}
+                            {siteSettings?.instagram && <a href={siteSettings.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Send size={12} /></a>}
+                            {siteSettings?.facebook && <a href={siteSettings.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Globe size={12} /></a>}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
-                <div className="container">
-                    <Link to="/" className="nav-logo">
-                        <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
-                        <div className="logo-text-stack">
-                            <span className="logo-name">TRAVELIUM</span>
-                            <span className="logo-tagline">Grobal</span>
-                        </div>
-                    </Link>
-                    <ul className="nav-links">
-                        <li>
-                            <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
-                                <Home size={16} /> Home
-                            </Link>
-                        </li>
-                        <DropdownLink label="Study Abroad" icon={<GraduationCap size={16} />} items={studyAbroadDropdown} />
-                        <DropdownLink label="Visa Services" icon={<Landmark size={16} />} items={visaServicesDropdown} />
-                        <WorkAbroadDropdown />
-                        <DropdownLink label="Flights" icon={<Plane size={16} />} items={flightsDropdown} />
-                        {staticLinks.map(l => (
-                            <li key={l.href}>
-                                <Link to={l.href} className={location.pathname === l.href ? 'active' : ''}>
-                                    {l.icon}
-                                    {l.label}
+                <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
+                    <div className="container">
+                        <Link to="/" className="nav-logo">
+                            <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
+                            <div className="logo-text-stack">
+                                <span className="logo-name">TRAVELIUM</span>
+                                <span className="logo-tagline">Grobal</span>
+                            </div>
+                        </Link>
+                        <ul className="nav-links">
+                            <li>
+                                <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
+                                    <Home size={16} /> Home
                                 </Link>
                             </li>
-                        ))}
-                    </ul>
-                    <div className="nav-actions">
-                        <Link to="/login" className="nav-login">
-                            <User size={16} /> Login
-                        </Link>
-                        <Link to="/apply" className="nav-apply">
-                            Apply Now <ArrowRight size={16} />
-                        </Link>
+                            <DropdownLink label="Study Abroad" icon={<GraduationCap size={16} />} items={studyAbroadDropdown} />
+                            <DropdownLink label="Visa Services" icon={<Landmark size={16} />} items={visaServicesDropdown} />
+                            <WorkAbroadDropdown />
+                            <DropdownLink label="Flights" icon={<Plane size={16} />} items={flightsDropdown} />
+                            {staticLinks.map(l => (
+                                <li key={l.href}>
+                                    <Link to={l.href} className={location.pathname === l.href ? 'active' : ''}>
+                                        {l.icon}
+                                        {l.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="nav-actions">
+                            <Link to="/login" className="nav-login">
+                                <User size={16} /> Login
+                            </Link>
+                            <Link to="/apply" className="nav-apply">
+                                Apply Now <ArrowRight size={16} />
+                            </Link>
+                        </div>
+                        <div className="nav-mobile-btns">
+                            <Link to="/" className="mobile-home-btn" aria-label="Go to Home">
+                                <Home size={20} />
+                            </Link>
+                            <button className="hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+                                <Menu size={24} />
+                            </button>
+                        </div>
                     </div>
-                    <div className="nav-mobile-btns">
-                        <Link to="/" className="mobile-home-btn" aria-label="Go to Home">
-                            <Home size={20} />
-                        </Link>
-                        <button className="hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
-                            <Menu size={24} />
-                        </button>
-                    </div>
-                </div>
-            </nav>
+                </nav>
             </header>
 
             <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>

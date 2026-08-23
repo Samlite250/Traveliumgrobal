@@ -48,6 +48,7 @@ export default function Footer() {
                             <h4>Quick Links</h4>
                             <ul>
                                 <li><Link to="/">Home</Link></li>
+                                <li><Link to="/jobs">Jobs &amp; Careers</Link></li>
                                 <li><Link to="/about">About Travelium</Link></li>
                                 <li><Link to="/visa-services">Visa Solutions</Link></li>
                                 <li><Link to="/flights">Flight Booking</Link></li>
@@ -86,40 +87,40 @@ export default function Footer() {
                                 </div>
 
                                 {whatsAppNumbers.length >= 1 ? whatsAppNumbers.map((w, i) => (
-                                <div className="contact-block" key={i}>
-                                    <div className="block-head">
-                                        <div className="block-icon"><Globe size={16} /></div>
-                                        <span style={{ color: 'white' }}>{w.label || (i === 0 ? 'Jobs & Recruitment' : 'Air Ticketing')}</span>
-                                    </div>
-                                    <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                            <Phone size={14} color="var(--gold)" /> <span>{w.number}</span>
+                                    <div className="contact-block" key={i}>
+                                        <div className="block-head">
+                                            <div className="block-icon"><Globe size={16} /></div>
+                                            <span style={{ color: 'white' }}>{w.label || (i === 0 ? 'Jobs & Recruitment' : 'Air Ticketing')}</span>
+                                        </div>
+                                        <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
+                                                <Phone size={14} color="var(--gold)" /> <span>{w.number}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                 )) : (<>
-                                <div className="contact-block">
-                                    <div className="block-head">
-                                        <div className="block-icon"><Globe size={16} /></div>
-                                        <span style={{ color: 'white' }}>Jobs & Recruitment</span>
-                                    </div>
-                                    <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                            <Phone size={14} color="var(--gold)" /> <span>+250 796 230 619</span>
+                                    <div className="contact-block">
+                                        <div className="block-head">
+                                            <div className="block-icon"><Globe size={16} /></div>
+                                            <span style={{ color: 'white' }}>Jobs & Recruitment</span>
+                                        </div>
+                                        <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
+                                                <Phone size={14} color="var(--gold)" /> <span>+250 796 230 619</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="contact-block">
-                                    <div className="block-head">
-                                        <div className="block-icon"><Plane size={16} /></div>
-                                        <span style={{ color: 'white' }}>Air Ticketing</span>
-                                    </div>
-                                    <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                            <Phone size={14} color="var(--gold)" /> <span>+250 793 658 206</span>
+                                    <div className="contact-block">
+                                        <div className="block-head">
+                                            <div className="block-icon"><Plane size={16} /></div>
+                                            <span style={{ color: 'white' }}>Air Ticketing</span>
+                                        </div>
+                                        <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
+                                                <Phone size={14} color="var(--gold)" /> <span>+250 793 658 206</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                 </>)}
                             </div>
                         </div>

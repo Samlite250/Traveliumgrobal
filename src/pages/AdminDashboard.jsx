@@ -913,7 +913,7 @@ export default function AdminDashboard() {
                     </div>
                 )}
             </div>
-            {selectedMsg ? (
+            {selectedMsg && (
                 <div className="admin-table-card msg-detail-panel">
                     <div className="card-header">
                         <div className="card-title-group"><Mail size={20} className="title-icon" /><h3>Message Details</h3></div>

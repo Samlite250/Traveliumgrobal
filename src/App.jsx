@@ -20,6 +20,7 @@ const Login = lazy(() => import('./pages/Login'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Flights = lazy(() => import('./pages/Flights'))
 const BuyTicket = lazy(() => import('./pages/BuyTicket'))
+const Jobs = lazy(() => import('./pages/Jobs'))
 
 function ProtectedRoute({ children }) {
     const { currentUser } = useAuth()
@@ -68,6 +69,7 @@ function AppLayout() {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/flights" element={<Flights />} />
                     <Route path="/buy-ticket" element={<BuyTicket />} />
+                    <Route path="/jobs" element={<Jobs />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/apply" element={
                         <ProtectedRoute><Apply /></ProtectedRoute>
