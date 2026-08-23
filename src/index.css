@@ -10431,3 +10431,24 @@ textarea:focus,
     padding: 1rem;
   }
 }
+
+/* ===== RESPONSIVE DESKTOP TABLE VS MOBILE CARDS ===== */
+@media (min-width: 769px) {
+  .mobile-only-cards {
+    display: none !important;
+  }
+
+  .desktop-only-table {
+    display: block !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-only-table {
+    display: none !important;
+  }
+
+  .mobile-only-cards {
+    display: flex !important;
+  }
+}

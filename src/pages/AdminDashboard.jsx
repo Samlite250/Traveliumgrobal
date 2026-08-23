@@ -1662,28 +1662,60 @@ export default function AdminDashboard() {
             jobs.length === 0 ? (
                 <div className="admin-empty" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#64748b' }}><Briefcase size={36} /><p style={{ margin: 0, fontWeight: '600', color: '#0f172a' }}>No jobs. Click "Add Job".</p></div>
             ) : (
-                <div className="admin-table-overflow" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
-                    <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
-                        <thead><tr style={{ background: '#f8f9fc', borderBottom: '1px solid #e2e6f0' }}><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Job Title</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Company</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Location</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Salary</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Exp.</th><th className="actions-col" style={{ padding: '0.85rem 1rem', textAlign: 'center', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800', position: 'sticky', right: 0, background: '#f8f9fc', zIndex: 10, boxShadow: '-3px 0 6px rgba(0,0,0,0.08)' }}>Actions</th></tr></thead>
-                        <tbody>
-                            {jobs.map(job => (
-                                <tr key={job.id} style={{ borderBottom: '1px solid #f1f3f8' }}>
-                                    <td style={{ padding: '0.85rem 1rem', color: '#0f172a' }}><strong style={{ color: '#0f172a', fontWeight: '700' }}>{job.title}</strong></td>
-                                    <td style={{ padding: '0.85rem 1rem' }}><span style={{ color: '#334155', fontWeight: '500' }}>{job.company}</span></td>
-                                    <td style={{ padding: '0.85rem 1rem' }}><span style={{ color: '#334155', fontWeight: '500' }}>{job.location}</span></td>
-                                    <td style={{ padding: '0.85rem 1rem' }}><strong style={{ fontSize: '0.85rem', color: '#0f172a', fontWeight: '700' }}>{job.salary}</strong></td>
-                                    <td style={{ padding: '0.85rem 1rem' }}><span className="card-badge" style={{ background: '#f1f3f8', color: '#0f172a', fontWeight: '700', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', border: '1px solid #e2e6f0' }}>{job.experience || job.type}</span></td>
-                                    <td style={{ padding: '0.85rem 1rem', position: 'sticky', right: 0, background: '#ffffff', zIndex: 5, boxShadow: '-3px 0 6px rgba(0,0,0,0.08)' }}>
-                                        <div className="admin-action-btns" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                                            <button className="btn-act pro" onClick={() => openEditJob(job, type)} title="Edit Job" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', minWidth: '36px', borderRadius: '8px', background: '#dbeafe', color: '#1d4ed8', border: 'none', cursor: 'pointer' }}><Edit3 size={16} /></button>
-                                            <button className="btn-act rej" onClick={() => deleteJob(job.id, type)} title="Delete Job" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', minWidth: '36px', borderRadius: '8px', background: '#fee2e2', color: '#b91c1c', border: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <>
+                    {/* Desktop Table View */}
+                    <div className="admin-table-overflow desktop-only-table" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', position: 'relative' }}>
+                        <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+                            <thead><tr style={{ background: '#f8f9fc', borderBottom: '1px solid #e2e6f0' }}><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Job Title</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Company</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Location</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Salary</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Exp.</th><th className="actions-col" style={{ padding: '0.85rem 1rem', textAlign: 'center', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800', position: 'sticky', right: 0, background: '#f8f9fc', zIndex: 10, boxShadow: '-3px 0 6px rgba(0,0,0,0.08)' }}>Actions</th></tr></thead>
+                            <tbody>
+                                {jobs.map(job => (
+                                    <tr key={job.id} style={{ borderBottom: '1px solid #f1f3f8' }}>
+                                        <td style={{ padding: '0.85rem 1rem', color: '#0f172a' }}><strong style={{ color: '#0f172a', fontWeight: '700' }}>{job.title}</strong></td>
+                                        <td style={{ padding: '0.85rem 1rem' }}><span style={{ color: '#334155', fontWeight: '500' }}>{job.company}</span></td>
+                                        <td style={{ padding: '0.85rem 1rem' }}><span style={{ color: '#334155', fontWeight: '500' }}>{job.location}</span></td>
+                                        <td style={{ padding: '0.85rem 1rem' }}><strong style={{ fontSize: '0.85rem', color: '#0f172a', fontWeight: '700' }}>{job.salary}</strong></td>
+                                        <td style={{ padding: '0.85rem 1rem' }}><span className="card-badge" style={{ background: '#f1f3f8', color: '#0f172a', fontWeight: '700', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', border: '1px solid #e2e6f0' }}>{job.experience || job.type}</span></td>
+                                        <td style={{ padding: '0.85rem 1rem', position: 'sticky', right: 0, background: '#ffffff', zIndex: 5, boxShadow: '-3px 0 6px rgba(0,0,0,0.08)' }}>
+                                            <div className="admin-action-btns" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                                                <button className="btn-act pro" onClick={() => openEditJob(job, type)} title="Edit Job" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', minWidth: '36px', borderRadius: '8px', background: '#dbeafe', color: '#1d4ed8', border: 'none', cursor: 'pointer' }}><Edit3 size={16} /></button>
+                                                <button className="btn-act rej" onClick={() => deleteJob(job.id, type)} title="Delete Job" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', minWidth: '36px', borderRadius: '8px', background: '#fee2e2', color: '#b91c1c', border: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Mobile Card List View */}
+                    <div className="mobile-only-cards" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                        {jobs.map(job => (
+                            <div key={job.id} style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '14px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
+                                    <div>
+                                        <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: '800', color: '#0f172a', lineHeight: '1.3' }}>{job.title}</h4>
+                                        <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#475569', fontWeight: '600' }}>{job.company} • {job.location}</p>
+                                    </div>
+                                    <span style={{ background: '#f1f3f8', color: '#0f172a', fontWeight: '700', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.72rem', border: '1px solid #cbd5e1', flexShrink: 0 }}>
+                                        {job.experience || job.type}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8f9fc', padding: '0.6rem 0.85rem', borderRadius: '8px', border: '1px solid #e2e6f0' }}>
+                                    <span style={{ fontSize: '0.82rem', color: '#475569', fontWeight: '600' }}>Salary / Pay:</span>
+                                    <strong style={{ fontSize: '0.9rem', color: '#1d4ed8', fontWeight: '800' }}>{job.salary}</strong>
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
+                                    <button onClick={() => openEditJob(job, type)} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.7rem 1rem', borderRadius: '8px', background: '#dbeafe', color: '#1d4ed8', border: '1.5px solid #93c5fd', fontWeight: '800', fontSize: '0.88rem', cursor: 'pointer' }}>
+                                        <Edit3 size={16} /> Edit Job
+                                    </button>
+                                    <button onClick={() => deleteJob(job.id, type)} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.7rem 1rem', borderRadius: '8px', background: '#fee2e2', color: '#b91c1c', border: '1.5px solid #fca5a5', fontWeight: '800', fontSize: '0.88rem', cursor: 'pointer' }}>
+                                        <Trash2 size={16} /> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </>
             )
         )
 
