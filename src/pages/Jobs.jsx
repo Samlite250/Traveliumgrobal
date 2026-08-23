@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
     Briefcase, DollarSign, Clock, MapPin, Building, Search, Filter,
-    CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck
+    CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award
 } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
 
@@ -11,6 +11,7 @@ export const JOBS_DATA = [
     {
         id: 'uae',
         country: 'Dubai (UAE)',
+        code: 'UAE',
         flag: '🇦🇪',
         tagline: 'Tax-Free Income & Luxury Living',
         highPayableJobs: [
@@ -121,6 +122,7 @@ export const JOBS_DATA = [
     {
         id: 'canada',
         country: 'Canada',
+        code: 'CAN',
         flag: '🇨🇦',
         tagline: 'High Standard of Living & PR Pathways',
         highPayableJobs: [
@@ -231,6 +233,7 @@ export const JOBS_DATA = [
     {
         id: 'uk',
         country: 'United Kingdom',
+        code: 'UK',
         flag: '🇬🇧',
         tagline: 'Skilled Worker Visas & Global Hub',
         highPayableJobs: [
@@ -341,6 +344,7 @@ export const JOBS_DATA = [
     {
         id: 'germany',
         country: 'Germany',
+        code: 'DE',
         flag: '🇩🇪',
         tagline: 'EU Blue Card & Strong Industrial Economy',
         highPayableJobs: [
@@ -451,6 +455,7 @@ export const JOBS_DATA = [
     {
         id: 'usa',
         country: 'United States',
+        code: 'USA',
         flag: '🇺🇸',
         tagline: 'High Pay & Career Opportunities',
         highPayableJobs: [
@@ -561,6 +566,7 @@ export const JOBS_DATA = [
     {
         id: 'australia',
         country: 'Australia',
+        code: 'AUS',
         flag: '🇦🇺',
         tagline: 'High Minimum Wages & Great Quality of Life',
         highPayableJobs: [
@@ -794,13 +800,13 @@ export default function Jobs() {
                                 className={`filter-pill ${filterType === 'highPayable' ? 'active' : ''}`}
                                 onClick={() => setFilterType('highPayable')}
                             >
-                                💎 High Payable Only
+                                <Gem size={14} /> High Payable Only
                             </button>
                             <button
                                 className={`filter-pill ${filterType === 'partTime' ? 'active' : ''}`}
                                 onClick={() => setFilterType('partTime')}
                             >
-                                ⏱️ Part-Time Only
+                                <Clock size={14} /> Part-Time Only
                             </button>
                         </div>
                     </div>
@@ -822,7 +828,7 @@ export default function Jobs() {
                                     className={`country-tab-btn ${activeCountry === c.id ? 'active' : ''}`}
                                     onClick={() => setActiveCountry(c.id)}
                                 >
-                                    <span className="c-flag">{c.flag}</span>
+                                    <span className="c-code">{c.code}</span>
                                     <span className="c-name">{c.country}</span>
                                 </button>
                             ))}
@@ -832,7 +838,10 @@ export default function Jobs() {
                     {/* Active Country Banner Header */}
                     <div className="active-country-banner">
                         <div className="ac-title-wrap">
-                            <span className="ac-flag">{currentCountryData.flag}</span>
+                            <div className="ac-badge-icon">
+                                <Globe size={22} />
+                                <span>{currentCountryData.code}</span>
+                            </div>
                             <div>
                                 <h2>Available Jobs in {currentCountryData.country}</h2>
                                 <p className="ac-tagline">{currentCountryData.tagline}</p>
@@ -848,7 +857,7 @@ export default function Jobs() {
                         <div className="job-category-section">
                             <div className="category-header hp-header">
                                 <div className="cat-title">
-                                    <span className="cat-icon-badge hp">💎</span>
+                                    <span className="cat-icon-badge hp"><Gem size={20} /></span>
                                     <div>
                                         <h3>High Payable Jobs ({filteredHighPayable.length})</h3>
                                         <p>Full-time, high-salary &amp; sponsored career roles</p>
@@ -867,8 +876,8 @@ export default function Jobs() {
                                     {filteredHighPayable.map((job) => (
                                         <div key={job.id} className="job-card hp-card">
                                             <div className="job-card-top">
-                                                <div className="job-badge hp-badge">💎 High Salary</div>
-                                                <span className="job-country-tag">{currentCountryData.flag} {currentCountryData.country}</span>
+                                                <div className="job-badge hp-badge"><Gem size={13} /> High Salary</div>
+                                                <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
                                             </div>
 
                                             <h4 className="job-title">{job.title}</h4>
@@ -913,7 +922,7 @@ export default function Jobs() {
                         <div className="job-category-section" style={{ marginTop: '3.5rem' }}>
                             <div className="category-header pt-header">
                                 <div className="cat-title">
-                                    <span className="cat-icon-badge pt">⏱️</span>
+                                    <span className="cat-icon-badge pt"><Clock size={20} /></span>
                                     <div>
                                         <h3>Part-Time Jobs ({filteredPartTime.length})</h3>
                                         <p>Student-friendly, shift &amp; hourly flexible opportunities</p>
@@ -932,8 +941,8 @@ export default function Jobs() {
                                     {filteredPartTime.map((job) => (
                                         <div key={job.id} className="job-card pt-card">
                                             <div className="job-card-top">
-                                                <div className="job-badge pt-badge">⏱️ Flexible Hours</div>
-                                                <span className="job-country-tag">{currentCountryData.flag} {currentCountryData.country}</span>
+                                                <div className="job-badge pt-badge"><Clock size={13} /> Flexible Hours</div>
+                                                <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
                                             </div>
 
                                             <h4 className="job-title">{job.title}</h4>
@@ -994,7 +1003,7 @@ export default function Jobs() {
                         ) : (
                             <>
                                 <div className="job-modal-header">
-                                    <div className="jm-flag">{selectedJob.flag}</div>
+                                    <div className="jm-flag-icon"><Globe size={22} /></div>
                                     <div>
                                         <span className="jm-cat-tag">{selectedJob.categoryLabel}</span>
                                         <h3>Apply for {selectedJob.title}</h3>
