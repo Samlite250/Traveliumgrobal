@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
     Briefcase, DollarSign, Clock, MapPin, Building, Search, Filter,
-    CheckCircle, ArrowRight, ShieldCheck, Star, Sparkles, Send, X, Globe, UserCheck
+    CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck
 } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
 
@@ -760,7 +760,7 @@ export default function Jobs() {
             <section className="jobs-hero">
                 <div className="container">
                     <div className="jobs-hero-badge">
-                        <Sparkles size={16} /> Global Career Hub
+                        <Globe size={16} /> Global Career Hub
                     </div>
                     <h1>Verified International Jobs &amp; Work Visas</h1>
                     <p>
