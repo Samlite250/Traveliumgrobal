@@ -356,74 +356,74 @@ export default function Dashboard() {
                         <>
                             {/* Stats Row — 4 cards */}
                             <div className="dash-stats-grid">
-                                {/* Card 1 — Total */}
-                                <div className="premium-stat-card navy" style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                                {/* Card 1 — Total Applications */}
+                                <div className="premium-stat-card navy" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.25rem 1.5rem', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.04)', transition: 'all 0.25s ease' }}>
                                     <div className="stat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Applications</span>
-                                        <div className="stat-icon-wrap" style={{ background: '#e0e7ff', color: '#3730a3', padding: '0.5rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Applications</span>
+                                        <div className="stat-icon-wrap" style={{ background: '#eff6ff', color: '#1d4ed8', padding: '0.55rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <ClipboardList size={20} />
                                         </div>
                                     </div>
-                                    <div className="stat-content" style={{ marginTop: '0.75rem' }}>
-                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2rem', display: 'block', lineHeight: '1' }}>{applications.length}</span>
-                                        <span className="stat-trend neutral" style={{ color: '#475569', fontWeight: '700', fontSize: '0.8rem', marginTop: '0.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                                            <TrendingUp size={14} /> All time
+                                    <div className="stat-content" style={{ marginTop: '0.85rem' }}>
+                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2.2rem', display: 'block', lineHeight: '1', letterSpacing: '-0.02em' }}>{applications.length}</span>
+                                        <span className="stat-trend neutral" style={{ color: '#3b82f6', fontWeight: '700', fontSize: '0.82rem', marginTop: '0.45rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                                            <TrendingUp size={14} /> Total submissions
                                         </span>
                                     </div>
-                                    <div className="stat-bar" style={{ width: '100%', height: '4px', background: '#3730a3', borderRadius: '2px', marginTop: '0.75rem' }}></div>
+                                    <div className="stat-bar" style={{ width: '100%', height: '4px', background: '#1d4ed8', borderRadius: '4px', marginTop: '0.85rem' }}></div>
                                 </div>
 
                                 {/* Card 2 — In Progress */}
-                                <div className="premium-stat-card gold" style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                                <div className="premium-stat-card gold" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.25rem 1.5rem', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.04)', transition: 'all 0.25s ease' }}>
                                     <div className="stat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>In Progress</span>
-                                        <div className="stat-icon-wrap" style={{ background: '#fef3c7', color: '#b45309', padding: '0.5rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>In Progress</span>
+                                        <div className="stat-icon-wrap" style={{ background: '#fffbe6', color: '#d97706', padding: '0.55rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <Clock size={20} />
                                         </div>
                                     </div>
-                                    <div className="stat-content" style={{ marginTop: '0.75rem' }}>
-                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2rem', display: 'block', lineHeight: '1' }}>{pendingCount}</span>
-                                        <span className="stat-trend pending" style={{ color: '#b45309', fontWeight: '700', fontSize: '0.8rem', marginTop: '0.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                                            <Clock size={14} /> Live tracking
+                                    <div className="stat-content" style={{ marginTop: '0.85rem' }}>
+                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2.2rem', display: 'block', lineHeight: '1', letterSpacing: '-0.02em' }}>{pendingCount}</span>
+                                        <span className="stat-trend pending" style={{ color: '#d97706', fontWeight: '700', fontSize: '0.82rem', marginTop: '0.45rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                                            <Clock size={14} /> Active processing
                                         </span>
                                     </div>
-                                    <div className="stat-bar" style={{ width: applications.length ? `${(pendingCount / applications.length) * 100}%` : '0%', height: '4px', background: '#b45309', borderRadius: '2px', marginTop: '0.75rem' }}></div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(pendingCount / applications.length) * 100}%` : '0%', height: '4px', background: '#c8a84b', borderRadius: '4px', marginTop: '0.85rem' }}></div>
                                 </div>
 
                                 {/* Card 3 — Approved */}
-                                <div className="premium-stat-card success" style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                                <div className="premium-stat-card success" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.25rem 1.5rem', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.04)', transition: 'all 0.25s ease' }}>
                                     <div className="stat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Approved</span>
-                                        <div className="stat-icon-wrap" style={{ background: '#d1fae5', color: '#047857', padding: '0.5rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Approved</span>
+                                        <div className="stat-icon-wrap" style={{ background: '#ecfdf5', color: '#059669', padding: '0.55rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <ShieldCheck size={20} />
                                         </div>
                                     </div>
-                                    <div className="stat-content" style={{ marginTop: '0.75rem' }}>
-                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2rem', display: 'block', lineHeight: '1' }}>{approvedCount}</span>
-                                        <span className="stat-trend success" style={{ color: '#047857', fontWeight: '700', fontSize: '0.8rem', marginTop: '0.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                    <div className="stat-content" style={{ marginTop: '0.85rem' }}>
+                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2.2rem', display: 'block', lineHeight: '1', letterSpacing: '-0.02em' }}>{approvedCount}</span>
+                                        <span className="stat-trend success" style={{ color: '#059669', fontWeight: '700', fontSize: '0.82rem', marginTop: '0.45rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                                             <CheckCircle size={14} />
-                                            {applications.length ? `${Math.round((approvedCount / applications.length) * 100)}% rate` : 'Ready'}
+                                            {applications.length ? `${Math.round((approvedCount / applications.length) * 100)}% approval` : 'Successful'}
                                         </span>
                                     </div>
-                                    <div className="stat-bar" style={{ width: applications.length ? `${(approvedCount / applications.length) * 100}%` : '0%', height: '4px', background: '#047857', borderRadius: '2px', marginTop: '0.75rem' }}></div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(approvedCount / applications.length) * 100}%` : '0%', height: '4px', background: '#10b981', borderRadius: '4px', marginTop: '0.85rem' }}></div>
                                 </div>
 
-                                {/* Card 4 — Rejected */}
-                                <div className="premium-stat-card rejected" style={{ background: '#ffffff', border: '1.5px solid #cbd5e1', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                                {/* Card 4 — Rejected / Action Needed */}
+                                <div className="premium-stat-card rejected" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.25rem 1.5rem', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.04)', transition: 'all 0.25s ease' }}>
                                     <div className="stat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Action Needed</span>
-                                        <div className="stat-icon-wrap" style={{ background: '#fee2e2', color: '#b91c1c', padding: '0.5rem', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <span className="stat-label" style={{ color: '#475569', fontWeight: '800', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Action Needed</span>
+                                        <div className="stat-icon-wrap" style={{ background: '#fff1f2', color: '#e11d48', padding: '0.55rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <XCircle size={20} />
                                         </div>
                                     </div>
-                                    <div className="stat-content" style={{ marginTop: '0.75rem' }}>
-                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2rem', display: 'block', lineHeight: '1' }}>{rejectedCount}</span>
-                                        <span className="stat-trend danger" style={{ color: '#b91c1c', fontWeight: '700', fontSize: '0.8rem', marginTop: '0.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                    <div className="stat-content" style={{ marginTop: '0.85rem' }}>
+                                        <span className="stat-value" style={{ color: '#0f172a', fontWeight: '900', fontSize: '2.2rem', display: 'block', lineHeight: '1', letterSpacing: '-0.02em' }}>{rejectedCount}</span>
+                                        <span className="stat-trend danger" style={{ color: '#e11d48', fontWeight: '700', fontSize: '0.82rem', marginTop: '0.45rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                                             <AlertCircle size={14} />
                                             {rejectedCount > 0 ? 'Review notes' : 'All clear'}
                                         </span>
                                     </div>
-                                    <div className="stat-bar" style={{ width: applications.length ? `${(rejectedCount / applications.length) * 100}%` : '0%', height: '4px', background: '#b91c1c', borderRadius: '2px', marginTop: '0.75rem' }}></div>
+                                    <div className="stat-bar" style={{ width: applications.length ? `${(rejectedCount / applications.length) * 100}%` : '0%', height: '4px', background: '#ef4444', borderRadius: '4px', marginTop: '0.85rem' }}></div>
                                 </div>
                             </div>
 
@@ -468,7 +468,7 @@ export default function Dashboard() {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', background: '#ffffff', border: '1.5px solid #94a3b8', padding: '0.6rem 1rem', borderRadius: '10px', flex: 1, minWidth: '250px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', background: '#ffffff', border: '1px solid #cbd5e1', padding: '0.65rem 1rem', borderRadius: '12px', flex: 1, minWidth: '250px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
                                         <Search size={18} color="#64748b" />
                                         <input
                                             type="text"
@@ -479,7 +479,7 @@ export default function Dashboard() {
                                         />
                                     </div>
                                     <select
-                                        style={{ padding: '0.6rem 1rem', borderRadius: '10px', border: '1.5px solid #94a3b8', outline: 'none', background: '#ffffff', fontSize: '0.9rem', color: '#0f172a', fontWeight: '700', minWidth: '160px' }}
+                                        style={{ padding: '0.65rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', background: '#ffffff', fontSize: '0.9rem', color: '#0f172a', fontWeight: '700', minWidth: '160px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)', cursor: 'pointer' }}
                                         value={filterStatus}
                                         onChange={e => setFilterStatus(e.target.value)}
                                     >
