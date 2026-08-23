@@ -10297,3 +10297,137 @@ main {
   border-top: 1px solid var(--gray-200);
   background: var(--off-white);
 }
+
+/* ===== GLOBAL HIGH-CONTRAST SYSTEM FORMS & INPUT ENHANCEMENTS ===== */
+label,
+.form-group label,
+.form-group-custom label,
+.job-apply-form label {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  font-size: 0.88rem !important;
+  margin-bottom: 0.35rem !important;
+  display: block !important;
+  letter-spacing: 0.01em !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+input[type="file"],
+select,
+textarea,
+.admin-note-input,
+.search-box input,
+.filter-select-wrap select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #94a3b8 !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+input::placeholder,
+textarea::placeholder,
+.admin-note-input::placeholder,
+.search-box input::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  padding: 0.5rem !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.admin-note-input:focus {
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15) !important;
+  outline: none !important;
+}
+
+/* ===== MOBILE RESPONSIVE ADMIN BUTTONS & TABLES ===== */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding: 1rem;
+  }
+
+  .card-title-group {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .admin-btn-primary,
+  .admin-btn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.95rem !important;
+    min-height: 44px !important;
+  }
+
+  .country-tab-btn {
+    flex: 1 1 calc(50% - 0.5rem);
+    justify-content: center;
+    padding: 0.65rem 0.85rem !important;
+    font-size: 0.85rem !important;
+    min-height: 42px !important;
+  }
+
+  .admin-action-btns {
+    gap: 0.5rem;
+  }
+
+  .btn-act {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    border-radius: 10px !important;
+  }
+
+  .btn-act svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem 0.85rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  .admin-table-overflow {
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 0.5rem;
+  }
+
+  .admin-modal {
+    max-height: 95vh;
+    border-radius: 16px;
+  }
+
+  .admin-modal-body {
+    padding: 1rem;
+  }
+
+  .admin-modal-header,
+  .admin-modal-footer {
+    padding: 1rem;
+  }
+}
