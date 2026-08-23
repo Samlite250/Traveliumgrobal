@@ -720,14 +720,33 @@ export default function Jobs() {
     })
 
     useEffect(() => {
+        const countTotalJobs = (data) => {
+            if (!Array.isArray(data)) return 0
+            return data.reduce((acc, c) => acc + (c.highPayableJobs?.length || 0) + (c.partTimeJobs?.length || 0), 0)
+        }
+
         let unsubFirestore = null
         if (db) {
             try {
                 unsubFirestore = onSnapshot(doc(db, 'settings', 'jobs'), (snap) => {
+                    let localSaved = []
+                    try {
+                        const raw = localStorage.getItem('travelium_jobs_config')
+                        if (raw) localSaved = JSON.parse(raw)
+                    } catch { }
+
                     if (snap.exists() && snap.data()?.jobs) {
-                        const liveJobs = snap.data().jobs
-                        setAllJobsData(liveJobs)
-                        try { localStorage.setItem('travelium_jobs_config', JSON.stringify(liveJobs)) } catch { }
+                        const cloudJobs = snap.data().jobs
+                        const cloudCount = countTotalJobs(cloudJobs)
+                        const localCount = countTotalJobs(localSaved)
+
+                        if (localCount > cloudCount) {
+                            setAllJobsData(localSaved)
+                            // Skip overwriting localStorage since local is already newer
+                        } else {
+                            setAllJobsData(cloudJobs)
+                            try { localStorage.setItem('travelium_jobs_config', JSON.stringify(cloudJobs)) } catch { }
+                        }
                     }
                 }, (err) => console.warn("Jobs Firestore sync notice:", err))
             } catch { }
