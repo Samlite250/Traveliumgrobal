@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { Plane, Globe, Send, Play, Mail, Phone, ShieldCheck } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function Footer() {
+    const { t } = useTranslation()
     const [siteSettings, setSiteSettings] = useState(null)
 
     useEffect(() => {
@@ -45,18 +47,18 @@ export default function Footer() {
 
                     <div className="footer-nav-grid">
                         <div className="footer-links-col">
-                            <h4>Quick Links</h4>
+                            <h4>{t('footer.quickLinks', 'Quick Links')}</h4>
                             <ul>
-                                <li><Link to="/">Home</Link></li>
-                                <li><Link to="/jobs">Jobs &amp; Careers</Link></li>
-                                <li><Link to="/about">About Travelium</Link></li>
-                                <li><Link to="/visa-services">Visa Solutions</Link></li>
-                                <li><Link to="/flights">Flight Booking</Link></li>
-                                <li><Link to="/contact">Contact Support</Link></li>
+                                <li><Link to="/">{t('navbar.home', 'Home')}</Link></li>
+                                <li><Link to="/jobs">{t('footer.jobs', 'Jobs & Careers')}</Link></li>
+                                <li><Link to="/about">{t('footer.about', 'About Travelium')}</Link></li>
+                                <li><Link to="/visa-services">{t('footer.visaSolutions', 'Visa Solutions')}</Link></li>
+                                <li><Link to="/flights">{t('footer.flightBooking', 'Flight Booking')}</Link></li>
+                                <li><Link to="/contact">{t('footer.contactSupport', 'Contact Support')}</Link></li>
                             </ul>
                         </div>
                         <div className="footer-links-col">
-                            <h4>Hot Destinies</h4>
+                            <h4>{t('footer.hotDestinies', 'Hot Destinies')}</h4>
                             <ul>
                                 <li><Link to="/visa-services">Dubai, UAE</Link></li>
                                 <li><Link to="/visa-services">Canada PR</Link></li>
@@ -143,8 +145,8 @@ export default function Footer() {
                         <span>© {new Date().getFullYear()} {s.copyright || 'Travelium Global. Licensed Recruitment & Travel Agency.'}</span>
                     </div>
                     <div className="legal-links">
-                        <Link to="#">Terms of Use</Link>
-                        <Link to="#">Privacy Policy</Link>
+                        <Link to="#">{t('footer.terms', 'Terms of Use')}</Link>
+                        <Link to="#">{t('footer.privacy', 'Privacy Policy')}</Link>
                         <span className="location-tag"><Globe size={14} /> {s.headquarters || 'Headquartered in Dubai, UAE'}</span>
                     </div>
                 </div>

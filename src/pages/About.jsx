@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
 import { Users, Target, Globe, Award } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const team = [
     {
@@ -29,16 +30,17 @@ const values = [
 ]
 
 export default function About() {
+    const { t } = useTranslation();
     return (
         <main>
             <div className="page-hero">
                 <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container page-hero-content">
                     <div className="breadcrumb">
-                        <Link to="/">Home</Link><span className="sep">›</span><span>About Us</span>
+                        <Link to="/">Home</Link><span className="sep">›</span><span>{t('about.breadcrumb', 'About Us')}</span>
                     </div>
-                    <h1>About Travelium</h1>
-                    <p>Dedicated to making global education accessible to every ambitious student.</p>
+                    <h1>{t('about.title', 'About Travelium')}</h1>
+                    <p>{t('about.subtitle', 'Dedicated to making global education accessible to every ambitious student.')}</p>
                 </div>
             </div>
 
@@ -46,13 +48,13 @@ export default function About() {
                 <div className="container">
                     <div className="about-grid">
                         <div className="about-text">
-                            <div className="section-label">Our Story</div>
-                            <h2 className="section-title">Who We Are</h2>
+                            <div className="section-label">{t('about.storyLabel', 'Our Story')}</div>
+                            <h2 className="section-title">{t('about.storyTitle', 'Who We Are')}</h2>
                             <p>
-                                Founded in 2015, Travelium Global has helped over 15,000 students realize their dream of studying and working abroad. We are a team of passionate education consultants, visa experts, and travel professionals.
+                                {t('about.storyP1', 'Founded in 2015, Travelium Global has helped over 15,000 students realize their dream of studying and working abroad. We are a team of passionate education consultants, visa experts, and travel professionals.')}
                             </p>
                             <p>
-                                Our mission is simple: break down barriers to global education by providing expert guidance, personalized support, and a network of 200+ partner universities across 20+ countries.
+                                {t('about.storyP2', 'Our mission is simple: break down barriers to global education by providing expert guidance, personalized support, and a network of 200+ partner universities across 20+ countries.')}
                             </p>
                             <div className="about-stats">
                                 <div className="about-stat"><div className="num">15K+</div><div className="label">Students Helped</div></div>
@@ -74,8 +76,8 @@ export default function About() {
             <section className="content-section" style={{ background: 'var(--off-white)' }}>
                 <div className="container">
                     <div className="section-header">
-                        <div className="section-label">What Drives Us</div>
-                        <h2 className="section-title">Our Core Values</h2>
+                        <div className="section-label">{t('about.valuesLabel', 'What Drives Us')}</div>
+                        <h2 className="section-title">{t('about.valuesTitle', 'Our Core Values')}</h2>
                     </div>
                     <div className="values-grid">
                         {values.map(v => (
@@ -92,8 +94,8 @@ export default function About() {
             <section className="content-section">
                 <div className="container">
                     <div className="section-header">
-                        <div className="section-label">Our People</div>
-                        <h2 className="section-title">Meet the Team</h2>
+                        <div className="section-label">{t('about.teamLabel', 'Our People')}</div>
+                        <h2 className="section-title">{t('about.teamTitle', 'Meet the Team')}</h2>
                     </div>
                     <div className="team-grid">
                         {team.map(m => (

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from './LanguageSwitcher'
 import {
     Mail, Phone, Globe, Send, Play,
     Plane, GraduationCap, Landmark, Award, Info, PhoneCall,
@@ -9,41 +11,7 @@ import {
     BookOpen, Building2, FileText, Briefcase, MapPin, Star
 } from 'lucide-react'
 
-const studyAbroadDropdown = [
-    { label: 'Find Universities', href: '/study-abroad', icon: <Building2 size={15} /> },
-    { label: 'Available Programs', href: '/study-abroad', icon: <BookOpen size={15} /> },
-    { label: 'Scholarships', href: '/scholarships', icon: <Star size={15} /> },
-    { label: 'Destinations', href: '/study-abroad', icon: <MapPin size={15} /> },
-]
 
-const visaServicesDropdown = [
-    { label: 'Student Visa', href: '/visa-services', icon: <GraduationCap size={15} /> },
-    { label: 'Tourist Visa', href: '/visa-services', icon: <Globe size={15} /> },
-    { label: 'Work Visa', href: '/visa-services', icon: <Briefcase size={15} /> },
-    { label: 'Document Assistance', href: '/visa-services', icon: <FileText size={15} /> },
-]
-
-const workAbroadDropdown = [
-    { label: 'Dubai', href: '/jobs?country=Dubai', icon: <MapPin size={15} />, tag: 'Hot', sub: 'Jobs & Work Visas' },
-    { label: 'Canada', href: '/jobs?country=Canada', icon: <MapPin size={15} />, tag: 'Hot', sub: 'Jobs & Express Entry' },
-    { label: 'USA', href: '/jobs?country=USA', icon: <MapPin size={15} />, tag: 'Trending', sub: 'Jobs & H-1B Visa' },
-    { label: 'UK', href: '/jobs?country=UK', icon: <MapPin size={15} />, tag: null, sub: 'Jobs & Skilled Worker' },
-    { label: 'Germany', href: '/jobs?country=Germany', icon: <MapPin size={15} />, tag: null, sub: 'Jobs & EU Blue Card' },
-    { label: 'France', href: '/jobs?country=France', icon: <MapPin size={15} />, tag: null, sub: 'Jobs & Talent Visa' },
-    { label: 'Oman', href: '/jobs?country=Oman', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Work Permits' },
-    { label: 'China', href: '/jobs?country=China', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Z-Visa' },
-    { label: 'Japan', href: '/jobs?country=Japan', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Work Permits' },
-    { label: 'Netherlands', href: '/jobs?country=Netherlands', icon: <MapPin size={15} />, tag: null, sub: 'Jobs & Skilled Migrant' },
-]
-
-const flightsDropdown = [
-    { label: 'Buy Ticket', href: '/buy-ticket', icon: <Send size={15} /> },
-    { label: 'Book Flight', href: '/flights', icon: <Plane size={15} /> },
-];
-const staticLinks = [
-    { label: 'About Us', href: '/about', icon: <Info size={16} /> },
-    { label: 'Contact Us', href: '/contact', icon: <PhoneCall size={16} /> },
-]
 
 function DropdownLink({ label, icon, items, megaHint }) {
     const [open, setOpen] = useState(false)
@@ -82,7 +50,7 @@ function DropdownLink({ label, icon, items, megaHint }) {
     )
 }
 
-function WorkAbroadDropdown() {
+function WorkAbroadDropdown({ t, workAbroadDropdown }) {
     const [open, setOpen] = useState(false)
     const ref = useRef(null)
 
@@ -100,14 +68,14 @@ function WorkAbroadDropdown() {
                 aria-expanded={open}
             >
                 <Briefcase size={16} />
-                Jobs &amp; Careers
+                {t('navbar.jobsCareers', 'Jobs & Careers')}
                 <ChevronDown size={14} className={`chevron${open ? ' open' : ''}`} />
             </button>
             {open && (
                 <div className="work-abroad-mega">
                     <div className="work-abroad-mega-header">
-                        <h4>Global Jobs &amp; Careers Hub</h4>
-                        <p>Browse high-payable &amp; part-time jobs across top global destinations</p>
+                        <h4>{t('navbar.globalJobsHub', 'Global Jobs & Careers Hub')}</h4>
+                        <p>{t('navbar.globalJobsSub', 'Browse high-payable & part-time jobs across top global destinations')}</p>
                     </div>
                     <ul className="work-abroad-list">
                         {workAbroadDropdown.map(item => (
@@ -125,7 +93,7 @@ function WorkAbroadDropdown() {
                     </ul>
                     <div className="work-abroad-mega-footer">
                         <Link to="/jobs" onClick={() => setOpen(false)} className="work-mega-cta">
-                            Browse All Country Jobs &amp; Work Visas <ArrowRight size={13} />
+                            {t('navbar.browseAllJobs', 'Browse All Country Jobs & Work Visas')} <ArrowRight size={13} />
                         </Link>
                     </div>
                 </div>
@@ -135,6 +103,45 @@ function WorkAbroadDropdown() {
 }
 
 export default function Navbar() {
+    const { t } = useTranslation();
+
+    const studyAbroadDropdown = [
+        { label: t('navbar.findUniversities', 'Find Universities'), href: '/study-abroad', icon: <Building2 size={15} /> },
+        { label: t('navbar.programs', 'Available Programs'), href: '/study-abroad', icon: <BookOpen size={15} /> },
+        { label: t('navbar.scholarships', 'Scholarships'), href: '/scholarships', icon: <Star size={15} /> },
+        { label: t('navbar.destinations', 'Destinations'), href: '/study-abroad', icon: <MapPin size={15} /> },
+    ]
+
+    const visaServicesDropdown = [
+        { label: t('navbar.studentVisa', 'Student Visa'), href: '/visa-services', icon: <GraduationCap size={15} /> },
+        { label: t('navbar.touristVisa', 'Tourist Visa'), href: '/visa-services', icon: <Globe size={15} /> },
+        { label: t('navbar.workVisa', 'Work Visa'), href: '/visa-services', icon: <Briefcase size={15} /> },
+        { label: t('navbar.docAssist', 'Document Assistance'), href: '/visa-services', icon: <FileText size={15} /> },
+    ]
+
+    const workAbroadDropdown = [
+        { label: 'Dubai', href: '/jobs?country=Dubai', icon: <MapPin size={15} />, tag: 'Hot', sub: t('navbar.jobsWorkVisas', 'Jobs & Work Visas') },
+        { label: 'Canada', href: '/jobs?country=Canada', icon: <MapPin size={15} />, tag: 'Hot', sub: t('navbar.jobsExpress', 'Jobs & Express Entry') },
+        { label: 'USA', href: '/jobs?country=USA', icon: <MapPin size={15} />, tag: 'Trending', sub: t('navbar.jobsH1B', 'Jobs & H-1B Visa') },
+        { label: 'UK', href: '/jobs?country=UK', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsSkilledWorker', 'Jobs & Skilled Worker') },
+        { label: 'Germany', href: '/jobs?country=Germany', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsEU', 'Jobs & EU Blue Card') },
+        { label: 'France', href: '/jobs?country=France', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsTalent', 'Jobs & Talent Visa') },
+        { label: 'Oman', href: '/jobs?country=Oman', icon: <MapPin size={15} />, tag: 'New', sub: t('navbar.jobsWorkPermit', 'Jobs & Work Permits') },
+        { label: 'China', href: '/jobs?country=China', icon: <MapPin size={15} />, tag: 'New', sub: t('navbar.jobsZ', 'Jobs & Z-Visa') },
+        { label: 'Japan', href: '/jobs?country=Japan', icon: <MapPin size={15} />, tag: 'New', sub: t('navbar.jobsWorkPermit', 'Jobs & Work Permits') },
+        { label: 'Netherlands', href: '/jobs?country=Netherlands', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsSkilledMigrant', 'Jobs & Skilled Migrant') },
+    ]
+
+    const flightsDropdown = [
+        { label: t('navbar.buyTicket', 'Buy Ticket'), href: '/buy-ticket', icon: <Send size={15} /> },
+        { label: t('navbar.bookFlight', 'Book Flight'), href: '/flights', icon: <Plane size={15} /> },
+    ]
+
+    const staticLinks = [
+        { label: t('navbar.aboutUs', 'About Us'), href: '/about', icon: <Info size={16} /> },
+        { label: t('navbar.contactUs', 'Contact Us'), href: '/contact', icon: <PhoneCall size={16} /> },
+    ]
+
     const [scrolled, setScrolled] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
     const [siteSettings, setSiteSettings] = useState(null)
@@ -190,6 +197,7 @@ export default function Navbar() {
                             <a href={`tel:${siteSettings?.supportPhone?.replace(/\s/g, '') || '+250786189460'}`} className="topbar-link"><Phone size={12} /> {siteSettings?.supportPhone || '+250 786 189 460'}</a>
                         </div>
                         <div className="topbar-right">
+                            <LanguageSwitcher />
                             {siteSettings?.linkedin && <a href={siteSettings.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Globe size={12} /></a>}
                             {siteSettings?.twitter && <a href={siteSettings.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter"><Send size={12} /></a>}
                             {siteSettings?.youtube && <a href={siteSettings.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Play size={12} /></a>}
@@ -211,13 +219,13 @@ export default function Navbar() {
                         <ul className="nav-links">
                             <li>
                                 <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
-                                    <Home size={16} /> Home
+                                    <Home size={16} /> {t('navbar.home')}
                                 </Link>
                             </li>
-                            <DropdownLink label="Study Abroad" icon={<GraduationCap size={16} />} items={studyAbroadDropdown} />
-                            <DropdownLink label="Visa Services" icon={<Landmark size={16} />} items={visaServicesDropdown} />
-                            <WorkAbroadDropdown />
-                            <DropdownLink label="Flights" icon={<Plane size={16} />} items={flightsDropdown} />
+                            <DropdownLink label={t('navbar.studyAbroad', 'Study Abroad')} icon={<GraduationCap size={16} />} items={studyAbroadDropdown} />
+                            <DropdownLink label={t('navbar.visaServices', 'Visa Services')} icon={<Landmark size={16} />} items={visaServicesDropdown} />
+                            <WorkAbroadDropdown t={t} workAbroadDropdown={workAbroadDropdown} />
+                            <DropdownLink label={t('navbar.flights', 'Flights')} icon={<Plane size={16} />} items={flightsDropdown} />
                             {staticLinks.map(l => (
                                 <li key={l.href}>
                                     <Link to={l.href} className={location.pathname === l.href ? 'active' : ''}>
@@ -229,10 +237,10 @@ export default function Navbar() {
                         </ul>
                         <div className="nav-actions">
                             <Link to="/login" className="nav-login">
-                                <User size={16} /> Login
+                                <User size={16} /> {t('navbar.login')}
                             </Link>
                             <Link to="/apply" className="nav-apply">
-                                Apply Now <ArrowRight size={16} />
+                                {t('navbar.applyNow')} <ArrowRight size={16} />
                             </Link>
                         </div>
                         <div className="nav-mobile-btns">
@@ -263,7 +271,7 @@ export default function Navbar() {
                 <ul className="mobile-nav-links">
                     <li>
                         <Link to="/" className={location.pathname === '/' ? 'active' : ''} onClick={() => setMenuOpen(false)}>
-                            <Home size={16} /> <span className="mobile-link-text">Home</span>
+                            <Home size={16} /> <span className="mobile-link-text">{t('navbar.home')}</span>
                         </Link>
                     </li>
 
@@ -364,13 +372,13 @@ export default function Navbar() {
                     ))}
                     <li>
                         <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''} onClick={() => setMenuOpen(false)}>
-                            <User size={16} /> <span className="mobile-link-text">My Dashboard</span>
+                            <User size={16} /> <span className="mobile-link-text">{t('navbar.dashboard')}</span>
                         </Link>
                     </li>
                 </ul>
                 <div className="mobile-actions">
-                    <Link to="/login" className="btn btn-navy" onClick={() => setMenuOpen(false)}>Login</Link>
-                    <Link to="/apply" className="btn btn-primary" onClick={() => setMenuOpen(false)}>Apply Now <ArrowRight size={16} /></Link>
+                    <Link to="/login" className="btn btn-navy" onClick={() => setMenuOpen(false)}>{t('navbar.login')}</Link>
+                    <Link to="/apply" className="btn btn-primary" onClick={() => setMenuOpen(false)}>{t('navbar.applyNow')} <ArrowRight size={16} /></Link>
                 </div>
             </div>
         </>

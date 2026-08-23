@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { Briefcase, Landmark, Palmtree, GraduationCap, ArrowRight, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const fallbackServices = [
     { title: 'Flight Booking', img: 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', featured: true, type: 'flight' },
@@ -17,6 +18,7 @@ const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-ab
 const iconMap = { visa: <Briefcase size={24} />, flight: <Landmark size={24} />, study: <GraduationCap size={24} />, scholarship: <Palmtree size={24} /> }
 
 export default function Services() {
+    const { t } = useTranslation()
     const [services, setServices] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -59,10 +61,10 @@ export default function Services() {
         <section className="services section">
             <div className="container">
                 <div className="section-header">
-                    <div className="section-label">What We Offer</div>
-                    <h2 className="section-title">Our Services</h2>
+                    <div className="section-label">{t('services.label', 'What We Offer')}</div>
+                    <h2 className="section-title">{t('services.title', 'Our Services')}</h2>
                     <p className="section-sub">
-                        Comprehensive work visa & career relocation support — from Dubai to the world
+                        {t('services.subtitle', 'Comprehensive work visa & career relocation support — from Dubai to the world')}
                     </p>
                 </div>
                 {loading && <div className="admin-loading"><Loader2 size={24} className="animate-spin" /></div>}
@@ -77,7 +79,7 @@ export default function Services() {
                                 <h3>{s.name || s.title}</h3>
                                 <p>{s.description || s.desc}</p>
                                 <Link to={typeHref[s.type] || '/visa-services'} className="service-link">
-                                    Learn More <ArrowRight size={16} />
+                                    {t('services.learnMore', 'Learn More')} <ArrowRight size={16} />
                                 </Link>
                             </div>
                         </div>

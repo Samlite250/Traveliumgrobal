@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Briefcase, TrendingUp, ArrowRight, Star, Sparkles, Globe } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const destinations = [
     { id: 'ae', flag: 'https://flagcdn.com/w80/ae.png', name: 'Dubai, UAE', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop', jobs: '10k+', salary: 'AED 8k+', featured: true, tag: 'Most Popular' },
@@ -15,16 +16,17 @@ const destinations = [
 ]
 
 export default function Destinations() {
+    const { t } = useTranslation()
     return (
         <section className="destinations-premium section-padding">
             <div className="container">
                 <div className="premium-section-header text-center">
                     <span className="p-badge">
-                        <Sparkles size={14} className="icon-gold" /> Global Opportunities
+                        <Sparkles size={14} className="icon-gold" /> {t('destinations.badge', 'Global Opportunities')}
                     </span>
-                    <h2>Featured Destinations</h2>
+                    <h2>{t('destinations.title', 'Featured Destinations')}</h2>
                     <p className="mx-auto">
-                        Explore verified career pathways in the world's most stable economies.
+                        {t('destinations.subtitle', "Explore verified career pathways in the world's most stable economies.")}
                     </p>
                 </div>
 
@@ -57,7 +59,7 @@ export default function Destinations() {
                                     </div>
                                 </div>
                                 <Link to="/visa-services" className="dest-action-link">
-                                    Explore Program <ArrowRight size={14} />
+                                    {t('destinations.exploreProgram', 'Explore Program')} <ArrowRight size={14} />
                                 </Link>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Calendar, Briefcase, Star, CheckCircle, Send, ChevronLeft, ChevronRight } from 'lucide-react'
-
+import { useTranslation } from 'react-i18next'
 // Hero background slideshow images — Dubai, visas, scholarships, campuses
 const heroBgImages = [
     'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1400&q=80&auto=format&fit=crop',  // Dubai skyline
@@ -102,6 +102,7 @@ const proofAvatars = [
 ]
 
 export default function Hero() {
+    const { t } = useTranslation();
     const [activeBg, setActiveBg] = useState(0)
     const [loadedImages, setLoadedImages] = useState(new Set([]))
     const handleImageLoad = (i) => setLoadedImages(prev => { const s = new Set(prev); s.add(i); return s; })
@@ -213,41 +214,40 @@ export default function Hero() {
                     <div className="hero-content reveal">
                         <div className="hero-badge">
                             <Briefcase size={14} />
-                            Your Career, Our Mission
+                            {t('hero.badge', 'Your Career, Our Mission')}
                         </div>
 
                         <h1 className="hero-title">
-                            Your Gateway to <em>Dubai</em> &amp;<br />
-                            <span>Global Work Visas</span>
+                            {t('hero.titlePart1', 'Your Gateway to')} <em>{t('hero.titleDubai', 'Dubai')}</em> {t('hero.titlePart2', '&')}<br />
+                            <span>{t('hero.titleGlobal', 'Global Work Visas')}</span>
                         </h1>
 
                         <p className="hero-sub">
-                            Join thousands of professionals securing high-paying careers abroad.
-                            Expert work visa guidance — from application to your first day on the job.
+                            {t('hero.subtitle', 'Join thousands of professionals securing high-paying careers abroad. Expert work visa guidance — from application to your first day on the job.')}
                         </p>
 
                         {/* Bullet benefits */}
                         <div className="hero-benefits">
                             <div className="benefit-item">
                                 <CheckCircle size={16} className="benefit-icon" />
-                                <span>98% Work Visa Success Rate</span>
+                                <span>{t('hero.benefit1', '98% Work Visa Success Rate')}</span>
                             </div>
                             <div className="benefit-item">
                                 <CheckCircle size={16} className="benefit-icon" />
-                                <span>Dubai & 50+ Countries Covered</span>
+                                <span>{t('hero.benefit2', 'Dubai & 50+ Countries Covered')}</span>
                             </div>
                             <div className="benefit-item">
                                 <CheckCircle size={16} className="benefit-icon" />
-                                <span>End-to-End Relocation Support</span>
+                                <span>{t('hero.benefit3', 'End-to-End Relocation Support')}</span>
                             </div>
                         </div>
 
                         <div className="hero-actions">
                             <Link to="/apply" className="btn btn-primary">
-                                Apply Now <ArrowRight size={16} />
+                                {t('hero.applyNow', 'Apply Now')} <ArrowRight size={16} />
                             </Link>
                             <Link to="/contact" className="btn btn-outline">
-                                <Calendar size={16} /> Free Consultation
+                                <Calendar size={16} /> {t('hero.freeConsultation', 'Free Consultation')}
                             </Link>
                         </div>
 
@@ -262,7 +262,7 @@ export default function Hero() {
                                 <div className="hero-proof-stars">
                                     {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="currentColor" />)}
                                 </div>
-                                <span><strong>15,000+</strong> professionals placed worldwide</span>
+                                <span><strong>15,000+</strong> {t('hero.placedPros', 'professionals placed worldwide')}</span>
                             </div>
                         </div>
                     </div>
@@ -271,20 +271,20 @@ export default function Hero() {
                     <div className="hero-form-wrapper reveal">
                         <div className="hero-form-card">
                             <div className="form-card-header">
-                                <h3>Check Work Visa Eligibility</h3>
-                                <p>Get a response within 24 hours</p>
+                                <h3>{t('hero.formTitle', 'Check Work Visa Eligibility')}</h3>
+                                <p>{t('hero.formSub', 'Get a response within 24 hours')}</p>
                             </div>
 
                             {submitted ? (
                                 <div className="form-success-msg">
                                     <CheckCircle size={40} className="success-icon" />
-                                    <h4>Application Received!</h4>
-                                    <p>Our work visa expert will contact you shortly.</p>
+                                    <h4>{t('hero.formSuccess', 'Application Received!')}</h4>
+                                    <p>{t('hero.formSuccessSub', 'Our work visa expert will contact you shortly.')}</p>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="hero-form">
                                     <div className="form-group-custom">
-                                        <label htmlFor="hero-name">Full Name</label>
+                                        <label htmlFor="hero-name">{t('hero.formFullName', 'Full Name')}</label>
                                         <input
                                             type="text"
                                             id="hero-name"
@@ -295,7 +295,7 @@ export default function Hero() {
                                         />
                                     </div>
                                     <div className="form-group-custom">
-                                        <label htmlFor="hero-email">Email Address</label>
+                                        <label htmlFor="hero-email">{t('hero.formEmail', 'Email Address')}</label>
                                         <input
                                             type="email"
                                             id="hero-email"
@@ -306,15 +306,15 @@ export default function Hero() {
                                         />
                                     </div>
                                     <div className="form-group-custom">
-                                        <label htmlFor="hero-dest">Preferred Destination</label>
+                                        <label htmlFor="hero-dest">{t('hero.formDest', 'Preferred Destination')}</label>
                                         <select
                                             id="hero-dest"
                                             value={formData.destination}
                                             onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
                                             required
                                         >
-                                            <option value="">Select country...</option>
-                                            <option value="Dubai">🇦🇪 Dubai, UAE — Most Popular</option>
+                                            <option value="">{t('hero.formDestPlaceholder', 'Select country...')}</option>
+                                            <option value="Dubai">🇦🇪 Dubai, UAE</option>
                                             <option value="Canada">🇨🇦 Canada</option>
                                             <option value="UK">🇬🇧 United Kingdom</option>
                                             <option value="Germany">🇩🇪 Germany</option>
@@ -325,14 +325,14 @@ export default function Hero() {
                                         </select>
                                     </div>
                                     <div className="form-group-custom">
-                                        <label htmlFor="hero-service">Service Needed</label>
+                                        <label htmlFor="hero-service">{t('hero.formService', 'Service Needed')}</label>
                                         <select
                                             id="hero-service"
                                             value={formData.service}
                                             onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                                             required
                                         >
-                                            <option value="">Select service...</option>
+                                            <option value="">{t('hero.formServicePlaceholder', 'Select service...')}</option>
                                             <option value="Work">Work Visa / Permit</option>
                                             <option value="Dubai">Dubai UAE Work Visa</option>
                                             <option value="Tourist">Tourist / Visitor Visa</option>
@@ -340,7 +340,7 @@ export default function Hero() {
                                         </select>
                                     </div>
                                     <button type="submit" className="btn btn-primary btn-block btn-icon">
-                                        Submit Inquiry <Send size={16} />
+                                        {t('hero.submitInquiry', 'Submit Inquiry')} <Send size={16} />
                                     </button>
                                 </form>
                             )}
