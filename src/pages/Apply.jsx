@@ -138,7 +138,7 @@ export default function Apply() {
                     localStorage.setItem('travelium_applications', JSON.stringify(existing))
                 } catch (quotaErr) {
                     console.warn('[Apply] localStorage quota reached, clearing and retrying:', quotaErr)
-                    try { localStorage.removeItem('travelium_applications') } catch (_) {}
+                    try { localStorage.removeItem('travelium_applications') } catch (_) { }
                     localStorage.setItem('travelium_applications', JSON.stringify([metaOnly]))
                 }
                 try {
@@ -191,7 +191,7 @@ export default function Apply() {
                 existing.push(metaOnly)
                 localStorage.setItem('travelium_applications', JSON.stringify(existing))
             } catch (quotaErr) {
-                try { localStorage.removeItem('travelium_applications') } catch (_) {}
+                try { localStorage.removeItem('travelium_applications') } catch (_) { }
                 localStorage.setItem('travelium_applications', JSON.stringify([metaOnly]))
             }
             setStatus({ type: 'success' })
@@ -277,11 +277,18 @@ export default function Apply() {
                                         <div className="select-wrap">
                                             <Globe size={16} className="select-icon" />
                                             <select name="destination" value={form.destination} onChange={set} required>
-                                                <option value="">Select country</option>
-                                                {['Dubai', 'Canada', 'United States', 'United Kingdom',
-                                                    'Germany', 'France', 'Oman', 'China', 'Japan', 'Netherlands'].map(c => (
-                                                        <option key={c}>{c}</option>
-                                                    ))}
+                                                <option value="">Select Destination Country</option>
+                                                <option value="Dubai (UAE)">Dubai (UAE)</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="United States">United States</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Germany">Germany</option>
+                                                <option value="France">France</option>
+                                                <option value="Oman">Oman</option>
+                                                <option value="China">China</option>
+                                                <option value="Japan">Japan</option>
+                                                <option value="Netherlands">Netherlands</option>
+                                                <option value="Australia">Australia</option>
                                             </select>
                                         </div>
                                     </div>

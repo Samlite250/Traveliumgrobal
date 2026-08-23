@@ -307,7 +307,7 @@ export default function Navbar() {
                     <li className={`mobile-accordion ${workAbroadOpen ? 'open' : ''}`}>
                         <button className="mobile-accordion-trigger" onClick={() => setWorkAbroadOpen(!workAbroadOpen)}>
                             <span className="trigger-label">
-                                <Briefcase size={16} /> <span className="mobile-link-text">Work Abroad</span>
+                                <Briefcase size={16} /> <span className="mobile-link-text">Jobs &amp; Careers</span>
                             </span>
                             <ChevronDown size={14} className="chevron" />
                         </button>

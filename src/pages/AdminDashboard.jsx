@@ -15,8 +15,10 @@ import {
     Globe, BookOpen, Check, MessageSquare,
     Trash2, Eye, EyeOff, PieChart, TrendingUp, Star,
     Settings, AlertTriangle, Send, X, Info, Menu, LayoutDashboard,
-    FolderOpen, DollarSign, CreditCard, Plus, Edit3, Package, Lock, Image as ImageIcon, Plane
+    FolderOpen, DollarSign, CreditCard, Plus, Edit3, Package, Lock, Image as ImageIcon, Plane,
+    Briefcase, MapPin, Building, Gem
 } from 'lucide-react'
+import { JOBS_DATA } from './Jobs'
 import { jsPDF } from 'jspdf'
 
 const SERVICE_OPTIONS = [
@@ -40,6 +42,7 @@ const statusConfig = {
 const navItems = [
     { key: 'overview', label: 'Overview', icon: <PieChart size={20} /> },
     { key: 'applications', label: 'Applications', icon: <ClipboardList size={20} />, badge: 'pending' },
+    { key: 'jobs', label: 'Jobs & Careers', icon: <Briefcase size={20} /> },
     { key: 'flights', label: 'Flight Bookings', icon: <Plane size={20} />, badge: 'flights' },
     { key: 'transactions', label: 'Transactions', icon: <DollarSign size={20} /> },
     { key: 'services', label: 'Services', icon: <Package size={20} /> },
@@ -135,6 +138,15 @@ export default function AdminDashboard() {
     const [editingTx, setEditingTx] = useState(null)
     const [txForm, setTxForm] = useState({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
     const [showTxEditor, setShowTxEditor] = useState(false)
+
+    // Jobs Management state
+    const [jobsData, setJobsData] = useState(JOBS_DATA)
+    const [activeJobCountry, setActiveJobCountry] = useState(JOBS_DATA[0]?.id || 'uae')
+    const [jobsEditorView, setJobsEditorView] = useState('list') // 'list' | 'editJob'
+    const [editingJob, setEditingJob] = useState(null)
+    const [editingJobType, setEditingJobType] = useState('highPayableJobs')
+    const [jobForm, setJobForm] = useState({ title: '', company: '', location: '', salary: '', type: 'Full-Time', experience: '', requirements: '', hours: '' })
+    const [showJobEditor, setShowJobEditor] = useState(false)
 
     const loadLocalData = (key) => {
         try { return JSON.parse(localStorage.getItem(key) || '[]') } catch { return [] }
@@ -1571,6 +1583,182 @@ export default function AdminDashboard() {
         )
     }
 
+    // ─── Jobs & Careers Management ───
+    const renderJobs = () => {
+        const currentCountry = jobsData.find(c => c.id === activeJobCountry) || jobsData[0]
+
+        const saveJobLocal = (updatedData) => {
+            setJobsData(updatedData)
+            try { localStorage.setItem('travelium_jobs_config', JSON.stringify(updatedData)) } catch { }
+        }
+
+        const openAddJob = (type) => {
+            setEditingJob(null)
+            setEditingJobType(type)
+            setJobForm({ title: '', company: '', location: '', salary: '', type: type === 'highPayableJobs' ? 'Full-Time' : 'Part-Time', experience: '', requirements: '', hours: '' })
+            setShowJobEditor(true)
+        }
+
+        const openEditJob = (job, type) => {
+            setEditingJob(job)
+            setEditingJobType(type)
+            setJobForm({
+                title: job.title || '',
+                company: job.company || '',
+                location: job.location || '',
+                salary: job.salary || '',
+                type: job.type || 'Full-Time',
+                experience: job.experience || '',
+                requirements: (job.requirements || []).join('\n'),
+                hours: job.hours || ''
+            })
+            setShowJobEditor(true)
+        }
+
+        const saveJob = () => {
+            if (!jobForm.title || !jobForm.company) { toast('Title and Company are required', 'error'); return }
+            const reqArr = jobForm.requirements.split('\n').map(r => r.trim()).filter(Boolean)
+            const updatedJob = {
+                id: editingJob?.id || `${activeJobCountry}-${editingJobType === 'highPayableJobs' ? 'hp' : 'pt'}-${Date.now()}`,
+                title: jobForm.title, company: jobForm.company, location: jobForm.location,
+                salary: jobForm.salary, type: jobForm.type, experience: jobForm.experience,
+                requirements: reqArr, hours: jobForm.hours || undefined
+            }
+            const updated = jobsData.map(c => {
+                if (c.id !== activeJobCountry) return c
+                const jobs = c[editingJobType] || []
+                const exists = jobs.findIndex(j => j.id === updatedJob.id)
+                const newJobs = exists >= 0 ? jobs.map(j => j.id === updatedJob.id ? updatedJob : j) : [...jobs, updatedJob]
+                return { ...c, [editingJobType]: newJobs }
+            })
+            saveJobLocal(updated)
+            setShowJobEditor(false)
+            setEditingJob(null)
+            toast(editingJob ? 'Job updated! Changes visible to users.' : 'New job added!', 'success')
+        }
+
+        const deleteJob = (jobId, type) => {
+            if (!confirm('Delete this job listing?')) return
+            const updated = jobsData.map(c => {
+                if (c.id !== activeJobCountry) return c
+                return { ...c, [type]: (c[type] || []).filter(j => j.id !== jobId) }
+            })
+            saveJobLocal(updated)
+            toast('Job deleted.', 'success')
+        }
+
+        const JobTable = ({ jobs, type }) => (
+            jobs.length === 0 ? (
+                <div className="admin-empty" style={{ padding: '2rem' }}><Briefcase size={36} /><p>No jobs. Click "Add Job".</p></div>
+            ) : (
+                <div className="admin-table-overflow">
+                    <table className="admin-table">
+                        <thead><tr><th>Job Title</th><th>Company</th><th>Location</th><th>Salary</th><th>Exp.</th><th className="actions-col">Actions</th></tr></thead>
+                        <tbody>
+                            {jobs.map(job => (
+                                <tr key={job.id}>
+                                    <td><strong>{job.title}</strong></td>
+                                    <td><span className="text-muted">{job.company}</span></td>
+                                    <td><span className="text-muted">{job.location}</span></td>
+                                    <td><strong style={{ fontSize: '0.85rem' }}>{job.salary}</strong></td>
+                                    <td><span className="card-badge">{job.experience || job.type}</span></td>
+                                    <td>
+                                        <div className="admin-action-btns">
+                                            <button className="btn-act pro" onClick={() => openEditJob(job, type)} title="Edit"><Edit3 size={14} /></button>
+                                            <button className="btn-act rej" onClick={() => deleteJob(job.id, type)} title="Delete"><Trash2 size={14} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )
+        )
+
+        return (
+            <>
+                <div className="admin-table-card" style={{ marginBottom: '1rem' }}>
+                    <div className="card-header">
+                        <div className="card-title-group"><Briefcase size={20} className="title-icon" /><h3>Jobs & Careers Manager</h3></div>
+                        <span className="card-badge">{jobsData.length} Countries</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', padding: '0 1.5rem 1.25rem' }}>
+                        {jobsData.map(c => (
+                            <button key={c.id} className={`country-tab-btn ${activeJobCountry === c.id ? 'active' : ''}`}
+                                onClick={() => setActiveJobCountry(c.id)} style={{ padding: '0.6rem 1.1rem', fontSize: '0.88rem' }}>
+                                <span className="c-code">{c.code}</span>
+                                <span className="c-name">{c.country}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {currentCountry && (<>
+                    <div className="admin-table-card" style={{ marginBottom: '1rem' }}>
+                        <div className="card-header">
+                            <div className="card-title-group">
+                                <Gem size={18} className="title-icon" style={{ color: '#b45309' }} />
+                                <h3>High Payable Jobs — {currentCountry.country} ({(currentCountry.highPayableJobs || []).length})</h3>
+                            </div>
+                            <button className="admin-btn-primary" onClick={() => openAddJob('highPayableJobs')}><Plus size={16} /> Add Job</button>
+                        </div>
+                        <JobTable jobs={currentCountry.highPayableJobs || []} type="highPayableJobs" />
+                    </div>
+                    <div className="admin-table-card">
+                        <div className="card-header">
+                            <div className="card-title-group">
+                                <Clock size={18} className="title-icon" style={{ color: '#1d4ed8' }} />
+                                <h3>Part-Time Jobs — {currentCountry.country} ({(currentCountry.partTimeJobs || []).length})</h3>
+                            </div>
+                            <button className="admin-btn-primary" onClick={() => openAddJob('partTimeJobs')}><Plus size={16} /> Add Job</button>
+                        </div>
+                        <JobTable jobs={currentCountry.partTimeJobs || []} type="partTimeJobs" />
+                    </div>
+                </>)}
+
+                {showJobEditor && (
+                    <div className="admin-modal-overlay" onClick={() => setShowJobEditor(false)}>
+                        <div className="admin-modal admin-modal-sm" onClick={e => e.stopPropagation()} style={{ maxWidth: '620px' }}>
+                            <div className="admin-modal-header">
+                                <div className="modal-title-group">
+                                    {editingJobType === 'highPayableJobs' ? <Gem size={20} className="title-icon" /> : <Clock size={20} className="title-icon" />}
+                                    <h3>{editingJob ? 'Edit Job Listing' : `New ${editingJobType === 'highPayableJobs' ? 'High Payable' : 'Part-Time'} Job`} — {currentCountry?.country}</h3>
+                                </div>
+                                <button onClick={() => setShowJobEditor(false)} className="modal-close-btn"><X size={18} /></button>
+                            </div>
+                            <div className="admin-modal-body">
+                                <div className="form-row">
+                                    <div className="form-group"><label>Job Title *</label><input className="admin-note-input" value={jobForm.title} onChange={e => setJobForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Senior Software Engineer" /></div>
+                                    <div className="form-group"><label>Company *</label><input className="admin-note-input" value={jobForm.company} onChange={e => setJobForm(f => ({ ...f, company: e.target.value }))} placeholder="e.g. Apex Tech Gulf" /></div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group"><label>Location</label><input className="admin-note-input" value={jobForm.location} onChange={e => setJobForm(f => ({ ...f, location: e.target.value }))} placeholder="e.g. Dubai, UAE" /></div>
+                                    <div className="form-group"><label>Salary / Pay</label><input className="admin-note-input" value={jobForm.salary} onChange={e => setJobForm(f => ({ ...f, salary: e.target.value }))} placeholder="e.g. AED 18,000 / month" /></div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group"><label>Employment Type</label>
+                                        <select className="admin-note-input" value={jobForm.type} onChange={e => setJobForm(f => ({ ...f, type: e.target.value }))}>
+                                            <option>Full-Time</option><option>Part-Time</option><option>Part-Time / Flexible</option>
+                                            <option>Contract</option><option>Casual / Shift</option><option>Remote</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group"><label>Experience Required</label><input className="admin-note-input" value={jobForm.experience} onChange={e => setJobForm(f => ({ ...f, experience: e.target.value }))} placeholder="e.g. 2+ Years Exp." /></div>
+                                </div>
+                                {editingJobType === 'partTimeJobs' && (<div className="form-group"><label>Hours / Week</label><input className="admin-note-input" value={jobForm.hours} onChange={e => setJobForm(f => ({ ...f, hours: e.target.value }))} placeholder="e.g. 20 hrs / week" /></div>)}
+                                <div className="form-group"><label>Requirements (one per line)</label><textarea className="admin-note-input" rows="4" value={jobForm.requirements} onChange={e => setJobForm(f => ({ ...f, requirements: e.target.value }))} placeholder={"Relevant qualification\nFluent English\nTeam player"} /></div>
+                            </div>
+                            <div className="admin-modal-footer">
+                                <button onClick={() => setShowJobEditor(false)} className="admin-btn-secondary">Cancel</button>
+                                <button onClick={saveJob} className="admin-btn-primary"><Check size={16} /> {editingJob ? 'Update Job' : 'Add Job'}</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </>
+        )
+    }
+
     return (
         <div className="admin-layout">
             {/* Sidebar Overlay (mobile) */}
@@ -1647,6 +1835,7 @@ export default function AdminDashboard() {
                 <div className="main-content">
                     {activeTab === 'overview' && renderOverview()}
                     {activeTab === 'applications' && renderApplications()}
+                    {activeTab === 'jobs' && renderJobs()}
                     {activeTab === 'flights' && renderFlights()}
                     {activeTab === 'transactions' && renderTransactions()}
                     {activeTab === 'services' && renderServices()}
