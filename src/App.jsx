@@ -9,18 +9,34 @@ import { isAdmin } from './lib/firebase'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
 
-const Home = lazy(() => import('./pages/Home'))
-const StudyAbroad = lazy(() => import('./pages/StudyAbroad'))
-const VisaServices = lazy(() => import('./pages/VisaServices'))
-const Scholarships = lazy(() => import('./pages/Scholarships'))
-const About = lazy(() => import('./pages/About'))
-const Contact = lazy(() => import('./pages/Contact'))
-const Apply = lazy(() => import('./pages/Apply'))
-const Login = lazy(() => import('./pages/Login'))
-const Dashboard = lazy(() => import('./pages/Dashboard'))
-const Flights = lazy(() => import('./pages/Flights'))
-const BuyTicket = lazy(() => import('./pages/BuyTicket'))
-const Jobs = lazy(() => import('./pages/Jobs'))
+// Resilient lazy import wrapper that auto-reloads the page if a Vite dynamic chunk fail to load (404 on deployment update)
+function safeLazy(importFn) {
+    return lazy(() =>
+        importFn().catch((err) => {
+            console.warn('Dynamic chunk import failed (deployment update detected). Reloading...', err)
+            const key = 'chunk_reload_attempts'
+            const reloads = parseInt(sessionStorage.getItem(key) || '0', 10)
+            if (reloads < 2) {
+                sessionStorage.setItem(key, String(reloads + 1))
+                window.location.reload()
+            }
+            throw err
+        })
+    )
+}
+
+const Home = safeLazy(() => import('./pages/Home'))
+const StudyAbroad = safeLazy(() => import('./pages/StudyAbroad'))
+const VisaServices = safeLazy(() => import('./pages/VisaServices'))
+const Scholarships = safeLazy(() => import('./pages/Scholarships'))
+const About = safeLazy(() => import('./pages/About'))
+const Contact = safeLazy(() => import('./pages/Contact'))
+const Apply = safeLazy(() => import('./pages/Apply'))
+const Login = safeLazy(() => import('./pages/Login'))
+const Dashboard = safeLazy(() => import('./pages/Dashboard'))
+const Flights = safeLazy(() => import('./pages/Flights'))
+const BuyTicket = safeLazy(() => import('./pages/BuyTicket'))
+const Jobs = safeLazy(() => import('./pages/Jobs'))
 
 function ProtectedRoute({ children }) {
     const { currentUser } = useAuth()
