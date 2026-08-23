@@ -719,6 +719,34 @@ export default function Jobs() {
         }
     })
 
+    useEffect(() => {
+        const handleUpdate = () => {
+            try {
+                const saved = localStorage.getItem('travelium_jobs_config')
+                if (saved) setAllJobsData(JSON.parse(saved))
+            } catch { }
+        }
+
+        window.addEventListener('storage', handleUpdate)
+        window.addEventListener('travelium_jobs_updated', handleUpdate)
+
+        let bc = null
+        if (window.BroadcastChannel) {
+            bc = new BroadcastChannel('travelium_admin_sync')
+            bc.onmessage = (e) => {
+                if (e.data?.type === 'JOBS_UPDATED' && e.data?.payload) {
+                    setAllJobsData(e.data.payload)
+                }
+            }
+        }
+
+        return () => {
+            window.removeEventListener('storage', handleUpdate)
+            window.removeEventListener('travelium_jobs_updated', handleUpdate)
+            if (bc) bc.close()
+        }
+    }, [])
+
     const currentCountryData = allJobsData.find(c => c.id === activeCountry) || allJobsData[0]
 
     // Filter jobs based on search & filterType

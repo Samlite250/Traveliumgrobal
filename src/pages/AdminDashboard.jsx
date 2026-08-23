@@ -159,6 +159,19 @@ export default function AdminDashboard() {
         try { return JSON.parse(localStorage.getItem(key) || '[]') } catch { return [] }
     }
 
+    const saveLocal = (key, data) => {
+        try {
+            localStorage.setItem(`travelium_${key}_admin`, JSON.stringify(data))
+            window.dispatchEvent(new Event('storage'))
+            window.dispatchEvent(new CustomEvent('travelium_sync_updated', { detail: { key, data } }))
+            if (window.BroadcastChannel) {
+                const bc = new BroadcastChannel('travelium_admin_sync')
+                bc.postMessage({ type: 'DATA_UPDATED', key, payload: data })
+                bc.close()
+            }
+        } catch { }
+    }
+
     useEffect(() => {
         if (!db) {
             setOfflineMode(true)
@@ -332,9 +345,7 @@ export default function AdminDashboard() {
         )
     }, [usersList, userSearch])
 
-    const saveLocal = (key, data) => {
-        try { localStorage.setItem(`travelium_${key}_admin`, JSON.stringify(data)) } catch { }
-    }
+
 
     const updateStatus = async (id, newStatus) => {
         setUpdating(id)
@@ -1600,7 +1611,16 @@ export default function AdminDashboard() {
 
         const saveJobLocal = (updatedData) => {
             setJobsData(updatedData)
-            try { localStorage.setItem('travelium_jobs_config', JSON.stringify(updatedData)) } catch { }
+            try {
+                localStorage.setItem('travelium_jobs_config', JSON.stringify(updatedData))
+                window.dispatchEvent(new Event('storage'))
+                window.dispatchEvent(new CustomEvent('travelium_jobs_updated', { detail: updatedData }))
+                if (window.BroadcastChannel) {
+                    const bc = new BroadcastChannel('travelium_admin_sync')
+                    bc.postMessage({ type: 'JOBS_UPDATED', payload: updatedData })
+                    bc.close()
+                }
+            } catch { }
         }
 
         const openAddJob = (type) => {
