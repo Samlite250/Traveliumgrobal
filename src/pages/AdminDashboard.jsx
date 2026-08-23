@@ -140,7 +140,14 @@ export default function AdminDashboard() {
     const [showTxEditor, setShowTxEditor] = useState(false)
 
     // Jobs Management state
-    const [jobsData, setJobsData] = useState(JOBS_DATA)
+    const [jobsData, setJobsData] = useState(() => {
+        try {
+            const saved = localStorage.getItem('travelium_jobs_config')
+            return saved ? JSON.parse(saved) : JOBS_DATA
+        } catch {
+            return JOBS_DATA
+        }
+    })
     const [activeJobCountry, setActiveJobCountry] = useState(JOBS_DATA[0]?.id || 'uae')
     const [jobsEditorView, setJobsEditorView] = useState('list') // 'list' | 'editJob'
     const [editingJob, setEditingJob] = useState(null)

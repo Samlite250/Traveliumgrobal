@@ -710,7 +710,16 @@ export default function Jobs() {
         coverNote: ''
     })
 
-    const currentCountryData = JOBS_DATA.find(c => c.id === activeCountry) || JOBS_DATA[0]
+    const [allJobsData, setAllJobsData] = useState(() => {
+        try {
+            const saved = localStorage.getItem('travelium_jobs_config')
+            return saved ? JSON.parse(saved) : JOBS_DATA
+        } catch {
+            return JOBS_DATA
+        }
+    })
+
+    const currentCountryData = allJobsData.find(c => c.id === activeCountry) || allJobsData[0]
 
     // Filter jobs based on search & filterType
     const filterJobList = (jobs) => {
