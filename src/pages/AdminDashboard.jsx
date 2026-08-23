@@ -1656,23 +1656,23 @@ export default function AdminDashboard() {
 
         const JobTable = ({ jobs, type }) => (
             jobs.length === 0 ? (
-                <div className="admin-empty" style={{ padding: '2rem' }}><Briefcase size={36} /><p>No jobs. Click "Add Job".</p></div>
+                <div className="admin-empty" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: '#64748b' }}><Briefcase size={36} /><p style={{ margin: 0, fontWeight: '600', color: '#0f172a' }}>No jobs. Click "Add Job".</p></div>
             ) : (
-                <div className="admin-table-overflow">
-                    <table className="admin-table">
-                        <thead><tr><th>Job Title</th><th>Company</th><th>Location</th><th>Salary</th><th>Exp.</th><th className="actions-col">Actions</th></tr></thead>
+                <div className="admin-table-overflow" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                    <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead><tr style={{ background: '#f8f9fc', borderBottom: '1px solid #e2e6f0' }}><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Job Title</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Company</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Location</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Salary</th><th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Exp.</th><th className="actions-col" style={{ padding: '0.85rem 1rem', textAlign: 'left', fontSize: '0.78rem', color: '#0f172a', fontWeight: '800' }}>Actions</th></tr></thead>
                         <tbody>
                             {jobs.map(job => (
-                                <tr key={job.id}>
-                                    <td><strong>{job.title}</strong></td>
-                                    <td><span className="text-muted">{job.company}</span></td>
-                                    <td><span className="text-muted">{job.location}</span></td>
-                                    <td><strong style={{ fontSize: '0.85rem' }}>{job.salary}</strong></td>
-                                    <td><span className="card-badge">{job.experience || job.type}</span></td>
-                                    <td>
-                                        <div className="admin-action-btns">
-                                            <button className="btn-act pro" onClick={() => openEditJob(job, type)} title="Edit"><Edit3 size={14} /></button>
-                                            <button className="btn-act rej" onClick={() => deleteJob(job.id, type)} title="Delete"><Trash2 size={14} /></button>
+                                <tr key={job.id} style={{ borderBottom: '1px solid #f1f3f8' }}>
+                                    <td style={{ padding: '0.85rem 1rem', color: '#0f172a' }}><strong style={{ color: '#0f172a', fontWeight: '700' }}>{job.title}</strong></td>
+                                    <td style={{ padding: '0.85rem 1rem' }}><span style={{ color: '#334155', fontWeight: '500' }}>{job.company}</span></td>
+                                    <td style={{ padding: '0.85rem 1rem' }}><span style={{ color: '#334155', fontWeight: '500' }}>{job.location}</span></td>
+                                    <td style={{ padding: '0.85rem 1rem' }}><strong style={{ fontSize: '0.85rem', color: '#0f172a', fontWeight: '700' }}>{job.salary}</strong></td>
+                                    <td style={{ padding: '0.85rem 1rem' }}><span className="card-badge" style={{ background: '#f1f3f8', color: '#0f172a', fontWeight: '700', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', border: '1px solid #e2e6f0' }}>{job.experience || job.type}</span></td>
+                                    <td style={{ padding: '0.85rem 1rem' }}>
+                                        <div className="admin-action-btns" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <button className="btn-act pro" onClick={() => openEditJob(job, type)} title="Edit" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', minWidth: '36px', borderRadius: '8px', background: '#dbeafe', color: '#1d4ed8', border: 'none', cursor: 'pointer' }}><Edit3 size={16} /></button>
+                                            <button className="btn-act rej" onClick={() => deleteJob(job.id, type)} title="Delete" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', minWidth: '36px', borderRadius: '8px', background: '#fee2e2', color: '#b91c1c', border: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1685,16 +1685,16 @@ export default function AdminDashboard() {
 
         return (
             <>
-                <div className="admin-table-card" style={{ marginBottom: '1rem' }}>
-                    <div className="card-header">
-                        <div className="card-title-group"><Briefcase size={20} className="title-icon" /><h3>Jobs & Careers Manager</h3></div>
-                        <span className="card-badge">{jobsData.length} Countries</span>
+                <div className="admin-table-card" style={{ marginBottom: '1rem', background: '#fff', borderRadius: '16px', border: '1px solid #e2e6f0', overflow: 'hidden' }}>
+                    <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e6f0', gap: '1rem', flexWrap: 'wrap' }}>
+                        <div className="card-title-group" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}><Briefcase size={20} className="title-icon" style={{ color: '#c8a84b' }} /><h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '800', color: '#0f172a' }}>Jobs & Careers Manager</h3></div>
+                        <span className="card-badge" style={{ background: '#f1f3f8', color: '#0f172a', fontWeight: '700', padding: '0.3rem 0.75rem', borderRadius: '20px', fontSize: '0.78rem', border: '1px solid #e2e6f0' }}>{jobsData.length} Countries</span>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', padding: '0 1.5rem 1.25rem' }}>
+                    <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', padding: '1rem 1.5rem' }}>
                         {jobsData.map(c => (
                             <button key={c.id} className={`country-tab-btn ${activeJobCountry === c.id ? 'active' : ''}`}
-                                onClick={() => setActiveJobCountry(c.id)} style={{ padding: '0.6rem 1.1rem', fontSize: '0.88rem' }}>
-                                <span className="c-code">{c.code}</span>
+                                onClick={() => setActiveJobCountry(c.id)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.1rem', fontSize: '0.88rem', fontWeight: '700', borderRadius: '12px', background: activeJobCountry === c.id ? '#1e2338' : '#ffffff', color: activeJobCountry === c.id ? '#ffffff' : '#0f172a', border: activeJobCountry === c.id ? '1.5px solid #1e2338' : '1.5px solid #cbd5e1', cursor: 'pointer' }}>
+                                <span className="c-code" style={{ fontSize: '0.72rem', fontWeight: '800', padding: '0.15rem 0.45rem', borderRadius: '6px', background: activeJobCountry === c.id ? '#c8a84b' : '#e2e6f0', color: '#0f172a' }}>{c.code}</span>
                                 <span className="c-name">{c.country}</span>
                             </button>
                         ))}
@@ -1702,23 +1702,23 @@ export default function AdminDashboard() {
                 </div>
 
                 {currentCountry && (<>
-                    <div className="admin-table-card" style={{ marginBottom: '1rem' }}>
-                        <div className="card-header">
-                            <div className="card-title-group">
+                    <div className="admin-table-card" style={{ marginBottom: '1rem', background: '#fff', borderRadius: '16px', border: '1px solid #e2e6f0', overflow: 'hidden' }}>
+                        <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e6f0', gap: '1rem', flexWrap: 'wrap' }}>
+                            <div className="card-title-group" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                                 <Gem size={18} className="title-icon" style={{ color: '#b45309' }} />
-                                <h3>High Payable Jobs — {currentCountry.country} ({(currentCountry.highPayableJobs || []).length})</h3>
+                                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: '800', color: '#0f172a' }}>High Payable Jobs — {currentCountry.country} ({(currentCountry.highPayableJobs || []).length})</h3>
                             </div>
-                            <button className="admin-btn-primary" onClick={() => openAddJob('highPayableJobs')}><Plus size={16} /> Add Job</button>
+                            <button className="admin-btn-primary" onClick={() => openAddJob('highPayableJobs')} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.65rem 1.25rem', borderRadius: '10px', background: '#1e2338', color: '#ffffff', fontWeight: '700', fontSize: '0.88rem', border: 'none', cursor: 'pointer', minHeight: '40px' }}><Plus size={16} /> Add Job</button>
                         </div>
                         <JobTable jobs={currentCountry.highPayableJobs || []} type="highPayableJobs" />
                     </div>
-                    <div className="admin-table-card">
-                        <div className="card-header">
-                            <div className="card-title-group">
+                    <div className="admin-table-card" style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e2e6f0', overflow: 'hidden' }}>
+                        <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e6f0', gap: '1rem', flexWrap: 'wrap' }}>
+                            <div className="card-title-group" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                                 <Clock size={18} className="title-icon" style={{ color: '#1d4ed8' }} />
-                                <h3>Part-Time Jobs — {currentCountry.country} ({(currentCountry.partTimeJobs || []).length})</h3>
+                                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: '800', color: '#0f172a' }}>Part-Time Jobs — {currentCountry.country} ({(currentCountry.partTimeJobs || []).length})</h3>
                             </div>
-                            <button className="admin-btn-primary" onClick={() => openAddJob('partTimeJobs')}><Plus size={16} /> Add Job</button>
+                            <button className="admin-btn-primary" onClick={() => openAddJob('partTimeJobs')} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.65rem 1.25rem', borderRadius: '10px', background: '#1e2338', color: '#ffffff', fontWeight: '700', fontSize: '0.88rem', border: 'none', cursor: 'pointer', minHeight: '40px' }}><Plus size={16} /> Add Job</button>
                         </div>
                         <JobTable jobs={currentCountry.partTimeJobs || []} type="partTimeJobs" />
                     </div>
@@ -1726,38 +1726,38 @@ export default function AdminDashboard() {
 
                 {showJobEditor && (
                     <div className="admin-modal-overlay" onClick={() => setShowJobEditor(false)}>
-                        <div className="admin-modal admin-modal-sm" onClick={e => e.stopPropagation()} style={{ maxWidth: '620px' }}>
-                            <div className="admin-modal-header">
-                                <div className="modal-title-group">
-                                    {editingJobType === 'highPayableJobs' ? <Gem size={20} className="title-icon" /> : <Clock size={20} className="title-icon" />}
-                                    <h3>{editingJob ? 'Edit Job Listing' : `New ${editingJobType === 'highPayableJobs' ? 'High Payable' : 'Part-Time'} Job`} — {currentCountry?.country}</h3>
+                        <div className="admin-modal admin-modal-sm" onClick={e => e.stopPropagation()} style={{ maxWidth: '620px', background: '#ffffff', borderRadius: '16px' }}>
+                            <div className="admin-modal-header" style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e6f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div className="modal-title-group" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                                    {editingJobType === 'highPayableJobs' ? <Gem size={20} className="title-icon" style={{ color: '#b45309' }} /> : <Clock size={20} className="title-icon" style={{ color: '#1d4ed8' }} />}
+                                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '800', color: '#0f172a' }}>{editingJob ? 'Edit Job Listing' : `New ${editingJobType === 'highPayableJobs' ? 'High Payable' : 'Part-Time'} Job`} — {currentCountry?.country}</h3>
                                 </div>
-                                <button onClick={() => setShowJobEditor(false)} className="modal-close-btn"><X size={18} /></button>
+                                <button onClick={() => setShowJobEditor(false)} className="modal-close-btn" style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#f1f3f8', border: 'none', cursor: 'pointer', display: 'grid', placeItems: 'center', color: '#0f172a' }}><X size={18} /></button>
                             </div>
-                            <div className="admin-modal-body">
+                            <div className="admin-modal-body" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 <div className="form-row">
-                                    <div className="form-group"><label>Job Title *</label><input className="admin-note-input" value={jobForm.title} onChange={e => setJobForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Senior Software Engineer" /></div>
-                                    <div className="form-group"><label>Company *</label><input className="admin-note-input" value={jobForm.company} onChange={e => setJobForm(f => ({ ...f, company: e.target.value }))} placeholder="e.g. Apex Tech Gulf" /></div>
+                                    <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Job Title *</label><input className="admin-note-input" value={jobForm.title} onChange={e => setJobForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Senior Software Engineer" style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
+                                    <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Company *</label><input className="admin-note-input" value={jobForm.company} onChange={e => setJobForm(f => ({ ...f, company: e.target.value }))} placeholder="e.g. Apex Tech Gulf" style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
                                 </div>
                                 <div className="form-row">
-                                    <div className="form-group"><label>Location</label><input className="admin-note-input" value={jobForm.location} onChange={e => setJobForm(f => ({ ...f, location: e.target.value }))} placeholder="e.g. Dubai, UAE" /></div>
-                                    <div className="form-group"><label>Salary / Pay</label><input className="admin-note-input" value={jobForm.salary} onChange={e => setJobForm(f => ({ ...f, salary: e.target.value }))} placeholder="e.g. AED 18,000 / month" /></div>
+                                    <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Location</label><input className="admin-note-input" value={jobForm.location} onChange={e => setJobForm(f => ({ ...f, location: e.target.value }))} placeholder="e.g. Dubai, UAE" style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
+                                    <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Salary / Pay</label><input className="admin-note-input" value={jobForm.salary} onChange={e => setJobForm(f => ({ ...f, salary: e.target.value }))} placeholder="e.g. AED 18,000 / month" style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
                                 </div>
                                 <div className="form-row">
-                                    <div className="form-group"><label>Employment Type</label>
-                                        <select className="admin-note-input" value={jobForm.type} onChange={e => setJobForm(f => ({ ...f, type: e.target.value }))}>
-                                            <option>Full-Time</option><option>Part-Time</option><option>Part-Time / Flexible</option>
-                                            <option>Contract</option><option>Casual / Shift</option><option>Remote</option>
+                                    <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Employment Type</label>
+                                        <select className="admin-note-input" value={jobForm.type} onChange={e => setJobForm(f => ({ ...f, type: e.target.value }))} style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }}>
+                                            <option style={{ background: '#fff', color: '#0f172a' }}>Full-Time</option><option style={{ background: '#fff', color: '#0f172a' }}>Part-Time</option><option style={{ background: '#fff', color: '#0f172a' }}>Part-Time / Flexible</option>
+                                            <option style={{ background: '#fff', color: '#0f172a' }}>Contract</option><option style={{ background: '#fff', color: '#0f172a' }}>Casual / Shift</option><option style={{ background: '#fff', color: '#0f172a' }}>Remote</option>
                                         </select>
                                     </div>
-                                    <div className="form-group"><label>Experience Required</label><input className="admin-note-input" value={jobForm.experience} onChange={e => setJobForm(f => ({ ...f, experience: e.target.value }))} placeholder="e.g. 2+ Years Exp." /></div>
+                                    <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Experience Required</label><input className="admin-note-input" value={jobForm.experience} onChange={e => setJobForm(f => ({ ...f, experience: e.target.value }))} placeholder="e.g. 2+ Years Exp." style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
                                 </div>
-                                {editingJobType === 'partTimeJobs' && (<div className="form-group"><label>Hours / Week</label><input className="admin-note-input" value={jobForm.hours} onChange={e => setJobForm(f => ({ ...f, hours: e.target.value }))} placeholder="e.g. 20 hrs / week" /></div>)}
-                                <div className="form-group"><label>Requirements (one per line)</label><textarea className="admin-note-input" rows="4" value={jobForm.requirements} onChange={e => setJobForm(f => ({ ...f, requirements: e.target.value }))} placeholder={"Relevant qualification\nFluent English\nTeam player"} /></div>
+                                {editingJobType === 'partTimeJobs' && (<div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Hours / Week</label><input className="admin-note-input" value={jobForm.hours} onChange={e => setJobForm(f => ({ ...f, hours: e.target.value }))} placeholder="e.g. 20 hrs / week" style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>)}
+                                <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Requirements (one per line)</label><textarea className="admin-note-input" rows="4" value={jobForm.requirements} onChange={e => setJobForm(f => ({ ...f, requirements: e.target.value }))} placeholder={"Relevant qualification\nFluent English\nTeam player"} style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
                             </div>
-                            <div className="admin-modal-footer">
-                                <button onClick={() => setShowJobEditor(false)} className="admin-btn-secondary">Cancel</button>
-                                <button onClick={saveJob} className="admin-btn-primary"><Check size={16} /> {editingJob ? 'Update Job' : 'Add Job'}</button>
+                            <div className="admin-modal-footer" style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid #e2e6f0', background: '#f8f9fc', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                                <button onClick={() => setShowJobEditor(false)} className="admin-btn-secondary" style={{ padding: '0.65rem 1.25rem', borderRadius: '8px', border: '1.5px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontWeight: '700', cursor: 'pointer' }}>Cancel</button>
+                                <button onClick={saveJob} className="admin-btn-primary" style={{ padding: '0.65rem 1.25rem', borderRadius: '8px', border: 'none', background: '#1e2338', color: '#ffffff', fontWeight: '700', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}><Check size={16} /> {editingJob ? 'Update Job' : 'Add Job'}</button>
                             </div>
                         </div>
                     </div>
