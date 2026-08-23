@@ -103,7 +103,7 @@ function WorkAbroadDropdown({ t, workAbroadDropdown }) {
 }
 
 export default function Navbar() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const studyAbroadDropdown = [
         { label: t('navbar.findUniversities', 'Find Universities'), href: '/study-abroad', icon: <Building2 size={15} /> },
@@ -315,7 +315,7 @@ export default function Navbar() {
                     <li className={`mobile-accordion ${workAbroadOpen ? 'open' : ''}`}>
                         <button className="mobile-accordion-trigger" onClick={() => setWorkAbroadOpen(!workAbroadOpen)}>
                             <span className="trigger-label">
-                                <Briefcase size={16} /> <span className="mobile-link-text">Jobs &amp; Careers</span>
+                                <Briefcase size={16} /> <span className="mobile-link-text">{t('navbar.jobsCareers', 'Jobs & Careers')}</span>
                             </span>
                             <ChevronDown size={14} className="chevron" />
                         </button>
@@ -377,6 +377,41 @@ export default function Navbar() {
                     </li>
                 </ul>
                 <div className="mobile-actions">
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        padding: '0.6rem 1rem',
+                        background: 'var(--navy)',
+                        borderRadius: '8px',
+                        marginBottom: '0.5rem',
+                    }}>
+                        <Globe size={14} style={{ color: 'rgba(255,255,255,0.8)' }} />
+                        <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>
+                            {t('navbar.language', 'Language')}:
+                        </span>
+                        <select
+                            value={i18n.resolvedLanguage || 'en'}
+                            onChange={e => i18n.changeLanguage(e.target.value)}
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'white',
+                                fontSize: '0.85rem',
+                                fontWeight: 700,
+                                fontFamily: 'inherit',
+                                cursor: 'pointer',
+                                outline: 'none',
+                                appearance: 'none',
+                                WebkitAppearance: 'none',
+                            }}
+                        >
+                            <option value="en" style={{ background: '#1a2b5e' }}>English (EN)</option>
+                            <option value="fr" style={{ background: '#1a2b5e' }}>Français (FR)</option>
+                            <option value="rw" style={{ background: '#1a2b5e' }}>Kinyarwanda (RW)</option>
+                        </select>
+                    </div>
                     <Link to="/login" className="btn btn-navy" onClick={() => setMenuOpen(false)}>{t('navbar.login')}</Link>
                     <Link to="/apply" className="btn btn-primary" onClick={() => setMenuOpen(false)}>{t('navbar.applyNow')} <ArrowRight size={16} /></Link>
                 </div>
