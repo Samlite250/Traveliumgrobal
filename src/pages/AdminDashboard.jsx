@@ -266,7 +266,16 @@ export default function AdminDashboard() {
             setSettingsForm(prev => Object.keys(prev).length ? prev : merged)
             setOfflineMode(false)
         }, (err) => { console.error('Settings error:', err); setOfflineMode(true) })
-        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings(); unsubAdmins() }
+
+        const unsubJobs = onSnapshot(doc(db, 'settings', 'jobs'), (snap) => {
+            if (snap.exists() && snap.data()?.jobs) {
+                const liveJobs = snap.data().jobs
+                setJobsData(liveJobs)
+                try { localStorage.setItem('travelium_jobs_config', JSON.stringify(liveJobs)) } catch { }
+            }
+        }, (err) => { console.warn('Jobs realtime sync notice:', err) })
+
+        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings(); unsubAdmins(); unsubJobs() }
     }, [])
 
     const stats = useMemo(() => ({
@@ -1609,7 +1618,7 @@ export default function AdminDashboard() {
     const renderJobs = () => {
         const currentCountry = jobsData.find(c => c.id === activeJobCountry) || jobsData[0]
 
-        const saveJobLocal = (updatedData) => {
+        const saveJobLocal = async (updatedData) => {
             setJobsData(updatedData)
             try {
                 localStorage.setItem('travelium_jobs_config', JSON.stringify(updatedData))
@@ -1621,6 +1630,17 @@ export default function AdminDashboard() {
                     bc.close()
                 }
             } catch { }
+
+            if (db) {
+                try {
+                    await setDoc(doc(db, 'settings', 'jobs'), {
+                        jobs: updatedData,
+                        updated_at: serverTimestamp()
+                    })
+                } catch (err) {
+                    console.warn("Firestore jobs save notice:", err)
+                }
+            }
         }
 
         const openAddJob = (type) => {

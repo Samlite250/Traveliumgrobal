@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import {
     Briefcase, DollarSign, Clock, MapPin, Building, Search, Filter,
@@ -720,6 +720,19 @@ export default function Jobs() {
     })
 
     useEffect(() => {
+        let unsubFirestore = null
+        if (db) {
+            try {
+                unsubFirestore = onSnapshot(doc(db, 'settings', 'jobs'), (snap) => {
+                    if (snap.exists() && snap.data()?.jobs) {
+                        const liveJobs = snap.data().jobs
+                        setAllJobsData(liveJobs)
+                        try { localStorage.setItem('travelium_jobs_config', JSON.stringify(liveJobs)) } catch { }
+                    }
+                }, (err) => console.warn("Jobs Firestore sync notice:", err))
+            } catch { }
+        }
+
         const handleUpdate = () => {
             try {
                 const saved = localStorage.getItem('travelium_jobs_config')
@@ -741,6 +754,7 @@ export default function Jobs() {
         }
 
         return () => {
+            if (unsubFirestore) unsubFirestore()
             window.removeEventListener('storage', handleUpdate)
             window.removeEventListener('travelium_jobs_updated', handleUpdate)
             if (bc) bc.close()
