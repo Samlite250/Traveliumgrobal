@@ -113,60 +113,21 @@ export default function Hero() {
         service: ''
     });
     const [submitted, setSubmitted] = useState(false);
-    const scrollRef = useRef(null);
-    const scrollPosRef = useRef(0);
-    const requestRef = useRef();
+    const stripRef = useRef(null);
+    const [paused, setPaused] = useState(false);
 
-    useEffect(() => {
-        const play = () => {
-            if (scrollRef.current) {
-                scrollPosRef.current += 0.15;
-
-                // loop back when scrolling past original content
-                // card width is approx 240px + 1.1rem gap (approx 257px)
-                // 10 items * 257.6px = 2576px
-                if (scrollPosRef.current >= 2576) {
-                    scrollPosRef.current = 0;
-                }
-
-                scrollRef.current.scrollLeft = scrollPosRef.current;
-            }
-            requestRef.current = requestAnimationFrame(play);
-        };
-        requestRef.current = requestAnimationFrame(play);
-        return () => cancelAnimationFrame(requestRef.current);
-    }, []);
-
-    const handleMouseEnter = () => cancelAnimationFrame(requestRef.current);
-    const handleMouseLeave = () => {
-        // sync pos before restarting
-        if (scrollRef.current) scrollPosRef.current = scrollRef.current.scrollLeft;
-        const play = () => {
-            if (scrollRef.current) {
-                scrollPosRef.current += 0.15;
-                if (scrollPosRef.current >= 2576) {
-                    scrollPosRef.current = 0;
-                }
-                scrollRef.current.scrollLeft = scrollPosRef.current;
-            }
-            requestRef.current = requestAnimationFrame(play);
-        };
-        requestRef.current = requestAnimationFrame(play);
-    };
+    const handleMouseEnter = () => setPaused(true);
+    const handleMouseLeave = () => setPaused(false);
 
     const scrollLeft = () => {
-        if (scrollRef.current) {
-            const newPos = scrollRef.current.scrollLeft - 400;
-            scrollRef.current.scrollTo({ left: newPos, behavior: 'smooth' });
-            scrollPosRef.current = newPos;
+        if (stripRef.current) {
+            stripRef.current.scrollBy({ left: -320, behavior: 'smooth' });
         }
     };
 
     const scrollRight = () => {
-        if (scrollRef.current) {
-            const newPos = scrollRef.current.scrollLeft + 400;
-            scrollRef.current.scrollTo({ left: newPos, behavior: 'smooth' });
-            scrollPosRef.current = newPos;
+        if (stripRef.current) {
+            stripRef.current.scrollBy({ left: 320, behavior: 'smooth' });
         }
     };
 
@@ -389,9 +350,18 @@ export default function Hero() {
                 </div>
                 <div
                     className="hero-dest-strip-wrap"
-                    ref={scrollRef}
+                    ref={stripRef}
+                    style={{ overflowX: 'auto', overflowY: 'hidden' }}
                 >
-                    <div className="hero-dest-scroll">
+                    <div
+                        className="hero-dest-scroll"
+                        style={{
+                            display: 'flex',
+                            animation: paused ? 'none' : 'marqueeScroll 40s linear infinite',
+                            animationPlayState: paused ? 'paused' : 'running',
+                            width: 'max-content',
+                        }}
+                    >
                         {[...marqueeImages, ...marqueeImages].map((img, i) => (
                             <div className="hero-dest-card" key={i}>
                                 <div className="hero-dest-img">

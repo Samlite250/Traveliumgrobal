@@ -3679,15 +3679,7 @@ tr:hover td {
   background: var(--off-white);
   padding: 2rem 0 2.75rem;
   border-top: 1px solid var(--gray-200);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* IE/Edge */
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-  overscroll-behavior-x: contain;
+  overflow: hidden;
 }
 
 .hero-dest-strip-wrap::-webkit-scrollbar {
@@ -3744,13 +3736,26 @@ tr:hover td {
   transform: scale(1.1);
 }
 
-/* Scrollable track - full viewport width, no container constraint */
+/* Infinite marquee keyframe */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Scrollable track */
 .hero-dest-scroll {
   display: flex;
   flex-direction: row;
   gap: 1.1rem;
   width: max-content;
   padding: 0.5rem 0 1rem;
+  animation: marqueeScroll 40s linear infinite;
+  will-change: transform;
 }
 
 /* Each card: fixed width, scroll-snapped */
