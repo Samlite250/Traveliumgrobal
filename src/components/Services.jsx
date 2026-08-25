@@ -6,7 +6,7 @@ import { Briefcase, Landmark, Palmtree, GraduationCap, ArrowRight, Loader2 } fro
 import { useTranslation } from 'react-i18next'
 
 const fallbackServices = [
-    { title: 'Flight Booking', img: 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', featured: true, type: 'flight' },
+    { title: 'Flight Booking', img: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=800&auto=format&fit=crop', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', featured: true, type: 'flight' },
     { title: 'Work Visa (Global)', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop', desc: 'Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.', href: '/visa-services', type: 'visa' },
     { title: 'Tourist Visa', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', desc: 'Travel the world with ease. We handle your tourist visa process end-to-end.', href: '/visa-services', type: 'visa' },
     { title: 'Permanent Residency', img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop', desc: 'Pathway to Permanent Residency. Secure your future in Canada, Australia, Europe or another destination.', href: '/visa-services', type: 'visa' },
@@ -21,7 +21,7 @@ const getServiceImage = (s) => {
     const nameLower = (s.name || s.title || '').toLowerCase()
     // Type-specific images take priority to avoid wrong Firestore URLs
     if (nameLower.includes('flight') || s.type === 'flight') {
-        return 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop'
+        return 'https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=800&auto=format&fit=crop'
     }
     if (nameLower.includes('tourist') || nameLower.includes('travel')) {
         return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop'
@@ -110,7 +110,7 @@ export default function Services() {
                                         e.target.onerror = null;
                                         const nameLower = (s.name || s.title || '').toLowerCase();
                                         if (nameLower.includes('flight') || s.type === 'flight') {
-                                            e.target.src = 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop';
+                                            e.target.src = 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&auto=format&fit=crop';
                                         } else {
                                             e.target.src = 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop';
                                         }

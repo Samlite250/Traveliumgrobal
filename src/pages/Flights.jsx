@@ -117,7 +117,7 @@ export default function Flights() {
     return (
         <main className="flights-page">
             <div className="page-hero">
-                <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=1600&auto=format&fit=crop)' }} />
+                <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1400&q=80&auto=format&fit=crop)' }} />
                 <div className="container page-hero-content">
                     <div className="breadcrumb">
                         <Link to="/">Home</Link><span className="sep">›</span><span>Book Flight</span>
