@@ -915,73 +915,76 @@ button {
   gap: .4rem;
 }
 
-.form-group-custom label {
-  font-size: .8rem !important;
-  font-weight: 800 !important;
-  color: #ffffff !important;
-  text-transform: uppercase;
-  letter-spacing: .06em !important;
-  margin-bottom: .35rem !important;
-  display: block !important;
-  opacity: 1 !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-
 .hero-form-card label,
-.hero-form label {
-  font-size: .8rem !important;
-  font-weight: 800 !important;
+.hero-form label,
+.form-group-custom label,
+.hero-form-card .form-group-custom label {
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
   color: #ffffff !important;
   text-transform: uppercase;
-  letter-spacing: .06em !important;
-  margin-bottom: .35rem !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 0.4rem !important;
   display: block !important;
   opacity: 1 !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
-.form-group-custom input,
-.form-group-custom select {
-  background: #ffffff !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.90) !important;
+.hero-form .form-group-custom input,
+.hero-form .form-group-custom select,
+.hero-form-card input,
+.hero-form-card select {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
   border-radius: var(--radius-sm);
-  padding: .65rem .95rem;
-  font-size: .9rem;
+  padding: 0.65rem 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #0a1436 !important;
-  -webkit-text-fill-color: #0a1436 !important;
-  transition: border-color .3s ease, background-color .3s ease;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.form-group-custom select option {
-  background: #ffffff;
-  color: #0a1436;
+.hero-form .form-group-custom select option,
+.hero-form-card select option {
+  background: #0a1436 !important;
+  color: #ffffff !important;
   font-weight: 600;
+  padding: 0.5rem;
 }
 
-.form-group-custom input::placeholder {
-  color: #64748b !important;
-  font-weight: 500;
-  opacity: 1;
-  /* Firefox lowers opacity by default */
-}
-
-/* For select elements to not look faded on mobile iOS */
-.form-group-custom select {
-  color: #0a1436 !important;
+.hero-form .form-group-custom input::placeholder,
+.hero-form-card input::placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+  font-weight: 400;
   opacity: 1;
 }
 
-.form-group-custom input:focus,
-.form-group-custom select:focus {
+/* Select dropdown text on mobile/desktop */
+.hero-form .form-group-custom select,
+.hero-form-card select {
+  color: #ffffff !important;
+  opacity: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.85rem center !important;
+  background-size: 1rem !important;
+  padding-right: 2.2rem !important;
+}
+
+.hero-form .form-group-custom input:focus,
+.hero-form .form-group-custom select:focus,
+.hero-form-card input:focus,
+.hero-form-card select:focus {
   border-color: var(--gold) !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.3);
+  background: rgba(255, 255, 255, 0.20) !important;
+  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.35);
 }
 
 .form-success-msg {

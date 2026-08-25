@@ -284,7 +284,9 @@ export default function Hero() {
                             ) : (
                                 <form onSubmit={handleSubmit} className="hero-form">
                                     <div className="form-group-custom">
-                                        <label htmlFor="hero-name">{t('hero.formFullName', 'Full Name')}</label>
+                                        <label htmlFor="hero-name" style={{ color: '#ffffff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem', display: 'block', opacity: 1, textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+                                            {t('hero.formFullName', 'Full Name')}
+                                        </label>
                                         <input
                                             type="text"
                                             id="hero-name"
@@ -292,10 +294,13 @@ export default function Hero() {
                                             required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            style={{ background: 'rgba(255, 255, 255, 0.12)', color: '#ffffff', border: '1.5px solid rgba(255, 255, 255, 0.35)' }}
                                         />
                                     </div>
                                     <div className="form-group-custom">
-                                        <label htmlFor="hero-email">{t('hero.formEmail', 'Email Address')}</label>
+                                        <label htmlFor="hero-email" style={{ color: '#ffffff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem', display: 'block', opacity: 1, textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+                                            {t('hero.formEmail', 'Email Address')}
+                                        </label>
                                         <input
                                             type="email"
                                             id="hero-email"
@@ -303,15 +308,19 @@ export default function Hero() {
                                             required
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            style={{ background: 'rgba(255, 255, 255, 0.12)', color: '#ffffff', border: '1.5px solid rgba(255, 255, 255, 0.35)' }}
                                         />
                                     </div>
                                     <div className="form-group-custom">
-                                        <label htmlFor="hero-dest">{t('hero.formDest', 'Preferred Destination')}</label>
+                                        <label htmlFor="hero-dest" style={{ color: '#ffffff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem', display: 'block', opacity: 1, textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+                                            {t('hero.formDest', 'Preferred Destination')}
+                                        </label>
                                         <select
                                             id="hero-dest"
                                             value={formData.destination}
                                             onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
                                             required
+                                            style={{ background: 'rgba(255, 255, 255, 0.12)', color: '#ffffff', border: '1.5px solid rgba(255, 255, 255, 0.35)' }}
                                         >
                                             <option value="">{t('hero.formDestPlaceholder', 'Select country...')}</option>
                                             <option value="Dubai">🇦🇪 Dubai, UAE</option>
@@ -331,12 +340,15 @@ export default function Hero() {
                                         </select>
                                     </div>
                                     <div className="form-group-custom">
-                                        <label htmlFor="hero-service">{t('hero.formService', 'Service Needed')}</label>
+                                        <label htmlFor="hero-service" style={{ color: '#ffffff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.4rem', display: 'block', opacity: 1, textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+                                            {t('hero.formService', 'Service Needed')}
+                                        </label>
                                         <select
                                             id="hero-service"
                                             value={formData.service}
                                             onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                                             required
+                                            style={{ background: 'rgba(255, 255, 255, 0.12)', color: '#ffffff', border: '1.5px solid rgba(255, 255, 255, 0.35)' }}
                                         >
                                             <option value="">{t('hero.formServicePlaceholder', 'Select service...')}</option>
                                             <option value="Work">Work Visa / Permit</option>
