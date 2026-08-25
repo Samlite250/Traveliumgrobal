@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth'
 import { auth, db, ADMIN_EMAILS } from '../lib/firebase'
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import LoadingScreen from '../components/LoadingScreen'
 
 const AuthContext = createContext(null)
 
@@ -96,14 +97,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ currentUser, login, signup, logout }}>
-      {initialized ? children : (
-        <div className="premium-loader">
-          <div className="loader-content">
-            <div className="loader-circle"></div>
-            <p>Initializing...</p>
-          </div>
-        </div>
-      )}
+      {initialized ? children : <LoadingScreen />}
     </AuthContext.Provider>
   )
 }
