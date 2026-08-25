@@ -29,7 +29,7 @@ export default function Footer() {
                 <div className="footer-main-grid">
                     <div className="footer-brand-side">
                         <Link to="/" className="nav-logo">
-                            <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
+                            <img src="/logo.png" alt="Travelium Global" className="brand-logo-img" />
                             <div className="logo-text-stack">
                                 <span className="logo-name">TRAVELIUM</span>
                                 <span className="logo-tagline">Global</span>

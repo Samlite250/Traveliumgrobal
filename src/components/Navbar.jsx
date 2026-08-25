@@ -214,7 +214,7 @@ export default function Navbar() {
                 <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
                     <div className="container">
                         <Link to="/" className="nav-logo">
-                            <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
+                            <img src="/logo.png" alt="Travelium Global" className="brand-logo-img" />
                             <div className="logo-text-stack">
                                 <span className="logo-name">TRAVELIUM</span>
                                 <span className="logo-tagline">Global</span>

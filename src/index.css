@@ -312,6 +312,16 @@ button {
   flex-shrink: 0;
 }
 
+.brand-logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid var(--gold);
+  flex-shrink: 0;
+}
+
 .logo-text-stack {
   display: flex;
   flex-direction: column;
