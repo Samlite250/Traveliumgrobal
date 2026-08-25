@@ -254,11 +254,11 @@ export default function Apply() {
                                 <div className="form-row">
                                     <div className="form-group">
                                         <label>Full Name <span style={{ color: 'var(--error)' }}>*</span></label>
-                                        <input name="full_name" value={form.full_name} onChange={set} required placeholder="First and last name" />
+                                        <input name="full_name" value={form.full_name} onChange={set} required placeholder="e.g: Sam Dev" />
                                     </div>
                                     <div className="form-group">
                                         <label>Email Address <span style={{ color: 'var(--error)' }}>*</span></label>
-                                        <input type="email" name="email" value={form.email} onChange={set} required placeholder="you@email.com" />
+                                        <input type="email" name="email" value={form.email} onChange={set} required placeholder="e.g: travelium@gmail.com" />
                                     </div>
                                 </div>
                                 <div className="form-row">

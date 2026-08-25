@@ -212,9 +212,11 @@ export default function Hero() {
 
                     {/* Left Column: Copy */}
                     <div className="hero-content reveal">
-                        <div className="hero-badge">
-                            <Briefcase size={14} />
-                            {t('hero.badge', 'Your Career, Our Mission')}
+                        <div className="hero-badge" style={{ background: 'rgba(255, 255, 255, 0.22)', border: '1px solid rgba(255, 255, 255, 0.45)', color: '#ffffff', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.78rem', boxShadow: '0 4px 15px rgba(0,0,0,0.25)', backdropFilter: 'blur(8px)' }}>
+                            <Briefcase size={15} style={{ color: '#ffd700', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }} />
+                            <span style={{ color: '#ffffff', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                                {t('hero.badge', 'Your Career, Our Mission')}
+                            </span>
                         </div>
 
                         <h1 className="hero-title">
@@ -290,7 +292,7 @@ export default function Hero() {
                                         <input
                                             type="text"
                                             id="hero-name"
-                                            placeholder="Sam Dev"
+                                            placeholder="e.g: Sam Dev"
                                             required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -304,7 +306,7 @@ export default function Hero() {
                                         <input
                                             type="email"
                                             id="hero-email"
-                                            placeholder="john@example.com"
+                                            placeholder="e.g: travelium@gmail.com"
                                             required
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}

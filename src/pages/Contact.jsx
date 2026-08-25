@@ -145,11 +145,11 @@ export default function Contact() {
                                 <div className="form-row">
                                     <div className="form-group">
                                         <label>{t('contact.fName', 'Full Name *')}</label>
-                                        <input name="name" value={form.name} onChange={set} required placeholder="Your full name" />
+                                        <input name="name" value={form.name} onChange={set} required placeholder="e.g: Sam Dev" />
                                     </div>
                                     <div className="form-group">
                                         <label>{t('contact.fEmail', 'Email Address *')}</label>
-                                        <input type="email" name="email" value={form.email} onChange={set} required placeholder="you@email.com" />
+                                        <input type="email" name="email" value={form.email} onChange={set} required placeholder="e.g: travelium@gmail.com" />
                                     </div>
                                 </div>
                                 <div className="form-row">
