@@ -17,6 +17,27 @@ const fallbackServices = [
 const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-abroad', scholarship: '/scholarships' }
 const iconMap = { visa: <Briefcase size={24} />, flight: <Landmark size={24} />, study: <GraduationCap size={24} />, scholarship: <Palmtree size={24} /> }
 
+const getServiceImage = (s) => {
+    const raw = s.img || s.image || s.imageUrl || s.photo
+    if (raw && typeof raw === 'string' && raw.trim() !== '') {
+        return raw
+    }
+    const nameLower = (s.name || s.title || '').toLowerCase()
+    if (nameLower.includes('flight') || s.type === 'flight') {
+        return 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop'
+    }
+    if (nameLower.includes('tourist') || nameLower.includes('travel')) {
+        return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop'
+    }
+    if (nameLower.includes('study') || s.type === 'study') {
+        return 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800&auto=format&fit=crop'
+    }
+    if (nameLower.includes('residency') || nameLower.includes('pr')) {
+        return 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop'
+    }
+    return 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop'
+}
+
 export default function Services() {
     const { t } = useTranslation()
     const [services, setServices] = useState([])
@@ -72,7 +93,7 @@ export default function Services() {
                     {display.slice(0, 8).map((s, i) => (
                         <div key={s.id || s.title || i} className={`service-card reveal${s.featured ? ' service-card--featured' : ''}`}>
                             <div className="service-img">
-                                <img src={s.img || 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop'} alt={s.title} />
+                                <img src={getServiceImage(s)} alt={s.name || s.title || 'Service'} />
                             </div>
                             <div className="service-content">
                                 <div className="service-icon">{iconMap[s.type] || <Briefcase size={24} />}</div>
