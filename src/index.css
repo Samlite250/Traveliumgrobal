@@ -4091,7 +4091,11 @@ tr:hover td {
   justify-content: center;
 }
 
-.plane-spin {
+.spinner-logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.7)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
   animation: float-loader 2.5s ease-in-out infinite;
 }
 
