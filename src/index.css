@@ -5054,6 +5054,10 @@ main {
   border-top: 4px solid var(--gold);
 }
 
+.footer-brand-side .logo-name {
+  color: #ffffff !important;
+}
+
 .footer-main-grid {
   display: grid;
   grid-template-columns: 1.2fr 1.5fr 1fr;
@@ -5476,8 +5480,8 @@ main {
 }
 
 .contact-card-premium h4 {
-  margin-bottom: 2rem !important;
-  color: var(--navy) !important;
+  margin-bottom: 1rem !important;
+  color: var(--gold) !important;
 }
 
 .contact-grid-premium {

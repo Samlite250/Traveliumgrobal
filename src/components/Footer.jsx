@@ -70,71 +70,49 @@ export default function Footer() {
                     </div>
 
                     <div className="footer-contact-side">
-                        <div className="contact-card-premium" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
-                            <h4 style={{ color: 'white', marginBottom: '1.5rem' }}>Support Hub</h4>
-                            <div className="contact-grid-premium">
-                                <div className="contact-block">
-                                    <div className="block-head">
-                                        <div className="block-icon"><ShieldCheck size={16} /></div>
-                                        <span style={{ color: 'white' }}>Visas & General</span>
+                        <div className="contact-card-premium" style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.04)', padding: '1.25rem 1.5rem', borderRadius: '16px' }}>
+                            <h4 style={{ color: 'var(--gold)', fontSize: '0.95rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem', fontWeight: '800' }}>
+                                Support Hub
+                            </h4>
+                            <div className="contact-grid-compact" style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                                <div className="contact-block-compact" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ffffff', fontWeight: '700', fontSize: '0.82rem', textTransform: 'uppercase' }}>
+                                        <ShieldCheck size={15} color="var(--gold)" />
+                                        <span>Visas & General Inquiries</span>
                                     </div>
-                                    <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                            <Phone size={14} color="var(--gold)" /> <span>{getFirstPhone()}</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', paddingLeft: '1.4rem', fontSize: '0.85rem', color: '#cbd5e1' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                            <Phone size={13} color="var(--gold)" />
+                                            <span>{getFirstPhone()}</span>
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                            <Mail size={14} color="var(--gold)" /> <a href={`mailto:${s.supportEmail || 'traveliumglobal@gmail.com'}`} style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none' }}>{s.supportEmail || 'traveliumglobal@gmail.com'}</a>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                            <Mail size={13} color="var(--gold)" />
+                                            <a href={`mailto:${s.supportEmail || 'traveliumglobal@gmail.com'}`} style={{ color: '#cbd5e1', textDecoration: 'none' }}>{s.supportEmail || 'traveliumglobal@gmail.com'}</a>
                                         </div>
                                     </div>
                                 </div>
 
-                                {whatsAppNumbers.length >= 1 ? whatsAppNumbers.map((w, i) => (
-                                    <div className="contact-block" key={i}>
-                                        <div className="block-head">
-                                            <div className="block-icon"><Globe size={16} /></div>
-                                            <span style={{ color: 'white' }}>{w.label || (i === 0 ? 'Jobs & Recruitment' : 'Air Ticketing')}</span>
-                                        </div>
-                                        <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                                <Phone size={14} color="var(--gold)" /> <span>{w.number}</span>
-                                            </div>
-                                        </div>
+                                <div className="contact-block-compact" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ffffff', fontWeight: '700', fontSize: '0.82rem', textTransform: 'uppercase' }}>
+                                        <Globe size={15} color="var(--gold)" />
+                                        <span>Jobs & Recruitment</span>
                                     </div>
-                                )) : (<>
-                                    <div className="contact-block">
-                                        <div className="block-head">
-                                            <div className="block-icon"><Globe size={16} /></div>
-                                            <span style={{ color: 'white' }}>Regional (Burundi)</span>
-                                        </div>
-                                        <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                                <Phone size={14} color="var(--gold)" /> <span>+257 65 84 02 80</span>
-                                            </div>
-                                        </div>
+                                    <div style={{ paddingLeft: '1.4rem', fontSize: '0.85rem', color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                        <Phone size={13} color="var(--gold)" />
+                                        <span>{whatsAppNumbers[1]?.number || '+250 796 230 619'}</span>
                                     </div>
-                                    <div className="contact-block">
-                                        <div className="block-head">
-                                            <div className="block-icon"><Globe size={16} /></div>
-                                            <span style={{ color: 'white' }}>Jobs & Recruitment</span>
-                                        </div>
-                                        <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                                <Phone size={14} color="var(--gold)" /> <span>+250 733 387 135</span>
-                                            </div>
-                                        </div>
+                                </div>
+
+                                <div className="contact-block-compact" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ffffff', fontWeight: '700', fontSize: '0.82rem', textTransform: 'uppercase' }}>
+                                        <Plane size={15} color="var(--gold)" />
+                                        <span>Air Ticketing</span>
                                     </div>
-                                    <div className="contact-block">
-                                        <div className="block-head">
-                                            <div className="block-icon"><Plane size={16} /></div>
-                                            <span style={{ color: 'white' }}>Air Ticketing & Visas</span>
-                                        </div>
-                                        <div className="block-body" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem', color: 'rgba(255,255,255,0.8)' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                                                <Phone size={14} color="var(--gold)" /> <span>+250 732 580 014</span>
-                                            </div>
-                                        </div>
+                                    <div style={{ paddingLeft: '1.4rem', fontSize: '0.85rem', color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                        <Phone size={13} color="var(--gold)" />
+                                        <span>{whatsAppNumbers[2]?.number || '+250 793 658 206'}</span>
                                     </div>
-                                </>)}
+                                </div>
                             </div>
                         </div>
                     </div>
