@@ -655,18 +655,36 @@ export default function Dashboard() {
                             <div>
                                 <h4 style={{ margin: '0 0 0.65rem', fontSize: '0.95rem', fontWeight: '800', color: '#0f172a' }}>Uploaded Documents Verification</h4>
                                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                                    {getDocUrl(selectedApp.documents?.passport) ? (
-                                        <a href={getDocUrl(selectedApp.documents.passport)} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '0.85rem' }}>
-                                            <FileText size={16} color="#1d4ed8" /> Passport Copy (View)
-                                        </a>
-                                    ) : (
-                                        <span style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic' }}>No Passport file uploaded</span>
-                                    )}
-                                    {getDocUrl(selectedApp.documents?.diploma) && (
-                                        <a href={getDocUrl(selectedApp.documents.diploma)} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '0.85rem' }}>
-                                            <FileText size={16} color="#10b981" /> Academic Diploma (View)
-                                        </a>
-                                    )}
+                                    {(() => {
+                                        const openDocInTab = (url, title) => {
+                                            if (!url) return
+                                            if (url.startsWith('data:')) {
+                                                const win = window.open('', '_blank')
+                                                if (win) {
+                                                    win.document.write(`<!DOCTYPE html><html><head><title>${title}</title><style>body{margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh}img{max-width:100%;max-height:100vh;object-fit:contain;box-shadow:0 4px 32px rgba(0,0,0,0.5)}</style></head><body><img src="${url}" alt="${title}" /></body></html>`)
+                                                    win.document.close()
+                                                }
+                                            } else {
+                                                window.open(url, '_blank', 'noopener,noreferrer')
+                                            }
+                                        }
+                                        const passportUrl = getDocUrl(selectedApp.documents?.passport)
+                                        const diplomaUrl = getDocUrl(selectedApp.documents?.diploma)
+                                        return <>
+                                            {passportUrl ? (
+                                                <button onClick={() => openDocInTab(passportUrl, 'Passport Copy')} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', cursor: 'pointer' }}>
+                                                    <FileText size={16} color="#1d4ed8" /> Passport Copy (View)
+                                                </button>
+                                            ) : (
+                                                <span style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic' }}>No Passport file uploaded</span>
+                                            )}
+                                            {diplomaUrl && (
+                                                <button onClick={() => openDocInTab(diplomaUrl, 'Academic Diploma')} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', cursor: 'pointer' }}>
+                                                    <FileText size={16} color="#10b981" /> Academic Diploma (View)
+                                                </button>
+                                            )}
+                                        </>
+                                    })()}
                                 </div>
                             </div>
                         </div>
