@@ -32,7 +32,7 @@ export default function Footer() {
                             <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
                             <div className="logo-text-stack">
                                 <span className="logo-name">TRAVELIUM</span>
-                                <span className="logo-tagline">Grobal</span>
+                                <span className="logo-tagline">Global</span>
                             </div>
                         </Link>
                         <p className="brand-pitch">{s.description || 'Your trusted partner for global career transformation.'}</p>

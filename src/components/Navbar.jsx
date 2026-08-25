@@ -126,9 +126,13 @@ export default function Navbar() {
         { label: 'UK', href: '/jobs?country=UK', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsSkilledWorker', 'Jobs & Skilled Worker') },
         { label: 'Germany', href: '/jobs?country=Germany', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsEU', 'Jobs & EU Blue Card') },
         { label: 'France', href: '/jobs?country=France', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsTalent', 'Jobs & Talent Visa') },
-        { label: 'Oman', href: '/jobs?country=Oman', icon: <MapPin size={15} />, tag: 'New', sub: t('navbar.jobsWorkPermit', 'Jobs & Work Permits') },
-        { label: 'China', href: '/jobs?country=China', icon: <MapPin size={15} />, tag: 'New', sub: t('navbar.jobsZ', 'Jobs & Z-Visa') },
-        { label: 'Japan', href: '/jobs?country=Japan', icon: <MapPin size={15} />, tag: 'New', sub: t('navbar.jobsWorkPermit', 'Jobs & Work Permits') },
+        { label: 'Qatar', href: '/jobs?country=Qatar', icon: <MapPin size={15} />, tag: 'Hot', sub: 'Jobs & Work Permit' },
+        { label: 'Norway', href: '/jobs?country=Norway', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Skilled Worker Visa' },
+        { label: 'Australia', href: '/jobs?country=Australia', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Subclass 482 Visa' },
+        { label: 'Poland', href: '/jobs?country=Poland', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs & Work Permit (D Visa)' },
+        { label: 'Oman', href: '/jobs?country=Oman', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsWorkPermit', 'Jobs & Work Permits') },
+        { label: 'China', href: '/jobs?country=China', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsZ', 'Jobs & Z-Visa') },
+        { label: 'Japan', href: '/jobs?country=Japan', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsWorkPermit', 'Jobs & Work Permits') },
         { label: 'Netherlands', href: '/jobs?country=Netherlands', icon: <MapPin size={15} />, tag: null, sub: t('navbar.jobsSkilledMigrant', 'Jobs & Skilled Migrant') },
     ]
 
@@ -213,7 +217,7 @@ export default function Navbar() {
                             <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
                             <div className="logo-text-stack">
                                 <span className="logo-name">TRAVELIUM</span>
-                                <span className="logo-tagline">Grobal</span>
+                                <span className="logo-tagline">Global</span>
                             </div>
                         </Link>
                         <ul className="nav-links">
@@ -261,7 +265,7 @@ export default function Navbar() {
                         <div className="logo-icon"><Plane size={24} transform="rotate(45)" /></div>
                         <div className="logo-text-stack">
                             <span className="logo-name">TRAVELIUM</span>
-                            <span className="logo-tagline">Grobal</span>
+                            <span className="logo-tagline">Global</span>
                         </div>
                     </Link>
                     <button className="mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close">

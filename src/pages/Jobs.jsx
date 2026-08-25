@@ -675,6 +675,339 @@ export const JOBS_DATA = [
                 requirements: ['Certificate III in Individual Support or willing to obtain', 'Compassionate nature', 'First Aid']
             }
         ]
+    },
+    {
+        id: 'qatar',
+        country: 'Qatar',
+        code: 'QAT',
+        flag: '🇶🇦',
+        tagline: 'Tax-Free Salaries & World Cup Legacy Projects',
+        highPayableJobs: [
+            {
+                id: 'qat-hp-1',
+                title: 'Civil & Infrastructure Project Engineer',
+                company: 'Qatar Projects & Development Co.',
+                location: 'Doha & Lusail City, Qatar',
+                salary: 'QAR 18,000 - 26,000 / month',
+                type: 'Full-Time (Work Permit Provided)',
+                experience: '3+ Years Engineering',
+                requirements: ['Civil engineering degree', 'AutoCAD & project planning', 'Safety compliance knowledge']
+            },
+            {
+                id: 'qat-hp-2',
+                title: 'Luxury Hotel & Resort Manager',
+                company: 'Doha Pearl Hospitality Group',
+                location: 'The Pearl & West Bay, Qatar',
+                salary: 'QAR 22,000 - 30,000 / month',
+                type: 'Full-Time',
+                experience: '2+ Years Hospitality',
+                requirements: ['5-star hotel operations', 'Multi-lingual communication', 'Guest satisfaction leadership']
+            },
+            {
+                id: 'qat-hp-3',
+                title: 'Oil & Gas Process Engineer',
+                company: 'Qatar Petroleum Downstream',
+                location: 'Ras Laffan Industrial City, Qatar',
+                salary: 'QAR 25,000 - 35,000 / month',
+                type: 'Full-Time',
+                experience: 'Chemical / Petroleum Engineering',
+                requirements: ['Process simulation software', 'HAZOP analysis', 'Safety & compliance certification']
+            },
+            {
+                id: 'qat-hp-4',
+                title: 'Financial Controller & Senior Accountant',
+                company: 'Doha Investment & Finance Hub',
+                location: 'Qatar Financial Centre, Doha',
+                salary: 'QAR 20,000 - 28,000 / month',
+                type: 'Full-Time',
+                experience: '3+ Years Finance',
+                requirements: ['IFRS / GAAP accounting', 'Financial reporting', 'ERP systems (SAP/Oracle)']
+            },
+            {
+                id: 'qat-hp-5',
+                title: 'Healthcare Professional & Clinical Nurse',
+                company: 'Hamad Medical Corporation',
+                location: 'Doha, Qatar',
+                salary: 'QAR 17,000 - 24,000 / month',
+                type: 'Full-Time (Health Visa)',
+                experience: 'Licensed Medical Professional',
+                requirements: ['Nursing / medical degree', 'QCHP license eligibility', 'Compassionate patient care']
+            }
+        ],
+        partTimeJobs: [
+            {
+                id: 'qat-pt-1',
+                title: 'Retail & Mall Customer Associate',
+                company: 'Villaggio Mall & Katara Retail',
+                location: 'Doha, Qatar',
+                salary: 'QAR 45 - 60 / hour',
+                type: 'Part-Time',
+                hours: '20 hrs / week',
+                requirements: ['Customer service attitude', 'Bilingual English/Arabic preferred', 'Neat professional appearance']
+            },
+            {
+                id: 'qat-pt-2',
+                title: 'Event & Sports Venue Coordinator',
+                company: 'Qatar Sports Events Management',
+                location: 'Lusail Stadium & Al Bayt, Qatar',
+                salary: 'QAR 55 - 75 / hour',
+                type: 'Event / Shift Work',
+                hours: 'Weekend & evening shifts',
+                requirements: ['Event coordination skills', 'Strong communication', 'Team player mindset']
+            },
+            {
+                id: 'qat-pt-3',
+                title: 'English Language Tutor',
+                company: 'Qatar Education City Hub',
+                location: 'Education City, Doha',
+                salary: 'QAR 70 - 95 / hour',
+                type: 'Part-Time',
+                hours: '10-15 hrs / week',
+                requirements: ['Native or fluent English', 'Teaching experience preferred', 'Patient & encouraging']
+            },
+            {
+                id: 'qat-pt-4',
+                title: 'Hotel Food & Beverage Assistant',
+                company: 'Four Seasons Doha & Souq Waqif Hotels',
+                location: 'Doha, Qatar',
+                salary: 'QAR 50 - 65 / hour',
+                type: 'Part-Time / Shifts',
+                hours: 'Flexible schedules',
+                requirements: ['Food service experience', 'Professional demeanor', 'Adaptable to shift work']
+            },
+            {
+                id: 'qat-pt-5',
+                title: 'Airport Customer Service Representative',
+                company: 'Hamad International Airport Services',
+                location: 'Hamad International Airport, Doha',
+                salary: 'QAR 55 - 70 / hour',
+                type: 'Part-Time / Rotating Shifts',
+                hours: '20-25 hrs / week',
+                requirements: ['Strong people skills', 'Multilingual ability a plus', 'Calm under pressure']
+            }
+        ]
+    },
+    {
+        id: 'norway',
+        country: 'Norway',
+        code: 'NOR',
+        flag: '🇳🇴',
+        tagline: 'Top Salaries, Work-Life Balance & Nordic Stability',
+        highPayableJobs: [
+            {
+                id: 'nor-hp-1',
+                title: 'Offshore Oil & Gas Drilling Engineer',
+                company: 'North Sea Energy Operations',
+                location: 'Stavanger & Bergen, Norway',
+                salary: 'NOK 900,000 - 1,200,000 / year',
+                type: 'Full-Time (Skilled Worker Visa)',
+                experience: 'Petroleum Engineering Degree',
+                requirements: ['Offshore drilling operations', 'BOSIET / HUET safety certification', 'Risk management experience']
+            },
+            {
+                id: 'nor-hp-2',
+                title: 'Maritime & Naval Architect Engineer',
+                company: 'Norway Shipbuilding & Marine Tech',
+                location: 'Bergen & Ålesund, Norway',
+                salary: 'NOK 750,000 - 1,050,000 / year',
+                type: 'Full-Time',
+                experience: '3+ Years Marine Engineering',
+                requirements: ['Naval architecture degree', 'CAD & 3D modeling', 'Classification society knowledge']
+            },
+            {
+                id: 'nor-hp-3',
+                title: 'Senior Software & Data Engineer',
+                company: 'Oslo Tech Innovation AS',
+                location: 'Oslo & Trondheim, Norway',
+                salary: 'NOK 800,000 - 1,100,000 / year',
+                type: 'Full-Time',
+                experience: '3+ Years Software Dev',
+                requirements: ['Python, Java, cloud platforms', 'Agile & Scrum', 'Strong problem solving']
+            },
+            {
+                id: 'nor-hp-4',
+                title: 'Environmental & Renewable Energy Specialist',
+                company: 'Statkraft Green Energy Norway',
+                location: 'Oslo & National Sites, Norway',
+                salary: 'NOK 700,000 - 950,000 / year',
+                type: 'Full-Time',
+                experience: 'Environmental Engineering',
+                requirements: ['Hydro/Wind power systems', 'Environmental impact assessment', 'Project planning']
+            },
+            {
+                id: 'nor-hp-5',
+                title: 'Healthcare Specialist & Registered Nurse',
+                company: 'Oslo University Hospital (OUS)',
+                location: 'Oslo, Norway',
+                salary: 'NOK 600,000 - 800,000 / year',
+                type: 'Full-Time (Health Visa)',
+                experience: 'Nursing / Medical Qualification',
+                requirements: ['Norwegian authorization or eligibility', 'Clinical patient care', 'Basic Norwegian language preferred']
+            }
+        ],
+        partTimeJobs: [
+            {
+                id: 'nor-pt-1',
+                title: 'Grocery & Convenience Store Associate',
+                company: 'Rema 1000 & Kiwi Norway',
+                location: 'Oslo & Bergen, Norway',
+                salary: 'NOK 210 - 260 / hour',
+                type: 'Part-Time',
+                hours: '20 hrs / week',
+                requirements: ['Basic Norwegian helpful', 'Cashier skills', 'Punctuality']
+            },
+            {
+                id: 'nor-pt-2',
+                title: 'Café & Restaurant Crew Member',
+                company: 'Friele Coffee & Nordic Eateries',
+                location: 'Oslo & Stavanger, Norway',
+                salary: 'NOK 200 - 255 / hour',
+                type: 'Part-Time / Evening',
+                hours: '15-25 hrs / week',
+                requirements: ['Food handling interest', 'Friendly team attitude', 'Flexible schedule']
+            },
+            {
+                id: 'nor-pt-3',
+                title: 'Ski Resort & Tourism Seasonal Worker',
+                company: 'Geilo & Trysil Resort Operations',
+                location: 'Geilo & Trysil, Norway',
+                salary: 'NOK 220 - 280 / hour',
+                type: 'Seasonal / Part-Time',
+                hours: 'Winter season flexible hours',
+                requirements: ['Physical fitness', 'Customer service attitude', 'Interest in outdoor activities']
+            },
+            {
+                id: 'nor-pt-4',
+                title: 'Cleaning & Facility Services Operator',
+                company: 'ISS Norway Facility Services',
+                location: 'Nationwide, Norway',
+                salary: 'NOK 200 - 245 / hour',
+                type: 'Part-Time / Shifts',
+                hours: '15-20 hrs / week',
+                requirements: ['Reliability', 'Attention to detail', 'Basic cleaning equipment handling']
+            },
+            {
+                id: 'nor-pt-5',
+                title: 'University Library & Admin Assistant',
+                company: 'University of Oslo Student Services',
+                location: 'Oslo, Norway',
+                salary: 'NOK 230 - 290 / hour',
+                type: 'On-Campus Part-Time',
+                hours: '15-20 hrs / week',
+                requirements: ['Student enrollment preferred', 'Organized & detail-oriented', 'Good communication skills']
+            }
+        ]
+    },
+    {
+        id: 'poland',
+        country: 'Poland',
+        code: 'POL',
+        flag: '🇵🇱',
+        tagline: 'Growing Tech Hub & EU National Visa Opportunities',
+        highPayableJobs: [
+            {
+                id: 'pol-hp-1',
+                title: 'Senior Software & Full Stack Developer',
+                company: 'Warsaw Tech Innovation Hub',
+                location: 'Warsaw & Remote, Poland',
+                salary: 'PLN 18,000 - 26,000 / month',
+                type: 'Full-Time (Work Permit D Visa)',
+                experience: '3+ Years Software Dev',
+                requirements: ['Java/React/Python', 'Agile project delivery', 'Fluent English (Polish a plus)']
+            },
+            {
+                id: 'pol-hp-2',
+                title: 'Logistics & Warehouse Fleet Supervisor',
+                company: 'Silesian Global Logistics Hub',
+                location: 'Wrocław & Katowice, Poland',
+                salary: 'PLN 12,000 - 16,500 / month',
+                type: 'Full-Time',
+                experience: '2+ Years Logistics',
+                requirements: ['Supply chain management', 'Fleet & inventory tracking', 'Safety compliance']
+            },
+            {
+                id: 'pol-hp-3',
+                title: 'Mechanical & Industrial Automation Engineer',
+                company: 'Krakow Precision Engineering',
+                location: 'Kraków, Poland',
+                salary: 'PLN 15,000 - 21,000 / month',
+                type: 'Full-Time',
+                experience: 'Engineering Qualification',
+                requirements: ['PLC programming & CAD', 'Industrial safety standards', 'Quality control']
+            },
+            {
+                id: 'pol-hp-4',
+                title: 'Financial Services & Accounting Analyst',
+                company: 'Baltic Shared Services Center',
+                location: 'Warsaw & Poznań, Poland',
+                salary: 'PLN 13,500 - 18,000 / month',
+                type: 'Full-Time',
+                experience: 'Finance / Accounting Degree',
+                requirements: ['IFRS financial modeling', 'Excel & SAP ERP', 'Analytical skills']
+            },
+            {
+                id: 'pol-hp-5',
+                title: 'Clinical Care & Healthcare Specialist',
+                company: 'Pomeranian Medical Network',
+                location: 'Gdańsk, Poland',
+                salary: 'PLN 11,000 - 15,000 / month',
+                type: 'Full-Time (Health Visa)',
+                experience: 'Licensed Nursing / Healthcare',
+                requirements: ['Healthcare degree', 'Patient care expertise', 'Compassionate approach']
+            }
+        ],
+        partTimeJobs: [
+            {
+                id: 'pol-pt-1',
+                title: 'E-Commerce Order Fulfillment Specialist',
+                company: 'Amazon & Logistics Partners Poland',
+                location: 'Poznań & Wrocław, Poland',
+                salary: 'PLN 30 - 42 / hour',
+                type: 'Part-Time',
+                hours: '20 hrs / week',
+                requirements: ['Barcode scanner operation', 'Physical agility', 'Punctuality']
+            },
+            {
+                id: 'pol-pt-2',
+                title: 'University Campus & Academic Host',
+                company: 'University of Warsaw Student Union',
+                location: 'Warsaw, Poland',
+                salary: 'PLN 28 - 38 / hour',
+                type: 'On-Campus Part-Time',
+                hours: '15-20 hrs / week',
+                requirements: ['Valid student visa/status', 'Good organizational skills', 'English communication']
+            },
+            {
+                id: 'pol-pt-3',
+                title: 'Specialty Cafe Barista & Guest Staff',
+                company: 'Krakow Artisan Roasters',
+                location: 'Kraków, Poland',
+                salary: 'PLN 26 - 35 / hour',
+                type: 'Part-Time / Shift',
+                hours: '15-25 hrs / week',
+                requirements: ['Espresso preparation', 'Friendly customer attitude', 'Team spirit']
+            },
+            {
+                id: 'pol-pt-4',
+                title: 'Customer Experience Support Agent',
+                company: 'Multilingual Customer Care Hub',
+                location: 'Wrocław, Poland',
+                salary: 'PLN 32 - 45 / hour',
+                type: 'Part-Time / Remote Option',
+                hours: '20 hrs / week',
+                requirements: ['Fluent English or French/German', 'Computer literacy', 'Problem solving']
+            },
+            {
+                id: 'pol-pt-5',
+                title: 'Hotel Front Desk Receptionist',
+                company: 'Gdańsk Old Town Boutique Hotel',
+                location: 'Gdańsk, Poland',
+                salary: 'PLN 27 - 36 / hour',
+                type: 'Part-Time / Evening',
+                hours: '15-20 hrs / week',
+                requirements: ['Guest welcoming skills', 'Basic computer proficiency', 'Neat appearance']
+            }
+        ]
     }
 ]
 

@@ -1093,7 +1093,7 @@ export default function AdminDashboard() {
                     <div className="settings-body">
                         <div className="form-row">
                             {protectedNote('Site Name', 'TRAVELIUM')}
-                            {protectedNote('Tagline', 'Grobal')}
+                            {protectedNote('Tagline', 'Global')}
                         </div>
                         {protectedNote('Site ID', 'traveliumgrobal')}
                         <div className="form-group"><label>Site Description</label><textarea className="admin-note-input" rows="2" value={sf('description')} onChange={e => set('description', e.target.value)} /></div>
