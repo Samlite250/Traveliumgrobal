@@ -18,11 +18,8 @@ const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-ab
 const iconMap = { visa: <Briefcase size={24} />, flight: <Landmark size={24} />, study: <GraduationCap size={24} />, scholarship: <Palmtree size={24} /> }
 
 const getServiceImage = (s) => {
-    const raw = s.img || s.image || s.imageUrl || s.photo
-    if (raw && typeof raw === 'string' && raw.trim() !== '') {
-        return raw
-    }
     const nameLower = (s.name || s.title || '').toLowerCase()
+    // Type-specific images take priority to avoid wrong Firestore URLs
     if (nameLower.includes('flight') || s.type === 'flight') {
         return 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop'
     }
@@ -34,6 +31,11 @@ const getServiceImage = (s) => {
     }
     if (nameLower.includes('residency') || nameLower.includes('pr')) {
         return 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop'
+    }
+    // Fall back to Firestore image if available
+    const raw = s.img || s.image || s.imageUrl || s.photo
+    if (raw && typeof raw === 'string' && raw.trim() !== '') {
+        return raw
     }
     return 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop'
 }
