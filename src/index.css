@@ -293,39 +293,29 @@ button {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: .65rem;
   font-weight: 800;
   font-size: 1.3rem;
   color: var(--navy);
   white-space: nowrap;
-}
-
-.nav-logo .logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--gold);
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  color: var(--navy);
-  font-size: 1.1rem;
-  flex-shrink: 0;
+  text-decoration: none;
 }
 
 .brand-logo-img {
-  width: 38px;
-  height: 38px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
-  border-radius: 10px;
-  background: #0a192f;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  border: 1.5px solid var(--gold);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.45)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease, filter 0.25s ease;
 }
 
 .brand-logo-img:hover {
-  transform: scale(1.05);
+  transform: scale(1.08) rotate(3deg);
+  filter: drop-shadow(0 4px 14px rgba(255, 215, 0, 0.7));
 }
 
 .logo-text-stack {
