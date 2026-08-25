@@ -171,7 +171,36 @@ export default function Dashboard() {
         return matchesSearch && matchesFilter;
     });
 
-    const recentApps = applications.slice(0, 4)
+    const formatDate = (ts) => {
+        if (!ts) return 'Recent'
+        try {
+            if (typeof ts === 'object' && ts.toDate) return ts.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+            if (typeof ts === 'object' && ts.seconds) return new Date(ts.seconds * 1000).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+            const d = new Date(ts)
+            if (isNaN(d.getTime())) return 'Recent'
+            return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+        } catch {
+            return 'Recent'
+        }
+    }
+
+    const formatProgramType = (type) => {
+        if (!type) return 'APPLICATION'
+        if (typeof type !== 'string') return String(type).toUpperCase()
+        return type.replace(/_/g, ' ').toUpperCase()
+    }
+
+    const formatAppId = (id) => {
+        if (!id) return 'N/A'
+        return String(id).slice(0, 8)
+    }
+
+    const getDocUrl = (docData) => {
+        if (!docData) return null
+        if (typeof docData === 'string') return docData
+        if (typeof docData === 'object') return docData.url || docData.data || docData.src || null
+        return null
+    }
 
     const renderTableContent = (data) => (
         <div className="premium-table-wrap">
@@ -193,7 +222,7 @@ export default function Dashboard() {
                                 <td>
                                     <div className="service-info">
                                         <span className="service-name" style={{ fontWeight: '800', color: '#0f172a' }}>
-                                            {a.program_type?.replace('_', ' ').toUpperCase() || 'APPLICATION'}
+                                            {formatProgramType(a.program_type)}
                                         </span>
                                         <span className="service-sub" style={{ color: '#475569', fontWeight: '600' }}>
                                             📍 {a.destination || 'Global'}
@@ -203,7 +232,7 @@ export default function Dashboard() {
                                 <td>
                                     <div className={`status-pill ${statusInfo[a.status]?.class || 'status-pending'}`}>
                                         {statusInfo[a.status]?.icon || <Clock size={16} />}
-                                        <span>{statusInfo[a.status]?.label || a.status}</span>
+                                        <span>{statusInfo[a.status]?.label || (typeof a.status === 'string' ? a.status : 'Pending')}</span>
                                     </div>
                                 </td>
                                 <td>
@@ -230,9 +259,7 @@ export default function Dashboard() {
                                 </td>
                                 <td>
                                     <span className="date-text">
-                                        {a.created_at?.toDate ? a.created_at.toDate().toLocaleDateString(undefined, {
-                                            year: 'numeric', month: 'short', day: 'numeric'
-                                        }) : (a.created_at ? new Date(a.created_at).toLocaleDateString() : 'Recent')}
+                                        {formatDate(a.created_at)}
                                     </span>
                                 </td>
                                 <td>
@@ -576,7 +603,7 @@ export default function Dashboard() {
                         <div className="admin-modal-header" style={{ padding: '1.5rem', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
                                 <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '800', color: '#0f172a' }}>Application Details</h3>
-                                <p style={{ margin: '0.2rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>Reference ID: #{selectedApp.id?.slice(0, 8)}</p>
+                                <p style={{ margin: '0.2rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>Reference ID: #{formatAppId(selectedApp.id)}</p>
                             </div>
                             <button onClick={() => setSelectedApp(null)} style={{ background: '#f1f5f9', border: 'none', width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#0f172a' }}><X size={18} /></button>
                         </div>
@@ -585,8 +612,8 @@ export default function Dashboard() {
                             <div style={{ padding: '1rem', borderRadius: '12px', background: selectedApp.status === 'approved' ? '#ecfdf5' : (selectedApp.status === 'rejected' ? '#fef2f2' : '#f8fafc'), border: `1.5px solid ${selectedApp.status === 'approved' ? '#6ee7b7' : (selectedApp.status === 'rejected' ? '#fca5a5' : '#cbd5e1')}`, display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                 {statusInfo[selectedApp.status]?.icon || <Clock size={24} />}
                                 <div>
-                                    <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: '800', color: '#0f172a' }}>Status: {statusInfo[selectedApp.status]?.label || selectedApp.status}</h4>
-                                    <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#475569' }}>{statusInfo[selectedApp.status]?.description}</p>
+                                    <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: '800', color: '#0f172a' }}>Status: {statusInfo[selectedApp.status]?.label || (typeof selectedApp.status === 'string' ? selectedApp.status : 'Pending Review')}</h4>
+                                    <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#475569' }}>{statusInfo[selectedApp.status]?.description || 'Your application is being reviewed by our admissions team.'}</p>
                                 </div>
                             </div>
 
@@ -596,7 +623,7 @@ export default function Dashboard() {
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#b45309', fontWeight: '800', fontSize: '0.9rem', marginBottom: '0.35rem' }}>
                                         <MessageSquare size={16} /> Official Admissions Officer Note:
                                     </div>
-                                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#78350f', fontWeight: '600', lineHeight: '1.5' }}>"{selectedApp.admin_note}"</p>
+                                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#78350f', fontWeight: '600', lineHeight: '1.5' }}>"{String(selectedApp.admin_note)}"</p>
                                 </div>
                             )}
 
@@ -604,7 +631,7 @@ export default function Dashboard() {
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                                 <div>
                                     <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Program / Service</span>
-                                    <p style={{ margin: '0.2rem 0 0', fontWeight: '800', color: '#0f172a' }}>{selectedApp.program_type?.replace('_', ' ').toUpperCase()}</p>
+                                    <p style={{ margin: '0.2rem 0 0', fontWeight: '800', color: '#0f172a' }}>{formatProgramType(selectedApp.program_type)}</p>
                                 </div>
                                 <div>
                                     <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Target Destination</span>
@@ -612,12 +639,12 @@ export default function Dashboard() {
                                 </div>
                                 <div>
                                     <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Applicant Email</span>
-                                    <p style={{ margin: '0.2rem 0 0', fontWeight: '700', color: '#0f172a' }}>{selectedApp.user_email || selectedApp.email || currentUser?.email}</p>
+                                    <p style={{ margin: '0.2rem 0 0', fontWeight: '700', color: '#0f172a' }}>{selectedApp.user_email || selectedApp.email || currentUser?.email || 'N/A'}</p>
                                 </div>
                                 <div>
                                     <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Submitted Date</span>
                                     <p style={{ margin: '0.2rem 0 0', fontWeight: '700', color: '#0f172a' }}>
-                                        {selectedApp.created_at?.toDate ? selectedApp.created_at.toDate().toLocaleDateString() : 'Recently'}
+                                        {formatDate(selectedApp.created_at)}
                                     </p>
                                 </div>
                             </div>
@@ -626,15 +653,15 @@ export default function Dashboard() {
                             <div>
                                 <h4 style={{ margin: '0 0 0.65rem', fontSize: '0.95rem', fontWeight: '800', color: '#0f172a' }}>Uploaded Documents Verification</h4>
                                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                                    {selectedApp.documents?.passport ? (
-                                        <a href={selectedApp.documents.passport} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '0.85rem' }}>
+                                    {getDocUrl(selectedApp.documents?.passport) ? (
+                                        <a href={getDocUrl(selectedApp.documents.passport)} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '0.85rem' }}>
                                             <FileText size={16} color="#1d4ed8" /> Passport Copy (View)
                                         </a>
                                     ) : (
                                         <span style={{ fontSize: '0.82rem', color: '#94a3b8', fontStyle: 'italic' }}>No Passport file uploaded</span>
                                     )}
-                                    {selectedApp.documents?.diploma && (
-                                        <a href={selectedApp.documents.diploma} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '0.85rem' }}>
+                                    {getDocUrl(selectedApp.documents?.diploma) && (
+                                        <a href={getDocUrl(selectedApp.documents.diploma)} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '0.85rem' }}>
                                             <FileText size={16} color="#10b981" /> Academic Diploma (View)
                                         </a>
                                     )}

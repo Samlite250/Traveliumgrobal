@@ -1981,21 +1981,21 @@ export default function AdminDashboard() {
                             <div className="detail-section">
                                 <h4>Application Details</h4>
                                 <div className="detail-grid">
-                                    <div className="detail-item"><label>Service / Job Title</label><span className="service-type">{selectedApp.service_title || selectedApp.jobTitle || selectedApp.program_type?.replace(/_/g, ' ') || '\u2014'}</span></div>
+                                    <div className="detail-item"><label>Service / Job Title</label><span className="service-type">{selectedApp.service_title || selectedApp.jobTitle || (typeof selectedApp.program_type === 'string' ? selectedApp.program_type.replace(/_/g, ' ') : '') || '\u2014'}</span></div>
                                     <div className="detail-item"><label>Destination / Country</label><span><Globe size={14} /> {selectedApp.country || selectedApp.destination || '\u2014'}</span></div>
                                     {selectedApp.salary && <div className="detail-item"><label>Salary Range</label><span><DollarSign size={14} /> {selectedApp.salary}</span></div>}
                                     {selectedApp.company && <div className="detail-item"><label>Company / Employer</label><span><Building size={14} /> {selectedApp.company}</span></div>}
                                     {selectedApp.experienceYears && <div className="detail-item"><label>Experience Level</label><span><Briefcase size={14} /> {selectedApp.experienceYears}</span></div>}
                                     {selectedApp.fileName && <div className="detail-item"><label>Attached Resume/CV</label><span><FileText size={14} /> {selectedApp.fileName}</span></div>}
-                                    <div className="detail-item"><label>Status</label><div className={`status-pill-admin ${statusConfig[selectedApp.status]?.class || 'st-pending'}`}>{statusConfig[selectedApp.status]?.icon}<span>{statusConfig[selectedApp.status]?.label || selectedApp.status}</span></div></div>
+                                    <div className="detail-item"><label>Status</label><div className={`status-pill-admin ${statusConfig[selectedApp.status]?.class || 'st-pending'}`}>{statusConfig[selectedApp.status]?.icon}<span>{statusConfig[selectedApp.status]?.label || (typeof selectedApp.status === 'string' ? selectedApp.status : 'Pending')}</span></div></div>
                                     <div className="detail-item"><label>Submitted</label><span>{formatDate(selectedApp.created_at)}</span></div>
-                                    {selectedApp.admin_note && <div className="detail-item"><label>Admin Note</label><span className="admin-note-text">{selectedApp.admin_note}</span></div>}
+                                    {selectedApp.admin_note && <div className="detail-item"><label>Admin Note</label><span className="admin-note-text">{String(selectedApp.admin_note)}</span></div>}
                                 </div>
                             </div>
                             {(selectedApp.coverNote || selectedApp.message) && (
                                 <div className="detail-section">
                                     <h4>Cover Note / Message</h4>
-                                    <div className="detail-message-box"><p>{selectedApp.coverNote || selectedApp.message}</p></div>
+                                    <div className="detail-message-box"><p>{String(selectedApp.coverNote || selectedApp.message)}</p></div>
                                 </div>
                             )}
                             {selectedApp.documents && (selectedApp.documents.passport || selectedApp.documents.diploma || selectedApp.documents.id_card) && (
@@ -2003,9 +2003,11 @@ export default function AdminDashboard() {
                                     <h4>Uploaded Documents</h4>
                                     <div className="detail-docs-grid">
                                         {[{ key: 'passport', label: 'Passport' }, { key: 'diploma', label: 'Diploma' }, { key: 'id_card', label: 'ID Card' }].map(({ key, label }) => {
-                                            const docData = selectedApp.documents?.[key]
+                                            const docVal = selectedApp.documents?.[key]
+                                            if (!docVal) return null
+                                            const docData = typeof docVal === 'string' ? docVal : (docVal.url || docVal.data || '')
                                             if (!docData) return null
-                                            const isImage = docData.startsWith('data:image')
+                                            const isImage = typeof docData === 'string' && (docData.startsWith('data:image') || /\.(jpg|jpeg|png|webp)($|\?)/i.test(docData))
                                             const docStatus = selectedApp.doc_status?.[key] || 'pending'
                                             return (
                                                 <div key={key} className="detail-doc-card">
