@@ -37,7 +37,15 @@ export default function VisaServices() {
         return unsub
     }, [])
 
-    const display = loading ? fallbackVisas : visas
+    const rawVisas = loading ? fallbackVisas : (visas.length ? visas : fallbackVisas)
+    const uniqueVisaMap = new Map()
+    rawVisas.forEach(v => {
+        const key = (v.title || v.name || '').trim().toLowerCase()
+        if (key && !uniqueVisaMap.has(key)) {
+            uniqueVisaMap.set(key, v)
+        }
+    })
+    const display = Array.from(uniqueVisaMap.values())
 
     return (
         <main>

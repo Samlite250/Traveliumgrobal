@@ -54,7 +54,15 @@ export default function Services() {
         return unsub
     }, [])
 
-    const display = loading ? fallbackServices : services.filter(s => s.active !== false || loading)
+    const rawDisplay = loading ? fallbackServices : (services.length ? services.filter(s => s.active !== false) : fallbackServices)
+    const uniqueServicesMap = new Map()
+    rawDisplay.forEach(s => {
+        const key = (s.name || s.title || '').trim().toLowerCase()
+        if (key && !uniqueServicesMap.has(key)) {
+            uniqueServicesMap.set(key, s)
+        }
+    })
+    const display = Array.from(uniqueServicesMap.values())
 
     // Local scroll-reveal observer specifically for async loaded service cards
     useEffect(() => {
