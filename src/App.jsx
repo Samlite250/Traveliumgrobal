@@ -37,6 +37,7 @@ const Dashboard = safeLazy(() => import('./pages/Dashboard'))
 const Flights = safeLazy(() => import('./pages/Flights'))
 const BuyTicket = safeLazy(() => import('./pages/BuyTicket'))
 const Jobs = safeLazy(() => import('./pages/Jobs'))
+const NotFound = safeLazy(() => import('./pages/NotFound'))
 
 function ProtectedRoute({ children }) {
     const { currentUser } = useAuth()
@@ -111,6 +112,7 @@ function AppLayout() {
                     } />
                     <Route path="/admi-login" element={<AdminLogin />} />
                     <Route path="/admin-login" element={<Navigate to="/admi-login" replace />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </Suspense>
             {!isAdminPath && <Footer />}

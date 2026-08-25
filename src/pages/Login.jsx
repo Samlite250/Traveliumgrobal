@@ -48,7 +48,7 @@ export default function Login() {
                     <div className="auth-left-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop)' }} />
                     <div className="auth-left-content">
                         <Link to="/" className="nav-logo" style={{ color: 'white', marginBottom: '2.5rem' }}>
-                            <div className="logo-icon"><Plane size={24} /></div>
+                            <img src="/logo.png" alt="Travelium" style={{ width: '44px', height: '44px', objectFit: 'contain', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }} />
                             TRAVELIUM
                         </Link>
                         <h2>{t('login.title', 'Your Journey to Global Success Starts Here')}</h2>
@@ -120,7 +120,7 @@ export default function Login() {
                             </div>
                             {tab === 'login' && (
                                 <div style={{ textAlign: 'right', marginTop: '-.5rem' }}>
-                                    <a href="#" style={{ fontSize: '.8rem', color: 'var(--navy)', fontWeight: 600 }}>{t('login.forgot', 'Forgot password?')}</a>
+                                    <Link to="/contact" style={{ fontSize: '.8rem', color: 'var(--navy)', fontWeight: 600 }}>{t('login.forgot', 'Forgot password? Contact us')}</Link>
                                 </div>
                             )}
                             <button type="submit" className="form-submit" disabled={loading} style={{ marginTop: '.5rem' }}>
