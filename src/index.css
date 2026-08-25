@@ -916,50 +916,72 @@ button {
 }
 
 .form-group-custom label {
-  font-size: .72rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: .8rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: .06em !important;
+  margin-bottom: .35rem !important;
+  display: block !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.hero-form-card label,
+.hero-form label {
+  font-size: .8rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  text-transform: uppercase;
+  letter-spacing: .06em !important;
+  margin-bottom: .35rem !important;
+  display: block !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .form-group-custom input,
 .form-group-custom select {
-  background: rgba(255, 255, 255, 0.18);
-  border: 1.5px solid rgba(255, 255, 255, 0.30);
+  background: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.90) !important;
   border-radius: var(--radius-sm);
-  padding: .55rem .9rem;
-  font-size: .85rem;
-  color: var(--white);
-  -webkit-text-fill-color: var(--white);
+  padding: .65rem .95rem;
+  font-size: .9rem;
+  font-weight: 600;
+  color: #0a1436 !important;
+  -webkit-text-fill-color: #0a1436 !important;
   transition: border-color .3s ease, background-color .3s ease;
   width: 100%;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .form-group-custom select option {
-  background: var(--navy-dark);
-  color: var(--white);
+  background: #ffffff;
+  color: #0a1436;
+  font-weight: 600;
 }
 
 .form-group-custom input::placeholder {
-  color: rgba(255, 255, 255, 0.65);
+  color: #64748b !important;
+  font-weight: 500;
   opacity: 1;
   /* Firefox lowers opacity by default */
 }
 
 /* For select elements to not look faded on mobile iOS */
 .form-group-custom select {
-  color: rgba(255, 255, 255, 0.9);
+  color: #0a1436 !important;
   opacity: 1;
 }
 
 .form-group-custom input:focus,
 .form-group-custom select:focus {
-  border-color: var(--gold);
-  background: rgba(255, 255, 255, 0.25);
+  border-color: var(--gold) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.3);
 }
 
 .form-success-msg {

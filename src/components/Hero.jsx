@@ -320,8 +320,14 @@ export default function Hero() {
                                             <option value="Germany">🇩🇪 Germany</option>
                                             <option value="USA">🇺🇸 United States</option>
                                             <option value="Australia">🇦🇺 Australia</option>
-                                            <option value="Japan">🇯🇵 Japan</option>
+                                            <option value="Qatar">🇶🇦 Qatar</option>
+                                            <option value="Norway">🇳🇴 Norway</option>
+                                            <option value="Poland">🇵🇱 Poland</option>
                                             <option value="France">🇫🇷 France</option>
+                                            <option value="Japan">🇯🇵 Japan</option>
+                                            <option value="China">🇨🇳 China</option>
+                                            <option value="Netherlands">🇳🇱 Netherlands</option>
+                                            <option value="Oman">🇴🇲 Oman</option>
                                         </select>
                                     </div>
                                     <div className="form-group-custom">

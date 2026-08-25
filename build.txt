@@ -1,30 +1,31 @@
-[2m11:13:13 AM[22m [33m[1m[vite][22m[39m [33mwarning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.[39m
-`optimizeDeps.rollupOptions` / `ssr.optimizeDeps.rollupOptions` is deprecated. Use `optimizeDeps.rolldownOptions` instead. Note that this option may be set by a plugin. Set VITE_DEPRECATION_TRACE=1 to see where it is called.
-[vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown
-[36mvite v8.1.2 [32mbuilding client environment for production...[36m[39m
-[2Ktransforming...✓ 131 modules transformed.
-[31m✗[39m Build failed in 182ms
-[31merror during build:
-[31mBuild failed with 1 error:
+﻿[36mvite v8.1.2 [32mbuilding client environment for production...[36m[39m
+[2K
+transforming...Γ£ô 359 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                             1.20 kB Γöé gzip:   0.58 kB
+dist/assets/index-Df47wUau.css            137.91 kB Γöé gzip:  23.28 kB
+dist/assets/chevron-right-BGUln4bZ.js       0.12 kB Γöé gzip:   0.13 kB
+dist/assets/circle-check-big-Chq7FPgB.js    0.18 kB Γöé gzip:   0.17 kB
+dist/assets/upload-D6Tq1dIr.js              0.22 kB Γöé gzip:   0.18 kB
+dist/assets/award-w6jXzU4V.js               0.26 kB Γöé gzip:   0.21 kB
+dist/assets/layout-dashboard-CmqjZWB4.js    0.54 kB Γöé gzip:   0.28 kB
+dist/assets/rolldown-runtime-QTnfLwEv.js    0.69 kB Γöé gzip:   0.42 kB
+dist/assets/CTABanner-BllW8dux.js           0.83 kB Γöé gzip:   0.42 kB
+dist/assets/Scholarships-DWejEwVW.js        4.37 kB Γöé gzip:   1.67 kB
+dist/assets/About-Cc3oZOy8.js               5.37 kB Γöé gzip:   1.70 kB
+dist/assets/BuyTicket-COiHcQzd.js           5.44 kB Γöé gzip:   2.45 kB
+dist/assets/StudyAbroad-JFRov2Jm.js         5.76 kB Γöé gzip:   2.07 kB
+dist/assets/VisaServices-Ebg_zSJy.js        6.31 kB Γöé gzip:   2.36 kB
+dist/assets/Login-Ipfnzqwt.js               8.23 kB Γöé gzip:   3.22 kB
+dist/assets/Contact-BxhGw95a.js             8.38 kB Γöé gzip:   2.45 kB
+dist/assets/Flights-CVlgixQK.js             8.81 kB Γöé gzip:   2.73 kB
+dist/assets/Apply-Bc3xn1y0.js              12.80 kB Γöé gzip:   3.94 kB
+dist/assets/purify.es-Bu4Grnl0.js          26.10 kB Γöé gzip:  10.27 kB
+dist/assets/Dashboard-DVHtAWEc.js          27.73 kB Γöé gzip:   6.33 kB
+dist/assets/Home-l8L8W4o-.js               28.25 kB Γöé gzip:   8.44 kB
+dist/assets/index.es-cPZ8ccFc.js          151.42 kB Γöé gzip:  48.90 kB
+dist/assets/jsx-runtime-By_6ooxp.js       163.42 kB Γöé gzip:  53.94 kB
+dist/assets/html2canvas-BfZ04V3R.js       199.57 kB Γöé gzip:  46.79 kB
+dist/assets/index-DgiY9uKj.js             962.66 kB Γöé gzip: 289.24 kB
 
-[31m[builtin:vite-transform] [0mExpected `:` but found `}`
-     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/pages/AdminDashboard.jsx:940:14 [38;5;246m][0m
-     [38;5;246m│[0m
- [38;5;246m916 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m{[0m[38;5;249ms[0m[38;5;249me[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249md[0m[38;5;249mM[0m[38;5;249ms[0m[38;5;249mg[0m[38;5;249m [0m?[38;5;249m [0m[38;5;249m([0m
- [38;5;240m    │[0m                          ┬  
- [38;5;240m    │[0m                          ╰── Conditional starts here
- [38;5;240m    │[0m 
- [38;5;246m940 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m)[0m}
- [38;5;240m    │[0m              ┬  
- [38;5;240m    │[0m              ╰── `:` expected
-[38;5;246m─────╯[0m
-[31m
-    at aggregateBindingErrorsIntoJsError (file:///C:/xamppx/htdocs/tglobal/Traveliumgrobal/node_modules/rolldown/dist/shared/error-B68YLzl3.mjs:48:18)
-    at unwrapBindingResult (file:///C:/xamppx/htdocs/tglobal/Traveliumgrobal/node_modules/rolldown/dist/shared/error-B68YLzl3.mjs:18:128)
-    at #build (file:///C:/xamppx/htdocs/tglobal/Traveliumgrobal/node_modules/rolldown/dist/shared/rolldown-build-DR0wzp0V.mjs:3256:34)
-    at async buildEnvironment (file:///C:/xamppx/htdocs/tglobal/Traveliumgrobal/node_modules/vite/dist/node/chunks/node.js:32593:66)
-    at async Object.build (file:///C:/xamppx/htdocs/tglobal/Traveliumgrobal/node_modules/vite/dist/node/chunks/node.js:33015:19)
-    at async Object.buildApp (file:///C:/xamppx/htdocs/tglobal/Traveliumgrobal/node_modules/vite/dist/node/chunks/node.js:33012:153)
-    at async CAC.<anonymous> (file:///C:/xamppx/htdocs/tglobal/Traveliumgrobal/node_modules/vite/dist/node/cli.js:777:3) {
-  errors: [Getter/Setter]
-}[39m

@@ -283,12 +283,15 @@ export default function Apply() {
                                                 <option value="United States">United States</option>
                                                 <option value="United Kingdom">United Kingdom</option>
                                                 <option value="Germany">Germany</option>
+                                                <option value="Australia">Australia</option>
+                                                <option value="Qatar">Qatar</option>
+                                                <option value="Norway">Norway</option>
+                                                <option value="Poland">Poland</option>
                                                 <option value="France">France</option>
                                                 <option value="Oman">Oman</option>
                                                 <option value="China">China</option>
                                                 <option value="Japan">Japan</option>
                                                 <option value="Netherlands">Netherlands</option>
-                                                <option value="Australia">Australia</option>
                                             </select>
                                         </div>
                                     </div>
