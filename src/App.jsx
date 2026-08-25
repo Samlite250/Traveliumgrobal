@@ -57,6 +57,19 @@ function AppLayout() {
     const adminPaths = ['/admin', '/admin-login', '/admi-login']
     const isAdminPath = adminPaths.some(p => location.pathname === p || location.pathname.startsWith('/admin'))
 
+    // Automatic Scroll To Top on route change or handle hash anchors
+    useEffect(() => {
+        if (location.hash) {
+            const id = location.hash.replace('#', '')
+            const el = document.getElementById(id)
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                return
+            }
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }, [location.pathname, location.search, location.hash])
+
     // Global scroll-reveal observer — adds .visible to all .reveal elements on scroll
     useEffect(() => {
         const timer = setTimeout(() => {
