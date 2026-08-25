@@ -171,6 +171,8 @@ export default function Dashboard() {
         return matchesSearch && matchesFilter;
     });
 
+    const recentApps = applications.slice(0, 4)
+
     const formatDate = (ts) => {
         if (!ts) return 'Recent'
         try {
