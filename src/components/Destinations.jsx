@@ -11,7 +11,7 @@ const destinations = [
     { id: 'au', flag: 'https://flagcdn.com/w80/au.png', name: 'Australia', countryParam: 'Australia', img: 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=800&auto=format&fit=crop', jobs: '4k+', salary: 'AUD 55k+', tag: 'High Paying' },
     { id: 'qa', flag: 'https://flagcdn.com/w80/qa.png', name: 'Qatar', countryParam: 'Qatar', img: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=800&auto=format&fit=crop', jobs: '3.5k+', salary: 'QAR 9k+', tag: 'Tax-Free' },
     { id: 'no', flag: 'https://flagcdn.com/w80/no.png', name: 'Norway', countryParam: 'Norway', img: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop', jobs: '2k+', salary: 'NOK 45k+', tag: 'Top Quality' },
-    { id: 'pl', flag: 'https://flagcdn.com/w80/pl.png', name: 'Poland', countryParam: 'Poland', img: 'https://images.unsplash.com/photo-1519197924294-4ac97f1615c6?q=80&w=800&auto=format&fit=crop', jobs: '3k+', salary: 'PLN 12k+', tag: 'Fast Visa' },
+    { id: 'pl', flag: 'https://flagcdn.com/w80/pl.png', name: 'Poland', countryParam: 'Poland', img: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=800&auto=format&fit=crop', jobs: '3k+', salary: 'PLN 12k+', tag: 'Fast Visa' },
     { id: 'fr', flag: 'https://flagcdn.com/w80/fr.png', name: 'France', countryParam: 'France', img: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop', jobs: '2.5k+', salary: 'EUR 30k+' },
     { id: 'om', flag: 'https://flagcdn.com/w80/om.png', name: 'Oman', countryParam: 'Oman', img: 'https://images.unsplash.com/photo-1606813332135-228593b6e201?q=80&w=800&auto=format&fit=crop', jobs: '2k+', salary: 'OMR 500+' },
     { id: 'cn', flag: 'https://flagcdn.com/w80/cn.png', name: 'China', countryParam: 'China', img: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=800&auto=format&fit=crop', jobs: '8k+', salary: 'CNY 15k+', tag: 'High Demand' },
@@ -41,7 +41,15 @@ export default function Destinations() {
                             className={`dest-card-v2 animate-reveal ${d.featured ? 'dest-card--featured' : ''}`}
                         >
                             <div className="dest-img-wrap">
-                                <img src={d.img} alt={d.name} className="main-img" />
+                                <img
+                                    src={d.img}
+                                    alt={d.name}
+                                    className="main-img"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop';
+                                    }}
+                                />
                                 <div className="flag-overlay">
                                     <img src={d.flag} alt={d.name} />
                                 </div>

@@ -101,7 +101,19 @@ export default function Services() {
                     {display.slice(0, 8).map((s, i) => (
                         <div key={s.id || s.title || i} className={`service-card reveal${s.featured ? ' service-card--featured' : ''}`}>
                             <div className="service-img">
-                                <img src={getServiceImage(s)} alt={s.name || s.title || 'Service'} />
+                                <img
+                                    src={getServiceImage(s)}
+                                    alt={s.name || s.title || 'Service'}
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        const nameLower = (s.name || s.title || '').toLowerCase();
+                                        if (nameLower.includes('flight') || s.type === 'flight') {
+                                            e.target.src = 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800&auto=format&fit=crop';
+                                        } else {
+                                            e.target.src = 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop';
+                                        }
+                                    }}
+                                />
                             </div>
                             <div className="service-content">
                                 <div className="service-icon">{iconMap[s.type] || <Briefcase size={24} />}</div>
