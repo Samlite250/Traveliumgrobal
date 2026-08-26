@@ -19,6 +19,7 @@ const DEMO_USER = {
 }
 
 const ADMIN_DEMO_USERS = {
+  'support@traveliumglobal.com': { uid: 'admin_support', displayName: 'Travelium Support Admin' },
   'traveliumgrobal@gmail.com': { uid: 'admin_travelium', displayName: 'Travelium Admin' },
   'samlite250@gmail.com': { uid: 'admin_samlite', displayName: 'Sam Admin' },
 }
