@@ -40,9 +40,8 @@ export const analytics = null
 
 // Admin emails
 export const ADMIN_EMAILS = ['support@traveliumglobal.com', 'traveliumgrobal@gmail.com', 'samlite250@gmail.com']
-export const isAdmin = (user) => user && (
-  ADMIN_EMAILS.includes(user.email) ||
-  user.email === 'support@traveliumglobal.com' ||
-  user.email === 'traveliumgrobal@gmail.com' ||
-  user.email === 'samlite250@gmail.com'
-)
+export const isAdmin = (user) => {
+  if (!user || !user.email) return false
+  const email = user.email.toLowerCase().trim()
+  return ADMIN_EMAILS.some(e => e.toLowerCase() === email)
+}

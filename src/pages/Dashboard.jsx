@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
-import { db } from '../lib/firebase'
+import { db, isAdmin } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import {
@@ -342,6 +342,12 @@ export default function Dashboard() {
                         <PlusCircle size={20} />
                         <span>New Application</span>
                     </Link>
+                    {isAdmin(currentUser) && (
+                        <Link to="/admin" className="nav-item" style={{ background: 'linear-gradient(135deg, #c8a84b 0%, #b39035 100%)', color: '#0f172a', fontWeight: '800', marginTop: '1rem', boxShadow: '0 4px 12px rgba(200, 168, 75, 0.3)' }}>
+                            <ShieldCheck size={20} />
+                            <span>👑 Admin Dashboard</span>
+                        </Link>
+                    )}
                 </nav>
 
                 <div className="sidebar-footer">
@@ -351,7 +357,7 @@ export default function Dashboard() {
                         </div>
                         <div className="user-details">
                             <span className="user-name">{profileName || 'Traveler'}</span>
-                            <span className="user-role">Applicant Account</span>
+                            <span className="user-role">{isAdmin(currentUser) ? 'Administrator' : 'Applicant Account'}</span>
                         </div>
                     </div>
                     <button onClick={handleLogout} className="logout-btn">
@@ -369,6 +375,12 @@ export default function Dashboard() {
                         <p>Track your global education, visa, and job journey live.</p>
                     </div>
                     <div className="dash-actions-top">
+                        {isAdmin(currentUser) && (
+                            <Link to="/admin" className="btn-premium-sm" style={{ background: 'linear-gradient(135deg, #c8a84b 0%, #b39035 100%)', color: '#0f172a', fontWeight: '800' }}>
+                                <ShieldCheck size={16} />
+                                <span>👑 Open Admin Panel</span>
+                            </Link>
+                        )}
                         <Link to="/contact" className="help-link">
                             <HelpCircle size={20} />
                             <span>Help Center</span>

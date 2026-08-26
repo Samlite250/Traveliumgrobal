@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
-import { isAdmin } from '../lib/firebase'
+import { isAdmin, ADMIN_EMAILS } from '../lib/firebase'
 import { Plane, CheckCircle, ArrowRight, Mail, Lock, User, Phone, Globe } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -25,14 +25,18 @@ export default function Login() {
         setLoading(true)
         setStatus(null)
         try {
+            const inputEmail = form.email.trim().toLowerCase()
+            const isAnAdmin = ADMIN_EMAILS.some(e => e.toLowerCase() === inputEmail)
             if (tab === 'login') {
-                const { user } = await login(form.email.trim(), form.password.trim())
+                const res = await login(form.email.trim(), form.password.trim())
+                const u = res?.user || { email: inputEmail }
                 toast('Login successful!', 'success')
-                navigate(isAdmin(user) ? '/admin' : '/dashboard')
+                navigate(isAnAdmin || isAdmin(u) ? '/admin' : '/dashboard')
             } else {
-                await signup(form.email.trim(), form.password.trim(), form.full_name, form.phone, form.country)
+                const res = await signup(form.email.trim(), form.password.trim(), form.full_name, form.phone, form.country)
+                const u = res?.user || { email: inputEmail }
                 toast('Account created successfully!', 'success')
-                navigate('/dashboard')
+                navigate(isAnAdmin || isAdmin(u) ? '/admin' : '/dashboard')
             }
         } catch (err) {
             setStatus({ type: 'error', msg: err.message })
