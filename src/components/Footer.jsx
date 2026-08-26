@@ -12,7 +12,13 @@ export default function Footer() {
     useEffect(() => {
         if (!db) return
         const unsub = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
-            if (snap.exists()) setSiteSettings(snap.data())
+            if (snap.exists()) {
+                const data = snap.data()
+                if (!data.supportEmail || data.supportEmail === 'traveliumgrobal@gmail.com' || data.supportEmail === 'traveliumglobal@gmail.com') {
+                    data.supportEmail = 'support@traveliumglobal.com'
+                }
+                setSiteSettings(data)
+            }
         })
         return unsub
     }, [])

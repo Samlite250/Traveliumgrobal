@@ -41,7 +41,11 @@ export default function useSiteSettings() {
     if (!db) { setLoading(false); return }
     const unsub = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
       if (snap.exists()) {
-        setSettings({ ...defaults, ...snap.data() })
+        const data = snap.data()
+        if (!data.supportEmail || data.supportEmail === 'traveliumgrobal@gmail.com' || data.supportEmail === 'traveliumglobal@gmail.com') {
+          data.supportEmail = 'support@traveliumglobal.com'
+        }
+        setSettings({ ...defaults, ...data })
       } else {
         setSettings(defaults)
       }

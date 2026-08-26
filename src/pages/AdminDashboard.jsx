@@ -247,19 +247,22 @@ export default function AdminDashboard() {
                 metaDescription: 'Travelium — Your Gateway to Global Education and Travel Opportunities. Study abroad, visa services, scholarships and more.',
                 metaKeywords: 'travel, visa, study abroad, scholarship, work visa, flight booking',
                 googleAnalyticsId: '',
-                supportEmail: 'traveliumgrobal@gmail.com', supportPhone: '+250 782 531 515',
+                supportEmail: 'support@traveliumglobal.com', supportPhone: '+250 786 189 460',
                 address: '123 Global Avenue, Suite 400, New York, NY 10001, USA',
                 workingHours: 'Mon – Sat: 9:00 AM – 7:00 PM',
                 headquarters: 'Headquartered in Dubai, UAE',
                 copyright: 'Travelium Global. Licensed Recruitment & Travel Agency.',
                 linkedin: '#', twitter: '#', youtube: '#', instagram: '#', facebook: '#',
                 whatsappNumbers: [
-                    { label: 'Visas & General Inquiries', number: '250782531515' },
+                    { label: 'Visas & General Inquiries', number: '250786189460' },
                     { label: 'Jobs & Recruitment', number: '250796230619' },
                     { label: 'Air Ticketing', number: '250793658206' },
                 ],
-                adminEmails: ['traveliumgrobal@gmail.com', 'samlite250@gmail.com'],
+                adminEmails: ['support@traveliumglobal.com', 'traveliumgrobal@gmail.com', 'samlite250@gmail.com'],
                 maintenanceMode: false,
+            }
+            if (!data.supportEmail || data.supportEmail === 'traveliumgrobal@gmail.com' || data.supportEmail === 'traveliumglobal@gmail.com') {
+                data.supportEmail = 'support@traveliumglobal.com'
             }
             const merged = { ...defaults, ...data }
             setSiteSettings(merged)
