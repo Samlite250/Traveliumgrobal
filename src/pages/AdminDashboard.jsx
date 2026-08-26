@@ -472,6 +472,11 @@ export default function AdminDashboard() {
     }
 
     const deleteUser = async (uid, email) => {
+        const masterAdmins = ['support@traveliumglobal.com', 'traveliumgrobal@gmail.com', 'samlite250@gmail.com']
+        if (email && masterAdmins.some(a => a.toLowerCase() === email.toLowerCase().trim())) {
+            toast('Cannot delete a Master Admin account!', 'error')
+            return
+        }
         if (!confirm(`Are you sure you want to delete user "${email}"? This will also delete their Firebase Authentication account and cannot be undone.`)) return
         if (db) {
             try {
@@ -1060,15 +1065,43 @@ export default function AdminDashboard() {
                             </thead>
                             <tbody>
                                 {filteredUsers.map(u => {
+                                    const masterAdmins = ['support@traveliumglobal.com', 'traveliumgrobal@gmail.com', 'samlite250@gmail.com']
+                                    const isMasterAdmin = masterAdmins.some(a => a.toLowerCase() === (u.email || '').toLowerCase().trim())
                                     return (
-                                        <tr key={u.email}>
-                                            <td><div className="user-cell"><div className="u-avatar">{u.name?.charAt(0) || 'U'}</div><div className="u-info"><span className="n">{u.name}</span></div></div></td>
+                                        <tr key={u.email} style={isMasterAdmin ? { background: '#fffbeb' } : {}}>
+                                            <td>
+                                                <div className="user-cell">
+                                                    <div className="u-avatar" style={isMasterAdmin ? { background: '#c8a84b', color: '#0f172a', fontWeight: '800' } : {}}>
+                                                        {u.name?.charAt(0) || 'U'}
+                                                    </div>
+                                                    <div className="u-info">
+                                                        <span className="n" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                                            {u.name}
+                                                            {isMasterAdmin && (
+                                                                <span style={{ background: '#c8a84b', color: '#0f172a', fontSize: '0.65rem', fontWeight: '800', padding: '1px 6px', borderRadius: '4px' }}>
+                                                                    ADMIN
+                                                                </span>
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td><span className="destination-pill"><Globe size={12} /><span>{u.country || '\u2014'}</span></span></td>
-                                            <td><span className="user-email-cell">{u.email}</span></td>
+                                            <td><span className="user-email-cell" style={isMasterAdmin ? { fontWeight: '700', color: '#0f172a' } : {}}>{u.email}</span></td>
                                             <td><span className="user-phone-cell">{u.phone || '\u2014'}</span></td>
                                             <td><span className="user-count-cell">{u.appCount}</span></td>
                                             <td><div className="date-cell"><Calendar size={12} /><span>{formatDateShort(u.lastActive)}</span></div></td>
-                                            <td><button className="filter-btn" style={{ color: 'var(--error)' }} onClick={() => deleteUser(u.userId, u.email)} title="Delete user"><Trash2 size={14} /></button></td>
+                                            <td>
+                                                {isMasterAdmin ? (
+                                                    <button disabled className="filter-btn" style={{ color: '#94a3b8', cursor: 'not-allowed', opacity: 0.6, background: '#f1f5f9' }} title="Master Admin Account (Protected)">
+                                                        <Lock size={14} style={{ color: '#c8a84b' }} />
+                                                    </button>
+                                                ) : (
+                                                    <button className="filter-btn" style={{ color: 'var(--error)' }} onClick={() => deleteUser(u.userId, u.email)} title="Delete user">
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                )}
+                                            </td>
                                         </tr>
                                     )
                                 })}
