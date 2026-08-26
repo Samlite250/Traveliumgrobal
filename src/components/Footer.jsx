@@ -87,7 +87,7 @@ export default function Footer() {
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                             <Mail size={13} color="var(--gold)" />
-                                            <a href={`mailto:${s.supportEmail || 'traveliumglobal@gmail.com'}`} style={{ color: '#cbd5e1', textDecoration: 'none' }}>{s.supportEmail || 'traveliumglobal@gmail.com'}</a>
+                                            <a href={`mailto:${s.supportEmail || 'support@traveliumglobal.com'}`} style={{ color: '#cbd5e1', textDecoration: 'none' }}>{s.supportEmail || 'support@traveliumglobal.com'}</a>
                                         </div>
                                     </div>
                                 </div>

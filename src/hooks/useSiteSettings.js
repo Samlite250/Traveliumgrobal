@@ -12,7 +12,7 @@ const defaults = {
   metaDescription: 'Travelium — Your Gateway to Global Education and Travel Opportunities. Study abroad, visa services, scholarships and more.',
   metaKeywords: 'travel, visa, study abroad, scholarship, work visa, flight booking',
   googleAnalyticsId: '',
-  supportEmail: 'traveliumgrobal@gmail.com',
+  supportEmail: 'support@traveliumglobal.com',
   supportPhone: '+250 786 189 460',
   address: '123 Global Avenue, Suite 400, New York, NY 10001, USA',
   workingHours: 'Mon \u2013 Sat: 9:00 AM \u2013 7:00 PM',
@@ -29,7 +29,7 @@ const defaults = {
     { label: 'Jobs & Recruitment', number: '+250 733 387 135' },
     { label: 'Air Ticketing & Visas', number: '+250 732 580 014' },
   ],
-  adminEmails: ['traveliumgrobal@gmail.com', 'samlite250@gmail.com'],
+  adminEmails: ['support@traveliumglobal.com', 'traveliumgrobal@gmail.com', 'samlite250@gmail.com'],
   maintenanceMode: false,
 }
 
