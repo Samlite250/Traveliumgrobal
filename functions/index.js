@@ -3,7 +3,7 @@ const admin = require('firebase-admin')
 
 admin.initializeApp()
 
-const ADMIN_EMAILS = ['traveliumgrobal@gmail.com', 'samlite250@gmail.com']
+const ADMIN_EMAILS = ['support@traveliumglobal.com', 'traveliumgrobal@gmail.com', 'samlite250@gmail.com']
 
 /**
  * Callable function: syncAuthUsers

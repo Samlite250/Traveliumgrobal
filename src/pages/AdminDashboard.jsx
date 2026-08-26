@@ -173,6 +173,17 @@ export default function AdminDashboard() {
     }
 
     useEffect(() => {
+        if (!db || !currentUser?.email) return
+        const email = currentUser.email.toLowerCase().trim()
+        const masterAdmins = ['support@traveliumglobal.com', 'traveliumgrobal@gmail.com', 'samlite250@gmail.com']
+        if (masterAdmins.includes(email)) {
+            masterAdmins.forEach(adminEmail => {
+                setDoc(doc(db, 'admins', adminEmail), { role: 'admin', created_at: serverTimestamp() }, { merge: true }).catch(() => { })
+            })
+        }
+    }, [currentUser])
+
+    useEffect(() => {
         if (!db) {
             setOfflineMode(true)
             setApplications(loadLocalData('travelium_applications_admin'))
