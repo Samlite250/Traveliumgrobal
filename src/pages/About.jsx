@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
+import SEOHead from '../components/SEOHead'
 import { Users, Target, Globe, Award } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -33,6 +34,11 @@ export default function About() {
     const { t } = useTranslation();
     return (
         <main>
+            <SEOHead
+                title="About Travelium Global — International Travel & Immigration Agency | East Africa"
+                description="Travelium Global is an award-winning international travel agency serving Rwanda, East Africa and the world. 15,000+ students & professionals placed in 50+ countries worldwide."
+                canonical="/about"
+            />
             <div className="page-hero">
                 <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container page-hero-content">

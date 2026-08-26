@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
+import SEOHead from '../components/SEOHead'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { CalendarDays, ArrowRight, Loader2 } from 'lucide-react'
@@ -33,6 +34,11 @@ export default function Scholarships() {
 
     return (
         <main>
+            <SEOHead
+                title="Scholarships 2025 for African Students — Apply Now | Travelium Global"
+                description="Discover fully funded scholarships for students in Rwanda, East Africa & worldwide. Chevening, Fulbright, DAAD, Commonwealth & more — Travelium Global helps you apply and win."
+                canonical="/scholarships"
+            />
             <div className="page-hero">
                 <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container page-hero-content">

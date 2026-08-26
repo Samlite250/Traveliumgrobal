@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import SEOHead from '../components/SEOHead'
 import {
     Briefcase, DollarSign, Clock, MapPin, Building, Search, Filter,
     CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award, UploadCloud, FileText
@@ -1197,6 +1198,11 @@ export default function Jobs() {
 
     return (
         <div className="jobs-page">
+            <SEOHead
+                title="Jobs Abroad 2025 — Work in Dubai, Canada, UK, Germany & More | Travelium Global"
+                description="Find high-paying international jobs in Dubai, Canada, UK, Germany, Qatar, Norway & Australia. Travelium Global connects East African professionals to global career opportunities."
+                canonical="/jobs"
+            />
             {/* ── Hero Banner ── */}
             <section className="jobs-hero">
                 <div className="container">

@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Block private/auth pages from indexing
+Disallow: /admin
+Disallow: /admin-login
+Disallow: /admi-login
+Disallow: /dashboard
+Disallow: /apply
+
+# Sitemap location
+Sitemap: https://www.traveliumglobal.com/sitemap.xml

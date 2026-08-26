@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useToast } from '../context/ToastContext'
+import SEOHead from '../components/SEOHead'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -59,6 +60,11 @@ export default function Contact() {
 
     return (
         <main>
+            <SEOHead
+                title="Contact Travelium Global — Get a Free Visa & Study Abroad Consultation"
+                description="Contact Travelium Global for a free consultation on study abroad, work visas, scholarships & international jobs. Our expert team serves Rwanda, East Africa and worldwide clients."
+                canonical="/contact"
+            />
             <div className="page-hero">
                 <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1516387933999-ed33b5ecab39?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container page-hero-content">

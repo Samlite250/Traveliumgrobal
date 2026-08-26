@@ -6,6 +6,7 @@ import HowItWorks from '../components/HowItWorks'
 import Testimonials from '../components/Testimonials'
 import Destinations from '../components/Destinations'
 import CTABanner from '../components/CTABanner'
+import SEOHead from '../components/SEOHead'
 
 export default function Home() {
     useEffect(() => {
@@ -19,6 +20,11 @@ export default function Home() {
 
     return (
         <main>
+            <SEOHead
+                title="Travelium Global | International Travel Agency — Study Abroad, Work Visas & Global Jobs"
+                description="Travelium Global is a leading international travel & immigration agency. Study abroad, work visas, global jobs, scholarships & flight booking — serving East Africa and worldwide."
+                canonical="/"
+            />
             <Hero />
             <StatsBar />
             <Services />
@@ -29,3 +35,4 @@ export default function Home() {
         </main>
     )
 }
+

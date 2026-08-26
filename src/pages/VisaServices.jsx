@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
+import SEOHead from '../components/SEOHead'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { Briefcase, Globe, GraduationCap, Home, CheckCircle, ArrowRight, Star, Zap, Flame, Loader2 } from 'lucide-react'
@@ -49,6 +50,11 @@ export default function VisaServices() {
 
     return (
         <main>
+            <SEOHead
+                title="Work Visa Services — Dubai, UK, Canada, Germany & More | Travelium Global"
+                description="Expert work visa assistance for UAE, UK, Canada, Germany & 50+ countries. 98% success rate. Travelium Global helps professionals from East Africa secure international work permits."
+                canonical="/visa-services"
+            />
             <div className="page-hero">
                 <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container page-hero-content">

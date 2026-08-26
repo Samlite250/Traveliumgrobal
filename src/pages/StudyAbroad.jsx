@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
+import SEOHead from '../components/SEOHead'
 import {
     FlaskConical, HeartPulse, Briefcase, Scale, Palette, BookOpen,
     MapPin, ArrowRight, Globe
@@ -56,6 +57,11 @@ const destinations = [
 export default function StudyAbroad() {
     return (
         <main>
+            <SEOHead
+                title="Study Abroad 2025 — Apply for University Programs Worldwide | Travelium Global"
+                description="Apply to study abroad at top universities in Canada, UK, USA, Germany, Australia & more. Travelium Global guides students from East Africa and worldwide through the full application process."
+                canonical="/study-abroad"
+            />
             <div className="page-hero">
                 <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container page-hero-content">
@@ -118,6 +124,6 @@ export default function StudyAbroad() {
             </section>
 
             <CTABanner />
-        </main>
+        </main >
     )
 }
