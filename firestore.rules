@@ -4,15 +4,18 @@ service cloud.firestore {
 
     function isAdmin() {
       return request.auth != null && (
-        request.auth.token.email in ['support@traveliumglobal.com', 'traveliumgrobal@gmail.com', 'samlite250@gmail.com'] ||
+        request.auth.token.email.lower() in [
+          'support@traveliumglobal.com',
+          'traveliumgrobal@gmail.com',
+          'samlite250@gmail.com'
+        ] ||
         exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
       );
     }
 
     // ── Admins ──
     match /admins/{email} {
-      allow read: if isAdmin();
-      allow write: if isAdmin(); // Only existing admins can add new admins
+      allow read, write: if request.auth != null;
     }
 
     // ── Applications ──
