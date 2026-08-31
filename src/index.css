@@ -81,9 +81,10 @@ button {
 
 /* ===== UTILITY ===== */
 .container {
-  max-width: 1200px;
+  width: 98%;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 clamp(0.75rem, 1.5vw, 1.5rem);
 }
 
 .section {
@@ -110,7 +111,7 @@ button {
 .section-sub {
   font-size: 1rem;
   color: var(--text-light);
-  max-width: 560px;
+  max-width: 840px;
 }
 
 .section-header {
@@ -1294,8 +1295,8 @@ button {
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
   align-items: stretch;
 }
 
@@ -1441,7 +1442,7 @@ button {
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   position: relative;
-  max-width: 1000px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -2663,8 +2664,8 @@ tr:hover td {
 
 .programs-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.75rem;
   margin-top: 3rem;
 }
 
@@ -2780,7 +2781,7 @@ tr:hover td {
 
 .visa-types-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: 2rem;
   margin-top: 3rem;
 }
@@ -2963,8 +2964,8 @@ tr:hover td {
 
 .scholarships-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.75rem;
   margin-top: 3rem;
 }
 
@@ -5905,7 +5906,7 @@ main {
 .main-content {
   flex: 1;
   padding: 2rem;
-  max-width: 1400px;
+  max-width: 1760px;
   width: 100%;
   margin: 0 auto;
   display: flex;
@@ -9412,8 +9413,8 @@ main {
 /* Job Cards Grid */
 .jobs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
 }
 
 .job-card {

@@ -12,6 +12,7 @@ const fallbackVisas = [
     { title: 'Tourist Visa', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', desc: 'Short-term visitor visa.', price: 149, features: ['Application filing', 'Fast processing'] },
     { title: 'Student Visa', img: 'https://images.unsplash.com/photo-1568792923760-d70635a89fdc?q=80&w=800&auto=format&fit=crop', desc: 'Full enrollment student visa.', price: 299, features: ['University admission', 'Visa coaching'] },
     { title: 'Permanent Residency', img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop', desc: 'Pathway to PR.', price: 999, features: ['Eligibility assessment', 'Legal counsel'] },
+    { title: 'Employer Sponsorship', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop', desc: 'Let your employer handle the visa. We coordinate directly with companies hiring internationally.', price: 349, features: ['Employer liaison', 'Full legal support'] },
 ]
 
 const iconMap = { 'Dubai / UAE Work Visa': <Briefcase size={28} />, 'Work Visa (Global)': <Briefcase size={28} />, 'Tourist Visa': <Globe size={28} />, 'Student Visa': <GraduationCap size={28} />, 'Permanent Residency': <Home size={28} /> }

@@ -43,6 +43,18 @@ const programs = [
         desc: 'Psychology, sociology, international relations from top-ranking universities.',
         img: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=800&auto=format&fit=crop',
     },
+    {
+        icon: <Globe size={24} />,
+        tag: 'Environment', title: 'Environmental Science',
+        desc: 'Climate change, sustainability, and environmental policy programs at world-leading institutions.',
+        img: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=800&auto=format&fit=crop',
+    },
+    {
+        icon: <MapPin size={24} />,
+        tag: 'Education', title: 'Teaching & Education',
+        desc: 'PGCE, education leadership, and curriculum development at top teacher training colleges.',
+        img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop',
+    },
 ]
 
 const destinations = [

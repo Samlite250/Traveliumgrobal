@@ -6,11 +6,13 @@ import { Briefcase, Landmark, Palmtree, GraduationCap, ArrowRight, Loader2 } fro
 import { useTranslation } from 'react-i18next'
 
 const fallbackServices = [
-    { title: 'Flight Booking', img: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=800&auto=format&fit=crop', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', featured: true, type: 'flight' },
+    { title: 'Flight Booking', img: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=800&auto=format&fit=crop', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', type: 'flight' },
+    { title: 'Dubai / UAE Work Visa', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop', desc: 'Fast-track your UAE work visa. We handle the entire process — job offer verification, Emirates ID, and more.', href: '/visa-services', type: 'visa' },
     { title: 'Work Visa (Global)', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop', desc: 'Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.', href: '/visa-services', type: 'visa' },
     { title: 'Tourist Visa', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', desc: 'Travel the world with ease. We handle your tourist visa process end-to-end.', href: '/visa-services', type: 'visa' },
     { title: 'Permanent Residency', img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop', desc: 'Pathway to Permanent Residency. Secure your future in Canada, Australia, Europe or another destination.', href: '/visa-services', type: 'visa' },
     { title: 'Study Abroad', img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800&auto=format&fit=crop', desc: 'Discover the best universities and degree programs worldwide with our expert academic guidance.', href: '/study-abroad', type: 'study' },
+    { title: 'Scholarships & Funding', img: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=800&auto=format&fit=crop', desc: 'Access fully funded scholarships from top institutions — Commonwealth, Chevening, Fulbright & more.', href: '/scholarships', type: 'scholarship' },
     { title: 'Consultation & Advisory', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop', desc: 'Expert one-on-one guidance to plan your international journey, from visa to settlement.', href: '/contact', type: 'visa' },
 ]
 
