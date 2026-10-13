@@ -129,8 +129,8 @@ export default function Footer() {
                         <span>© {new Date().getFullYear()} {s.copyright || 'Travelium Global. Licensed Recruitment & Travel Agency.'}</span>
                     </div>
                     <div className="legal-links">
-                        <Link to="/contact">{t('footer.terms', 'Terms of Use')}</Link>
-                        <Link to="/contact">{t('footer.privacy', 'Privacy Policy')}</Link>
+                        <Link to="/terms-of-use">{t('footer.terms', 'Terms of Use')}</Link>
+                        <Link to="/privacy-policy">{t('footer.privacy', 'Privacy Policy')}</Link>
                         <span className="location-tag"><Globe size={14} /> {s.headquarters || 'Headquartered in Dubai, UAE'}</span>
                     </div>
                 </div>

@@ -38,6 +38,8 @@ const Flights = safeLazy(() => import('./pages/Flights'))
 const BuyTicket = safeLazy(() => import('./pages/BuyTicket'))
 const Jobs = safeLazy(() => import('./pages/Jobs'))
 const NotFound = safeLazy(() => import('./pages/NotFound'))
+const PrivacyPolicy = safeLazy(() => import('./pages/PrivacyPolicy'))
+const TermsOfUse = safeLazy(() => import('./pages/TermsOfUse'))
 
 function ProtectedRoute({ children }) {
     const { currentUser } = useAuth()
@@ -100,6 +102,8 @@ function AppLayout() {
                     <Route path="/flights" element={<Flights />} />
                     <Route path="/buy-ticket" element={<BuyTicket />} />
                     <Route path="/jobs" element={<Jobs />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/terms-of-use" element={<TermsOfUse />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/apply" element={
                         <ProtectedRoute><Apply /></ProtectedRoute>

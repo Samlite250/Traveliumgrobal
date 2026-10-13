@@ -10546,3 +10546,56 @@ textarea:focus,
     margin: 1rem auto;
   }
 }
+
+/* ===== LEGAL PAGES (PRIVACY POLICY / TERMS OF USE) ===== */
+.legal-content {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.legal-content h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--navy-dark);
+  margin: 2.25rem 0 0.85rem;
+}
+
+.legal-content p {
+  color: var(--text-light);
+  line-height: 1.75;
+  margin: 0 0 1rem;
+  font-size: 0.97rem;
+}
+
+.legal-content ul {
+  color: var(--text-light);
+  line-height: 1.75;
+  margin: 0 0 1.25rem;
+  padding-left: 1.4rem;
+  font-size: 0.97rem;
+}
+
+.legal-content li {
+  margin-bottom: 0.5rem;
+}
+
+.legal-content strong {
+  color: var(--text);
+}
+
+.legal-content a {
+  color: var(--gold-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-content a:hover {
+  color: var(--navy-dark);
+}
+
+@media (max-width: 768px) {
+  .legal-content h2 {
+    font-size: 1.15rem;
+    margin-top: 1.75rem;
+  }
+}
