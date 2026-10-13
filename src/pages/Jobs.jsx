@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import SEOHead from '../components/SEOHead'
+import AdSenseAd from '../components/AdSenseAd'
 import {
     Briefcase, DollarSign, Clock, MapPin, Building, Search, Filter,
     CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award, UploadCloud, FileText
@@ -1253,6 +1254,9 @@ export default function Jobs() {
                     </div>
                 </div>
             </section>
+
+            {/* ── AdSense Banner Ad ── */}
+            <AdSenseAd adSlot="5348613920" adFormat="auto" style={{ margin: '0 auto', maxWidth: '1200px', padding: '8px 20px' }} />
 
             {/* ── Main Country Tabs & Jobs Section ── */}
             <section className="jobs-main-section">

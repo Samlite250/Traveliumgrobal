@@ -10523,3 +10523,26 @@ textarea:focus,
   opacity: 1 !important;
   text-shadow: none !important;
 }
+
+/* ===== GOOGLE ADSENSE AD UNITS ===== */
+.adsense-wrapper {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin: 1.5rem auto;
+  box-sizing: border-box;
+  background: transparent;
+  min-height: 90px;
+}
+
+.adsense-wrapper .adsbygoogle {
+  display: block !important;
+}
+
+@media (max-width: 768px) {
+  .adsense-wrapper {
+    padding: 8px 12px;
+    margin: 1rem auto;
+  }
+}

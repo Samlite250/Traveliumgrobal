@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
+import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { CalendarDays, ArrowRight, Loader2 } from 'lucide-react'
@@ -87,6 +88,9 @@ export default function Scholarships() {
                     </div>
                 </div>
             </section>
+
+            {/* ── AdSense Banner Ad ── */}
+            <AdSenseAd adSlot="5348613920" adFormat="auto" style={{ margin: '0 auto', maxWidth: '1200px', padding: '8px 20px' }} />
 
             <CTABanner />
         </main>

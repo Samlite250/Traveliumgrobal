@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
+import AdSenseAd from '../components/AdSenseAd'
 import { Users, Target, Globe, Award } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -96,6 +97,9 @@ export default function About() {
                     </div>
                 </div>
             </section>
+
+            {/* ── AdSense Banner Ad ── */}
+            <AdSenseAd adSlot="5348613920" adFormat="auto" style={{ margin: '0 auto', maxWidth: '1200px', padding: '8px 20px' }} />
 
             <section className="content-section">
                 <div className="container">

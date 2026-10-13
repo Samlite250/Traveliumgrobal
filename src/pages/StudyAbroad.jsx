@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
+import AdSenseAd from '../components/AdSenseAd'
 import {
     FlaskConical, HeartPulse, Briefcase, Scale, Palette, BookOpen,
     MapPin, ArrowRight, Globe
@@ -112,6 +113,9 @@ export default function StudyAbroad() {
                     </div>
                 </div>
             </section>
+
+            {/* ── AdSense Banner Ad ── */}
+            <AdSenseAd adSlot="5348613920" adFormat="auto" style={{ margin: '0 auto', maxWidth: '1200px', padding: '8px 20px' }} />
 
             <section className="content-section destinations-strip">
                 <div className="container">

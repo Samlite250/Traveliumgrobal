@@ -7,6 +7,7 @@ import Testimonials from '../components/Testimonials'
 import Destinations from '../components/Destinations'
 import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
+import AdSenseAd from '../components/AdSenseAd'
 
 export default function Home() {
     useEffect(() => {
@@ -28,8 +29,12 @@ export default function Home() {
             <Hero />
             <StatsBar />
             <Services />
+            {/* ── AdSense Banner Ad ── */}
+            <AdSenseAd adSlot="5348613920" adFormat="auto" style={{ margin: '0 auto', maxWidth: '1200px', padding: '8px 20px' }} />
             <HowItWorks />
             <Testimonials />
+            {/* ── AdSense Banner Ad ── */}
+            <AdSenseAd adSlot="5348613920" adFormat="auto" style={{ margin: '0 auto', maxWidth: '1200px', padding: '8px 20px' }} />
             <Destinations />
             <CTABanner />
         </main>
