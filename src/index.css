@@ -10599,3 +10599,44 @@ textarea:focus,
     margin-top: 1.75rem;
   }
 }
+
+/* ===== AUTO-IMPORTED (VERIFIED SOURCE) LISTINGS ===== */
+.job-badge.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.job-source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.job-source-link:hover {
+  color: var(--gold-dark);
+}
+
+.scholarship-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #16a34a;
+  margin-top: 0.5rem;
+}
+
+.scholarship-source a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

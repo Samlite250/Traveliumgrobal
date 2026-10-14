@@ -5,7 +5,7 @@ import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
-import { CalendarDays, ArrowRight, Loader2 } from 'lucide-react'
+import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink } from 'lucide-react'
 
 const fallbackScholarships = [
     { amount: 'Full Fund', title: 'Commonwealth Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'Fully funded scholarships for students from developing countries.', deadline: 'Dec 31, 2026' },
@@ -81,6 +81,13 @@ export default function Scholarships() {
                                                 Apply <ArrowRight size={14} />
                                             </Link>
                                         </div>
+                                        {s.sourceUrl && (
+                                            <div className="scholarship-source">
+                                                <ShieldCheck size={12} />
+                                                {s.sourceName ? `${s.sourceName} — ` : ''}
+                                                <a href={s.sourceUrl} target="_blank" rel="noopener noreferrer">Official program page <ExternalLink size={11} /></a>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )

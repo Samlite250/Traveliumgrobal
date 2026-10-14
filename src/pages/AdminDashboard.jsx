@@ -16,7 +16,7 @@ import {
     Trash2, Eye, EyeOff, PieChart, TrendingUp, Star,
     Settings, AlertTriangle, Send, X, Info, Menu, LayoutDashboard,
     FolderOpen, DollarSign, CreditCard, Plus, Edit3, Package, Lock, Image as ImageIcon, Plane,
-    Briefcase, MapPin, Building, Gem
+    Briefcase, MapPin, Building, Gem, Inbox
 } from 'lucide-react'
 import { JOBS_DATA } from './Jobs'
 import { jsPDF } from 'jspdf'
@@ -46,6 +46,7 @@ const navItems = [
     { key: 'flights', label: 'Flight Bookings', icon: <Plane size={20} />, badge: 'flights' },
     { key: 'transactions', label: 'Transactions', icon: <DollarSign size={20} /> },
     { key: 'services', label: 'Services', icon: <Package size={20} /> },
+    { key: 'imports', label: 'Auto Imports', icon: <RefreshCw size={20} />, badge: 'imports' },
     { key: 'messages', label: 'Messages', icon: <MessageSquare size={20} />, badge: 'unread' },
     { key: 'users', label: 'Users', icon: <Users size={20} /> },
     { key: 'settings', label: 'Settings', icon: <Settings size={20} /> },
@@ -134,6 +135,15 @@ export default function AdminDashboard() {
     const [editingService, setEditingService] = useState(null)
     const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
     const [showServiceEditor, setShowServiceEditor] = useState(false)
+
+    // Auto Imports state
+    const [importedListings, setImportedListings] = useState([])
+    const [importSources, setImportSources] = useState(null)
+    const [importFilter, setImportFilter] = useState('pending')
+    const [selectedImports, setSelectedImports] = useState([])
+    const [importing, setImporting] = useState(false)
+    const [editingImport, setEditingImport] = useState(null)
+    const [importEditForm, setImportEditForm] = useState({})
     // Transaction editor state
     const [editingTx, setEditingTx] = useState(null)
     const [txForm, setTxForm] = useState({ applicant_name: '', email: '', service_type: '', amount: '', currency: 'USD', status: 'pending', payment_method: '', notes: '' })
@@ -248,6 +258,14 @@ export default function AdminDashboard() {
             (snap) => { const d = snap.docs.map(dd => ({ email: dd.id, ...dd.data() })); setAdminsList(d); saveLocal('admins', d) },
             onError('admins')
         )
+        const unsubImports = onSnapshot(
+            query(collection(db, 'imported_listings'), orderBy('imported_at', 'desc'), limit(300)),
+            (snap) => setImportedListings(snap.docs.map(dd => ({ id: dd.id, ...dd.data() }))),
+            (err) => console.warn('imported_listings notice:', err?.message)
+        )
+        const unsubImportCfg = onSnapshot(doc(db, 'settings', 'importSources'), (snap) => {
+            setImportSources(snap.exists() ? snap.data() : null)
+        }, (err) => console.warn('importSources notice:', err?.message))
         const unsubSettings = onSnapshot(doc(db, 'settings', 'site'), (snap) => {
             const data = snap.exists() ? snap.data() : {}
             const defaults = {
@@ -319,7 +337,7 @@ export default function AdminDashboard() {
             }
         }, (err) => { console.warn('Jobs realtime sync notice:', err) })
 
-        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings(); unsubAdmins(); unsubJobs() }
+        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings(); unsubAdmins(); unsubJobs(); unsubImports(); unsubImportCfg() }
     }, [])
 
     const stats = useMemo(() => ({
@@ -338,6 +356,7 @@ export default function AdminDashboard() {
         if (key === 'pending') return stats.pending
         if (key === 'unread') return stats.unread
         if (key === 'flights') return stats.flightBookings
+        if (key === 'imports') return importedListings.filter(l => l.status === 'pending').length
         return null
     }
 
@@ -1691,6 +1710,321 @@ export default function AdminDashboard() {
         )
     }
 
+    // ─── Auto Imports (verified sources → review → publish) ───
+    const COUNTRY_FLAG_CODES = {
+        'United States': 'us', 'United Kingdom': 'gb', 'Germany': 'de', 'Canada': 'ca',
+        'Australia': 'au', 'France': 'fr', 'Netherlands': 'nl', 'Poland': 'pl',
+        'Japan': 'jp', 'Switzerland': 'ch', 'United Arab Emirates': 'ae', 'European Union': 'eu',
+    }
+    const SOURCE_LABELS = { arbeitnow: 'Arbeitnow', remotive: 'Remotive', adzuna: 'Adzuna', official: 'Official Programs' }
+    const DEFAULT_IMPORT_SOURCES = {
+        arbeitnow: { enabled: true, autoApprove: false, countries: [] },
+        remotive: { enabled: true, autoApprove: false, countries: [] },
+        adzuna: { enabled: false, autoApprove: false, countries: [], appId: '', appKey: '' },
+        officialScholarships: { enabled: true, autoApprove: false },
+    }
+    const importCfg = { ...DEFAULT_IMPORT_SOURCES, ...(importSources || {}) }
+
+    const publishImportedJob = async (item) => {
+        const live = await addDoc(collection(db, 'jobs'), {
+            title: item.title,
+            company: item.company || 'Verified employer',
+            country: item.country || '',
+            location: item.location || '',
+            description: item.description || '',
+            salary: item.salary || '',
+            jobType: item.jobType || 'full-time',
+            source: item.source || '',
+            sourceName: item.sourceName || '',
+            sourceUrl: item.sourceUrl || '',
+            auto: true,
+            status: 'active',
+            created_at: serverTimestamp(),
+            expires_at: item.expires_at || null,
+        })
+        return live.id
+    }
+    const publishImportedScholarship = async (item) => {
+        const flagCode = COUNTRY_FLAG_CODES[item.country]
+        const live = await addDoc(collection(db, 'services'), {
+            type: 'scholarship',
+            title: item.title,
+            amount: item.amount || 'Contact us',
+            country: item.country || '',
+            flag: flagCode ? `https://flagcdn.com/w40/${flagCode}.png` : '',
+            description: item.description || '',
+            deadline: item.deadline || '',
+            source: item.source || '',
+            sourceName: item.sourceName || '',
+            sourceUrl: item.sourceUrl || '',
+            auto: true,
+            active: true,
+            created_at: serverTimestamp(),
+            updated_at: serverTimestamp(),
+            expires_at: item.expires_at || null,
+        })
+        return live.id
+    }
+    const approveImport = async (item) => {
+        if (!db) return toast('Database not connected', 'error')
+        try {
+            const liveId = item.type === 'job' ? await publishImportedJob(item) : await publishImportedScholarship(item)
+            await updateDoc(doc(db, 'imported_listings', item.id), { status: 'approved', approved_at: serverTimestamp(), liveId })
+            setSelectedImports(prev => prev.filter(id => id !== item.id))
+            toast(`Approved & published: ${item.title}`, 'success')
+        } catch (e) {
+            console.error('Approve import failed:', e)
+            toast('Failed to approve listing', 'error')
+        }
+    }
+    const rejectImport = async (item) => {
+        if (!db) return toast('Database not connected', 'error')
+        try {
+            await updateDoc(doc(db, 'imported_listings', item.id), { status: 'rejected', rejected_at: serverTimestamp() })
+            setSelectedImports(prev => prev.filter(id => id !== item.id))
+            toast('Listing rejected — it will not be re-imported.', 'info')
+        } catch (e) {
+            console.error('Reject import failed:', e)
+            toast('Failed to reject listing', 'error')
+        }
+    }
+    const bulkImportAction = async (action) => {
+        const targets = importedListings.filter(l => selectedImports.includes(l.id) && l.status === 'pending')
+        if (!targets.length) return toast('No pending listings selected', 'error')
+        for (const item of targets) {
+            if (action === 'approve') await approveImport(item)
+            else await rejectImport(item)
+        }
+    }
+    const saveImportEdits = async (thenPublish) => {
+        if (!db || !editingImport) return
+        try {
+            const patch = {}
+            for (const k of ['title', 'company', 'institution', 'country', 'salary', 'amount', 'deadline', 'description']) {
+                if (importEditForm[k] !== undefined) patch[k] = importEditForm[k]
+            }
+            await updateDoc(doc(db, 'imported_listings', editingImport.id), patch)
+            const updated = { ...editingImport, ...patch }
+            setEditingImport(null)
+            if (thenPublish) await approveImport(updated)
+            else toast('Changes saved', 'success')
+        } catch (e) {
+            console.error('Save import edits failed:', e)
+            toast('Failed to save changes', 'error')
+        }
+    }
+    const updateImportSource = async (key, patch) => {
+        if (!db) return toast('Database not connected', 'error')
+        try {
+            await setDoc(doc(db, 'settings', 'importSources'), { ...importCfg, [key]: { ...importCfg[key], ...patch } }, { merge: true })
+            toast('Import source settings saved', 'success')
+        } catch (e) {
+            console.error('Save import source failed:', e)
+            toast('Failed to save source settings', 'error')
+        }
+    }
+    const runImportsNow = async () => {
+        if (!db) return toast('Database not connected', 'error')
+        setImporting(true)
+        try {
+            const fn = httpsCallable(getFunctions(), 'runImports')
+            const res = await fn({})
+            const summary = res?.data || {}
+            const imported = Object.values(summary.perSource || {}).reduce((a, s) => a + (s.imported || 0), 0)
+            const expired = summary.expired || 0
+            toast(`Import run complete — ${imported} new listing${imported === 1 ? '' : 's'}, ${expired} expired.`, 'success')
+        } catch (e) {
+            console.error('Manual import run failed:', e)
+            toast(e?.message?.includes('not-found') ? 'Cloud Functions not deployed yet — deploy functions first.' : 'Import run failed. Check Cloud Function logs.', 'error')
+        } finally {
+            setImporting(false)
+        }
+    }
+
+    const renderImports = () => {
+        const counts = {
+            pending: importedListings.filter(l => l.status === 'pending').length,
+            approved: importedListings.filter(l => l.status === 'approved').length,
+            rejected: importedListings.filter(l => l.status === 'rejected').length,
+            expired: importedListings.filter(l => l.status === 'expired').length,
+        }
+        const visible = importedListings.filter(l => importFilter === 'all' || l.status === importFilter)
+        const lastRun = importSources?.lastRunAt
+        const sourceRows = [
+            { key: 'arbeitnow', name: 'Arbeitnow', desc: 'German/EU job board API — established employers, no registration needed', type: 'jobs' },
+            { key: 'remotive', name: 'Remotive', desc: 'Remote-first job board API — verified companies, no registration needed', type: 'jobs' },
+            { key: 'adzuna', name: 'Adzuna', desc: '20+ countries with salary data — requires free API key (developer.adzuna.com)', type: 'jobs' },
+            { key: 'officialScholarships', name: 'Official Scholarship Programs', desc: 'DAAD, Chevening, Commonwealth, Fulbright, Erasmus+, MEXT & more — pulled from the institutions\u2019 own pages', type: 'scholarships' },
+        ]
+        return (
+            <>
+                <div className="admin-filter-bar">
+                    <div className="filters-group">
+                        <button className="admin-btn-primary" onClick={runImportsNow} disabled={importing}>
+                            {importing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                            {importing ? 'Importing...' : 'Import Now'}
+                        </button>
+                        {['pending', 'approved', 'rejected', 'expired', 'all'].map(f => (
+                            <button key={f} className={`filter-btn ${importFilter === f ? 'active' : ''}`} onClick={() => { setImportFilter(f); setSelectedImports([]) }}>
+                                {f.charAt(0).toUpperCase() + f.slice(1)} {counts[f] !== undefined ? `(${counts[f]})` : ''}
+                            </button>
+                        ))}
+                    </div>
+                    <span className="card-badge">Last run: {lastRun ? timeAgo(lastRun) : 'never'}</span>
+                </div>
+
+                <div className="admin-table-card" style={{ marginBottom: '1rem' }}>
+                    <div className="card-header"><div className="card-title-group"><RefreshCw size={18} className="title-icon" /><h3>Import Sources</h3></div><span className="card-badge">{sourceRows.filter(s => importCfg[s.key]?.enabled).length}/{sourceRows.length} enabled</span></div>
+                    <div className="admin-table-overflow">
+                        <table className="admin-table">
+                            <thead><tr><th>Source</th><th>Provides</th><th>Enabled</th><th>Auto-Approve</th><th>Country Filter</th><th>Credentials</th></tr></thead>
+                            <tbody>
+                                {sourceRows.map(s => {
+                                    const cfg = importCfg[s.key] || {}
+                                    return (
+                                        <tr key={s.key}>
+                                            <td><strong>{s.name}</strong><div className="text-muted" style={{ fontSize: '0.8rem', maxWidth: 280 }}>{s.desc}</div></td>
+                                            <td><span className="text-muted">{s.type}</span></td>
+                                            <td>
+                                                <select className="admin-note-input" style={{ width: 90 }} value={cfg.enabled ? 'yes' : 'no'} onChange={e => updateImportSource(s.key, { enabled: e.target.value === 'yes' })}>
+                                                    <option value="yes">Yes</option><option value="no">No</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className="admin-note-input" style={{ width: 90 }} value={cfg.autoApprove ? 'yes' : 'no'} onChange={e => updateImportSource(s.key, { autoApprove: e.target.value === 'yes' })}>
+                                                    <option value="no">Off</option><option value="yes">On</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                {s.type === 'jobs' ? (
+                                                    <input className="admin-note-input" style={{ minWidth: 170 }} placeholder="All countries" defaultValue={(cfg.countries || []).join(', ')} onBlur={e => updateImportSource(s.key, { countries: e.target.value.split(',').map(c => c.trim()).filter(Boolean) })} />
+                                                ) : <span className="text-muted">—</span>}
+                                            </td>
+                                            <td>
+                                                {s.key === 'adzuna' ? (
+                                                    <div style={{ display: 'flex', gap: 6 }}>
+                                                        <input className="admin-note-input" style={{ width: 110 }} placeholder="App ID" defaultValue={cfg.appId || ''} onBlur={e => updateImportSource(s.key, { appId: e.target.value.trim() })} />
+                                                        <input className="admin-note-input" style={{ width: 110 }} placeholder="App Key" defaultValue={cfg.appKey || ''} onBlur={e => updateImportSource(s.key, { appKey: e.target.value.trim() })} type="password" />
+                                                    </div>
+                                                ) : <span className="text-muted">None needed</span>}
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p className="text-muted" style={{ padding: '0.75rem 1.25rem', margin: 0, fontSize: '0.85rem' }}>
+                        Auto-Approve publishes new imports immediately (scam-flagged items always wait for manual review). Keep it Off to review everything yourself — recommended.
+                    </p>
+                </div>
+
+                {selectedImports.length > 0 && importFilter === 'pending' && (
+                    <div className="admin-filter-bar" style={{ marginBottom: '1rem' }}>
+                        <div className="filters-group">
+                            <button className="admin-btn-success" onClick={() => bulkImportAction('approve')}><Check size={16} /> Approve Selected ({selectedImports.length})</button>
+                            <button className="admin-btn-secondary" onClick={() => bulkImportAction('reject')}><X size={16} /> Reject Selected</button>
+                        </div>
+                    </div>
+                )}
+
+                {visible.length === 0 ? (
+                    <div className="admin-table-card">
+                        <div className="admin-empty"><RefreshCw size={60} /><h3>No {importFilter === 'all' ? '' : importFilter + ' '}imported listings</h3><p>Click "Import Now" to pull jobs & scholarships from your enabled verified sources. Everything lands here for your review first — nothing goes live without your approval.</p></div>
+                    </div>
+                ) : (
+                    <div className="admin-table-card">
+                        <div className="card-header"><div className="card-title-group"><Inbox size={18} className="title-icon" /><h3>Review Queue</h3></div><span className="card-badge">{visible.length} listings</span></div>
+                        <div className="admin-table-overflow">
+                            <table className="admin-table">
+                                <thead><tr>
+                                    {importFilter === 'pending' && <th style={{ width: 34 }}><input type="checkbox" checked={visible.length > 0 && visible.every(l => selectedImports.includes(l.id))} onChange={e => setSelectedImports(e.target.checked ? visible.map(l => l.id) : [])} /></th>}
+                                    <th>Type</th><th>Title</th><th>Employer / Institution</th><th>Country</th><th>Salary / Amount</th><th>Source</th><th>Imported</th><th className="actions-col">Actions</th>
+                                </tr></thead>
+                                <tbody>
+                                    {visible.map(item => (
+                                        <tr key={item.id}>
+                                            {importFilter === 'pending' && (
+                                                <td><input type="checkbox" checked={selectedImports.includes(item.id)} onChange={e => setSelectedImports(prev => e.target.checked ? [...prev, item.id] : prev.filter(id => id !== item.id))} /></td>
+                                            )}
+                                            <td><div className={`status-pill-admin ${item.type === 'job' ? 'st-processing' : 'st-approved'}`}>{item.type === 'job' ? 'Job' : 'Scholarship'}</div></td>
+                                            <td>
+                                                <strong>{item.title}</strong>
+                                                {item.flagged && <div style={{ color: '#dc2626', fontSize: '0.78rem', fontWeight: 700, marginTop: 4 }}><AlertTriangle size={11} style={{ verticalAlign: '-1px' }} /> Scam signals: {(item.flags || []).join(', ')}</div>}
+                                            </td>
+                                            <td><span className="text-muted">{item.type === 'job' ? (item.company || '—') : (item.institution || '—')}</span></td>
+                                            <td><span className="text-muted">{item.country || '—'}</span></td>
+                                            <td><span className="text-muted">{item.type === 'job' ? (item.salary || '—') : (item.amount || '—')}</span></td>
+                                            <td>
+                                                <span className="card-badge">{SOURCE_LABELS[item.source] || item.source}</span>
+                                                {item.sourceUrl && <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="btn-act pro" style={{ marginLeft: 6, display: 'inline-flex' }} title="View original posting"><ExternalLink size={12} /></a>}
+                                            </td>
+                                            <td><span className="text-muted">{formatDateShort(item.imported_at)}</span></td>
+                                            <td>
+                                                <div className="admin-action-btns">
+                                                    <button className="btn-act pro" title="Edit before publishing" onClick={() => { setEditingImport(item); setImportEditForm({ title: item.title || '', company: item.company || '', institution: item.institution || '', country: item.country || '', salary: item.salary || '', amount: item.amount || '', deadline: item.deadline || '', description: item.description || '' }) }}><Edit3 size={14} /></button>
+                                                    {item.status === 'pending' && (
+                                                        <>
+                                                            <button className="btn-act app" title="Approve & publish" onClick={() => approveImport(item)}><Check size={14} /></button>
+                                                            <button className="btn-act rej" title="Reject" onClick={() => rejectImport(item)}><X size={14} /></button>
+                                                        </>
+                                                    )}
+                                                    {item.status === 'approved' && item.liveId && <button className="btn-act app" title="Live listing published" disabled style={{ opacity: 0.5 }}><CheckCircle size={14} /></button>}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
+                {editingImport && (
+                    <div className="admin-modal-overlay" onClick={() => setEditingImport(null)}>
+                        <div className="admin-modal" onClick={e => e.stopPropagation()}>
+                            <div className="admin-modal-header">
+                                <div className="modal-title-group"><Edit3 size={20} className="title-icon" /><h3>Edit Listing Before Publishing</h3></div>
+                                <button onClick={() => setEditingImport(null)} className="modal-close-btn"><X size={18} /></button>
+                            </div>
+                            <div className="admin-modal-body">
+                                <div className="form-row">
+                                    <div className="form-group"><label>Title</label><input className="admin-note-input" value={importEditForm.title || ''} onChange={e => setImportEditForm(f => ({ ...f, title: e.target.value }))} /></div>
+                                    <div className="form-group"><label>Country</label><input className="admin-note-input" value={importEditForm.country || ''} onChange={e => setImportEditForm(f => ({ ...f, country: e.target.value }))} /></div>
+                                </div>
+                                <div className="form-row">
+                                    {editingImport.type === 'job' ? (
+                                        <>
+                                            <div className="form-group"><label>Company</label><input className="admin-note-input" value={importEditForm.company || ''} onChange={e => setImportEditForm(f => ({ ...f, company: e.target.value }))} /></div>
+                                            <div className="form-group"><label>Salary</label><input className="admin-note-input" value={importEditForm.salary || ''} onChange={e => setImportEditForm(f => ({ ...f, salary: e.target.value }))} placeholder="e.g. AED 8,000/month" /></div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="form-group"><label>Institution</label><input className="admin-note-input" value={importEditForm.institution || ''} onChange={e => setImportEditForm(f => ({ ...f, institution: e.target.value }))} /></div>
+                                            <div className="form-group"><label>Amount</label><input className="admin-note-input" value={importEditForm.amount || ''} onChange={e => setImportEditForm(f => ({ ...f, amount: e.target.value }))} placeholder="e.g. Full Fund" /></div>
+                                        </>
+                                    )}
+                                </div>
+                                {editingImport.type === 'scholarship' && (
+                                    <div className="form-group"><label>Deadline</label><input className="admin-note-input" value={importEditForm.deadline || ''} onChange={e => setImportEditForm(f => ({ ...f, deadline: e.target.value }))} placeholder="e.g. Dec 31, 2026" /></div>
+                                )}
+                                <div className="form-group"><label>Description</label><textarea className="admin-note-input" rows="5" value={importEditForm.description || ''} onChange={e => setImportEditForm(f => ({ ...f, description: e.target.value }))} /></div>
+                                {editingImport.sourceUrl && (
+                                    <p className="text-muted" style={{ fontSize: '0.82rem' }}>Original: <a href={editingImport.sourceUrl} target="_blank" rel="noopener noreferrer">{editingImport.sourceUrl}</a></p>
+                                )}
+                            </div>
+                            <div className="admin-modal-footer">
+                                <button onClick={() => setEditingImport(null)} className="admin-btn-secondary">Cancel</button>
+                                <button onClick={() => saveImportEdits(false)} className="admin-btn-secondary">Save Changes</button>
+                                <button onClick={() => saveImportEdits(true)} className="admin-btn-primary"><Check size={16} /> Save & Publish</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </>
+        )
+    }
+
     // ─── Jobs & Careers Management ───
     const renderJobs = () => {
         const currentCountry = jobsData.find(c => c.id === activeJobCountry) || jobsData[0]
@@ -1999,6 +2333,7 @@ export default function AdminDashboard() {
                     {activeTab === 'flights' && renderFlights()}
                     {activeTab === 'transactions' && renderTransactions()}
                     {activeTab === 'services' && renderServices()}
+                    {activeTab === 'imports' && renderImports()}
                     {activeTab === 'messages' && renderMessages()}
                     {activeTab === 'users' && renderUsers()}
                     {activeTab === 'settings' && renderSettings()}

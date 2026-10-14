@@ -55,5 +55,16 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+
+    // ── Auto-import pipeline (admin review queue) ──
+    match /imported_listings/{docId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    // ── Live auto-imported jobs (public read of active listings) ──
+    match /jobs/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
   }
 }

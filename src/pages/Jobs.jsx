@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, doc, onSnapshot, serverTimestamp, query, where } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
 import {
     Briefcase, DollarSign, Clock, MapPin, Building, Search, Filter,
-    CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award, UploadCloud, FileText
+    CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award, UploadCloud, FileText, ExternalLink
 } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
 
@@ -1013,6 +1013,79 @@ export const JOBS_DATA = [
     }
 ]
 
+// ── Live auto-imported jobs (admin-approved via Cloud Function pipeline) ──
+const COUNTRY_GROUP_MAP = {
+    'United Arab Emirates': 'uae', 'UAE': 'uae', 'Dubai': 'uae',
+    'Canada': 'canada', 'United Kingdom': 'uk', 'UK': 'uk',
+    'Germany': 'germany', 'United States': 'usa', 'USA': 'usa', 'US': 'usa',
+    'Australia': 'australia', 'Qatar': 'qatar', 'Norway': 'norway', 'Poland': 'poland',
+}
+const ISO2_CODES = {
+    'United States': 'us', 'United Kingdom': 'gb', 'Germany': 'de', 'Canada': 'ca',
+    'Australia': 'au', 'France': 'fr', 'Netherlands': 'nl', 'Poland': 'pl',
+    'Japan': 'jp', 'Switzerland': 'ch', 'United Arab Emirates': 'ae', 'Qatar': 'qa',
+    'Norway': 'no', 'European Union': 'eu', 'China': 'cn', 'Oman': 'om',
+}
+
+const isoToEmoji = (cc) => (cc && cc.length === 2)
+    ? String.fromCodePoint(...[...cc.toUpperCase()].map(ch => 127397 + ch.charCodeAt()))
+    : ''
+
+const toRequirements = (desc) => {
+    const sentences = String(desc || '')
+        .split(/(?:\.\s+|\n|•)/)
+        .map(s => s.trim().replace(/\s+/g, ' '))
+        .filter(s => s.length > 15)
+        .slice(0, 3)
+        .map(s => (s.length > 90 ? s.slice(0, 87).trim() + '…' : s))
+    return sentences.length ? sentences : ['View the original posting for the full role description.']
+}
+
+function mergeLiveJobs(curated, live) {
+    const groups = curated.map(c => ({
+        ...c,
+        highPayableJobs: [...(c.highPayableJobs || [])],
+        partTimeJobs: [...(c.partTimeJobs || [])],
+    }))
+    const byId = Object.fromEntries(groups.map(g => [g.id, g]))
+    for (const lj of live) {
+        const groupName = lj.country || 'Remote'
+        const gid = COUNTRY_GROUP_MAP[groupName] || `auto-${String(groupName).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+        let group = byId[gid]
+        if (!group) {
+            const iso2 = ISO2_CODES[groupName] || ''
+            group = {
+                id: gid,
+                country: groupName,
+                code: (iso2 || groupName).toUpperCase().slice(0, 3),
+                flag: isoToEmoji(iso2) || '🌍',
+                tagline: 'Verified listings from official sources',
+                highPayableJobs: [],
+                partTimeJobs: [],
+                autoCountry: true,
+            }
+            byId[gid] = group
+            groups.push(group)
+        }
+        const job = {
+            id: `auto-${lj.id}`,
+            title: lj.title || 'Untitled role',
+            company: lj.company || 'Verified employer',
+            location: lj.location || groupName,
+            salary: lj.salary || 'Competitive salary',
+            type: /part/i.test(lj.jobType || '') ? 'Part-Time' : 'Full-Time',
+            experience: 'Verified listing',
+            requirements: toRequirements(lj.description),
+            auto: true,
+            sourceName: lj.sourceName || lj.source || '',
+            sourceUrl: lj.sourceUrl || '',
+        }
+        if (/part/i.test(lj.jobType || '')) group.partTimeJobs.push(job)
+        else group.highPayableJobs.push(job)
+    }
+    return groups
+}
+
 export default function Jobs() {
     const { toast } = useToast()
     const [searchParams] = useSearchParams()
@@ -1115,7 +1188,26 @@ export default function Jobs() {
         }
     }, [])
 
-    const currentCountryData = allJobsData.find(c => c.id === activeCountry) || allJobsData[0]
+    // Live listings from the auto-import pipeline (approved by admin)
+    const [liveJobs, setLiveJobs] = useState([])
+    useEffect(() => {
+        if (!db) return
+        const q = query(collection(db, 'jobs'), where('status', '==', 'active'))
+        const unsub = onSnapshot(q, (snap) => {
+            const now = Date.now()
+            setLiveJobs(snap.docs
+                .map(d => ({ id: d.id, ...d.data() }))
+                .filter(j => {
+                    if (!j.expires_at) return true
+                    const exp = j.expires_at.toDate ? j.expires_at.toDate().getTime() : new Date(j.expires_at).getTime()
+                    return !Number.isNaN(exp) && exp > now
+                }))
+        }, (err) => console.warn('Live jobs notice:', err?.message))
+        return unsub
+    }, [])
+
+    const displayJobsData = useMemo(() => mergeLiveJobs(allJobsData, liveJobs), [allJobsData, liveJobs])
+    const currentCountryData = displayJobsData.find(c => c.id === activeCountry) || displayJobsData[0]
 
     // Filter jobs based on search & filterType
     const filterJobList = (jobs) => {
@@ -1267,7 +1359,7 @@ export default function Jobs() {
                             <Globe size={18} /> Select Destination Country:
                         </div>
                         <div className="country-tabs-scroll">
-                            {JOBS_DATA.map((c) => (
+                            {displayJobsData.map((c) => (
                                 <button
                                     key={c.id}
                                     className={`country-tab-btn ${activeCountry === c.id ? 'active' : ''}`}
@@ -1322,6 +1414,7 @@ export default function Jobs() {
                                         <div key={job.id} className="job-card hp-card">
                                             <div className="job-card-top">
                                                 <div className="job-badge hp-badge"><Gem size={13} /> High Salary</div>
+                                                {job.auto && <div className="job-badge verified-badge"><ShieldCheck size={13} /> Verified Source</div>}
                                                 <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
                                             </div>
 
@@ -1348,6 +1441,11 @@ export default function Jobs() {
 
                                             <div className="job-card-footer">
                                                 <span className="exp-badge">{job.experience}</span>
+                                                {job.auto && job.sourceUrl && (
+                                                    <a className="job-source-link" href={job.sourceUrl} target="_blank" rel="noopener noreferrer" title={`Original posting — ${job.sourceName}`}>
+                                                        Original posting <ExternalLink size={12} />
+                                                    </a>
+                                                )}
                                                 <button
                                                     className="btn-apply-job primary"
                                                     onClick={() => handleApplyClick(job, 'High Payable Job')}
@@ -1387,6 +1485,7 @@ export default function Jobs() {
                                         <div key={job.id} className="job-card pt-card">
                                             <div className="job-card-top">
                                                 <div className="job-badge pt-badge"><Clock size={13} /> Flexible Hours</div>
+                                                {job.auto && <div className="job-badge verified-badge"><ShieldCheck size={13} /> Verified Source</div>}
                                                 <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
                                             </div>
 
