@@ -410,12 +410,18 @@ async function runAllImports() {
   for (const [key, result] of Object.entries(perSource)) {
     const sourceCfg = cfg[key] || {}
     if (!sourceCfg.autoApprove || !result?.imported) continue
-    const fresh = await db.collection('imported_listings')
-      .where('source', '==', key === 'officialScholarships' ? 'official' : key)
-      .where('status', '==', 'pending')
-      .where('flagged', '==', false)
-      .limit(result.imported)
-      .get()
+    let fresh
+    try {
+      fresh = await db.collection('imported_listings')
+        .where('source', '==', key === 'officialScholarships' ? 'official' : key)
+        .where('status', '==', 'pending')
+        .where('flagged', '==', false)
+        .limit(result.imported)
+        .get()
+    } catch (err) {
+      console.error('auto-approve query failed for', key, err.message)
+      continue
+    }
     for (const doc of fresh.docs) {
       try {
         await publishListing(db, doc.id, doc.data())
@@ -426,7 +432,12 @@ async function runAllImports() {
     }
   }
 
-  const expired = await sweepExpired(db)
+  let expired = 0
+  try {
+    expired = await sweepExpired(db)
+  } catch (err) {
+    console.error('expiry sweep failed (imports are unaffected):', err.message)
+  }
 
   const summary = { at: new Date().toISOString(), perSource, autoApproved, expired }
   await settingsRef.set({ ...cfg, lastRunAt: admin.firestore.FieldValue.serverTimestamp(), lastRunSummary: summary }, { merge: true })
