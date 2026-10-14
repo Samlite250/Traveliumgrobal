@@ -2887,6 +2887,7 @@ tr:hover td {
   display: flex;
   align-items: center;
   gap: 2rem;
+  min-width: 0;
 }
 
 .scholarship-card:hover {
@@ -2911,6 +2912,7 @@ tr:hover td {
 
 .scholarship-body {
   flex: 1;
+  min-width: 0;
 }
 
 .scholarship-body h3 {
@@ -2944,8 +2946,10 @@ tr:hover td {
 
 .scholarship-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: .75rem;
   border-top: 1px solid var(--gray-100);
   padding-top: 1rem;
 }
@@ -2964,7 +2968,7 @@ tr:hover td {
 
 .scholarships-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 1.75rem;
   margin-top: 3rem;
 }
@@ -3274,6 +3278,18 @@ tr:hover td {
   .auth-left {
     display: none;
   }
+
+  /* ── Scholarships: stack amount above body on tablets ── */
+  .scholarship-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .scholarship-amount {
+    width: 100%;
+    padding: 1rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -3523,18 +3539,6 @@ tr:hover td {
   .visa-card-body {
     width: 100%;
     padding: 1.5rem;
-  }
-
-  /* ── Scholarships ── */
-  .scholarship-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-  }
-
-  .scholarship-amount {
-    width: 100%;
-    padding: 1rem;
   }
 
   /* ── Auth ── */
