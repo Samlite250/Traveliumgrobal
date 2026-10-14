@@ -1,0 +1,31 @@
+name: Auto-import jobs & scholarships
+
+on:
+  schedule:
+    # Daily at 04:00 UTC (= 06:00 Kigali). GitHub may delay scheduled runs slightly.
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-imports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: functions
+        run: npm ci
+
+      - name: Run import pipeline
+        working-directory: functions
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node run-imports.js

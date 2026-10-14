@@ -141,7 +141,6 @@ export default function AdminDashboard() {
     const [importSources, setImportSources] = useState(null)
     const [importFilter, setImportFilter] = useState('pending')
     const [selectedImports, setSelectedImports] = useState([])
-    const [importing, setImporting] = useState(false)
     const [editingImport, setEditingImport] = useState(null)
     const [importEditForm, setImportEditForm] = useState({})
     // Transaction editor state
@@ -1823,24 +1822,6 @@ export default function AdminDashboard() {
             toast('Failed to save source settings', 'error')
         }
     }
-    const runImportsNow = async () => {
-        if (!db) return toast('Database not connected', 'error')
-        setImporting(true)
-        try {
-            const fn = httpsCallable(getFunctions(), 'runImports')
-            const res = await fn({})
-            const summary = res?.data || {}
-            const imported = Object.values(summary.perSource || {}).reduce((a, s) => a + (s.imported || 0), 0)
-            const expired = summary.expired || 0
-            toast(`Import run complete — ${imported} new listing${imported === 1 ? '' : 's'}, ${expired} expired.`, 'success')
-        } catch (e) {
-            console.error('Manual import run failed:', e)
-            toast(e?.message?.includes('not-found') ? 'Cloud Functions not deployed yet — deploy functions first.' : 'Import run failed. Check Cloud Function logs.', 'error')
-        } finally {
-            setImporting(false)
-        }
-    }
-
     const renderImports = () => {
         const counts = {
             pending: importedListings.filter(l => l.status === 'pending').length,
@@ -1860,10 +1841,9 @@ export default function AdminDashboard() {
             <>
                 <div className="admin-filter-bar">
                     <div className="filters-group">
-                        <button className="admin-btn-primary" onClick={runImportsNow} disabled={importing}>
-                            {importing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
-                            {importing ? 'Importing...' : 'Import Now'}
-                        </button>
+                        <a className="admin-btn-primary" href="https://github.com/Samlite250/Traveliumgrobal/actions/workflows/auto-imports.yml" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }} title="Trigger the import workflow manually (also runs daily via GitHub Actions)">
+                            <RefreshCw size={16} /> Run Imports
+                        </a>
                         {['pending', 'approved', 'rejected', 'expired', 'all'].map(f => (
                             <button key={f} className={`filter-btn ${importFilter === f ? 'active' : ''}`} onClick={() => { setImportFilter(f); setSelectedImports([]) }}>
                                 {f.charAt(0).toUpperCase() + f.slice(1)} {counts[f] !== undefined ? `(${counts[f]})` : ''}
@@ -1930,7 +1910,7 @@ export default function AdminDashboard() {
 
                 {visible.length === 0 ? (
                     <div className="admin-table-card">
-                        <div className="admin-empty"><RefreshCw size={60} /><h3>No {importFilter === 'all' ? '' : importFilter + ' '}imported listings</h3><p>Click "Import Now" to pull jobs & scholarships from your enabled verified sources. Everything lands here for your review first — nothing goes live without your approval.</p></div>
+                        <div className="admin-empty"><RefreshCw size={60} /><h3>No {importFilter === 'all' ? '' : importFilter + ' '}imported listings</h3><p>Imports run daily via GitHub Actions (or click "Run Imports" to trigger one now). Everything lands here for your review first — nothing goes live without your approval.</p></div>
                     </div>
                 ) : (
                     <div className="admin-table-card">
