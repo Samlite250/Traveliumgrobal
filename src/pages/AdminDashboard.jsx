@@ -133,7 +133,7 @@ export default function AdminDashboard() {
 
     // Service editor state
     const [editingService, setEditingService] = useState(null)
-    const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
+    const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
     const [showServiceEditor, setShowServiceEditor] = useState(false)
 
     // Auto Imports state
@@ -529,7 +529,10 @@ export default function AdminDashboard() {
             ...serviceForm,
             price: parseFloat(serviceForm.price) || 0,
             features: serviceForm.features.split('\n').filter(Boolean),
-            updated_at: serverTimestamp()
+            updated_at: serverTimestamp(),
+            // For scholarship type, also write `title` so the public /scholarships page
+            // (which reads s.title) can display manually-added scholarships.
+            ...(serviceForm.type === 'scholarship' ? { title: serviceForm.name } : {}),
         }
         if (db) {
             try {
@@ -539,7 +542,7 @@ export default function AdminDashboard() {
                     await addDoc(collection(db, 'services'), { ...data, created_at: serverTimestamp() })
                 }
                 setShowServiceEditor(false); setEditingService(null)
-                setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
+                setServiceForm({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
                 toast(editingService ? 'Service updated.' : 'Service created.', 'success')
                 return
             } catch (err) { console.error('Service save error:', err) }
@@ -553,12 +556,12 @@ export default function AdminDashboard() {
         }
         setServices(next); saveLocal('services', next)
         setShowServiceEditor(false); setEditingService(null)
-        setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
+        setServiceForm({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
         toast(editingService ? 'Service updated (offline).' : 'Service created (offline).', 'success')
     }
     const editService = (s) => {
         setEditingService(s)
-        setServiceForm({ name: s.name || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), features: (s.features || []).join('\n'), active: s.active !== false, featured: s.featured || false, country: s.country || '', flag: s.flag || '', deadline: s.deadline || '', img: s.img || '' })
+        setServiceForm({ name: s.name || s.title || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), amount: s.amount || '', features: (s.features || []).join('\n'), active: s.active !== false, featured: s.featured || false, country: s.country || '', flag: s.flag || '', deadline: s.deadline || '', img: s.img || '' })
         setShowServiceEditor(true)
     }
     const deleteService = async (id) => {
@@ -1693,7 +1696,7 @@ export default function AdminDashboard() {
                                 {serviceForm.type === 'scholarship' && (
                                     <div className="form-row">
                                         <div className="form-group"><label>Deadline</label><input className="admin-note-input" value={serviceForm.deadline} onChange={e => setServiceForm(f => ({ ...f, deadline: e.target.value }))} placeholder="e.g. Dec 31, 2026" /></div>
-                                        <div className="form-group" />
+                                        <div className="form-group"><label>Funding Amount</label><input className="admin-note-input" value={serviceForm.amount} onChange={e => setServiceForm(f => ({ ...f, amount: e.target.value }))} placeholder='e.g. Full Fund or $25,000' /></div>
                                     </div>
                                 )}
                                 <div className="form-group"><label>Features (one per line)</label><textarea className="admin-note-input" rows="4" value={serviceForm.features} onChange={e => setServiceForm(f => ({ ...f, features: e.target.value }))} placeholder="Free consultation&#10;Fast processing&#10;Online tracking" /></div>

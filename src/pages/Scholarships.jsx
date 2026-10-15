@@ -22,9 +22,13 @@ export default function Scholarships() {
 
     useEffect(() => {
         if (!db) { setLoading(false); return }
-        const q = query(collection(db, 'services'), where('type', '==', 'scholarship'), where('active', '==', true))
+        // Query all scholarship services — filter active client-side so both `active: true`
+        // and documents without the active field (older records) are included.
+        const q = query(collection(db, 'services'), where('type', '==', 'scholarship'))
         const unsub = onSnapshot(q, (snap) => {
-            const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            const all = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+            // Exclude only if explicitly set to false
+            const data = all.filter(s => s.active !== false)
             setScholarships(data.length ? data : fallbackScholarships)
             setLoading(false)
         }, () => { setScholarships(fallbackScholarships); setLoading(false) })
@@ -62,16 +66,17 @@ export default function Scholarships() {
                     <div className="scholarships-grid">
                         {display.map(s => {
                             const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'Contact us')
+                            const displayTitle = s.title || s.name || 'Scholarship'
                             return (
-                                <div key={s.title} className="scholarship-card">
+                                <div key={s.id || displayTitle} className="scholarship-card">
                                     <div className={`scholarship-amount${amount === 'Full Fund' ? ' full-fund' : ''}`}>{amount}</div>
                                     <div className="scholarship-body">
-                                        <h3>{s.title}</h3>
+                                        <h3>{displayTitle}</h3>
                                         {s.country && <div className="scholarship-country">
                                             {s.flag && <img src={s.flag} alt={s.country} />}
                                             {s.country}
                                         </div>}
-                                        <p>{s.description || s.desc}</p>
+                                        <p>{s.description || s.desc || ''}</p>
                                         <div className="scholarship-footer">
                                             {s.deadline && <span className="scholarship-deadline">
                                                 <CalendarDays size={14} />
