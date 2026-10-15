@@ -64,7 +64,7 @@ export default function Scholarships() {
                             const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'Contact us')
                             return (
                                 <div key={s.title} className="scholarship-card">
-                                    <div className="scholarship-amount">{amount}</div>
+                                    <div className={`scholarship-amount${amount === 'Full Fund' ? ' full-fund' : ''}`}>{amount}</div>
                                     <div className="scholarship-body">
                                         <h3>{s.title}</h3>
                                         {s.country && <div className="scholarship-country">
