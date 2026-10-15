@@ -1118,44 +1118,23 @@ export default function Jobs() {
         coverNote: ''
     })
 
-    const [allJobsData, setAllJobsData] = useState(() => {
-        try {
-            const saved = localStorage.getItem('travelium_jobs_config')
-            return saved ? JSON.parse(saved) : JOBS_DATA
-        } catch {
-            return JOBS_DATA
-        }
-    })
+    // Always start with hardcoded JOBS_DATA as the fallback baseline.
+    // Cloud data (from admin) will override this as soon as Firestore responds.
+    const [allJobsData, setAllJobsData] = useState(JOBS_DATA)
 
     useEffect(() => {
-        const countTotalJobs = (data) => {
-            if (!Array.isArray(data)) return 0
-            return data.reduce((acc, c) => acc + (c.highPayableJobs?.length || 0) + (c.partTimeJobs?.length || 0), 0)
-        }
-
         let unsubFirestore = null
         if (db) {
             try {
                 unsubFirestore = onSnapshot(doc(db, 'settings', 'jobs'), (snap) => {
-                    let localSaved = []
-                    try {
-                        const raw = localStorage.getItem('travelium_jobs_config')
-                        if (raw) localSaved = JSON.parse(raw)
-                    } catch { }
-
                     if (snap.exists() && snap.data()?.jobs) {
+                        // Cloud data from admin ALWAYS wins — this is the source of truth.
+                        // The local hardcoded JOBS_DATA is only a UI placeholder until Firestore responds.
                         const cloudJobs = snap.data().jobs
-                        const cloudCount = countTotalJobs(cloudJobs)
-                        const localCount = countTotalJobs(localSaved)
-
-                        if (localCount > cloudCount) {
-                            setAllJobsData(localSaved)
-                            // Skip overwriting localStorage since local is already newer
-                        } else {
-                            setAllJobsData(cloudJobs)
-                            try { localStorage.setItem('travelium_jobs_config', JSON.stringify(cloudJobs)) } catch { }
-                        }
+                        setAllJobsData(cloudJobs)
+                        try { localStorage.setItem('travelium_jobs_config', JSON.stringify(cloudJobs)) } catch { }
                     }
+                    // If Firestore doc doesn't exist yet, keep showing hardcoded fallback.
                 }, (err) => console.warn("Jobs Firestore sync notice:", err))
             } catch { }
         }
