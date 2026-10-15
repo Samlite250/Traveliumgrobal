@@ -239,7 +239,26 @@ export default function AdminDashboard() {
         )
         const unsubServices = onSnapshot(
             query(collection(db, 'services'), orderBy('created_at', 'desc')),
-            (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setServices(d); saveLocal('services', d) },
+            (snap) => {
+                const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() }))
+                setServices(d)
+                saveLocal('services', d)
+                // ── Background migration: patch scholarship records missing `title` field ──
+                // The public /scholarships page reads s.title. Old records only have s.name.
+                // This runs silently whenever admin loads services; it's idempotent.
+                snap.docs.forEach(dd => {
+                    const data = dd.data()
+                    if (data.type === 'scholarship') {
+                        const needsPatch = (!data.title && data.name) || data.active === undefined
+                        if (needsPatch) {
+                            const patch = {}
+                            if (!data.title && data.name) patch.title = data.name
+                            if (data.active === undefined) patch.active = true
+                            updateDoc(doc(db, 'services', dd.id), patch).catch(() => { })
+                        }
+                    }
+                })
+            },
             onError('services')
         )
         const unsubTx = onSnapshot(
