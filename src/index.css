@@ -3292,11 +3292,11 @@ tr:hover td {
   }
 }
 
-/* The desktop navbar (logo + 7 links + auth buttons) is ~1360px wide and only
-   fits its container at ~1400px+. Below that it overflows and stretches the
+/* The desktop navbar (logo + 6 links + auth buttons) is ~1220px wide and only
+   fits its container at ~1250px+. Below that it overflows and stretches the
    document, causing a horizontal scrollbar and clipped content — so the mobile
    header takes over until the bar actually fits. */
-@media (max-width: 1399px) {
+@media (max-width: 1279px) {
   .nav-links,
   .nav-actions {
     display: none;

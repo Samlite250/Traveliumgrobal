@@ -236,7 +236,8 @@ export default function Navbar() {
                             <DropdownLink label={t('navbar.visaServices', 'Visa Services')} icon={<Landmark size={16} />} items={visaServicesDropdown} />
                             <WorkAbroadDropdown t={t} workAbroadDropdown={workAbroadDropdown} />
                             <DropdownLink label={t('navbar.flights', 'Flights')} icon={<Plane size={16} />} items={flightsDropdown} />
-                            {staticLinks.map(l => (
+                            {/* Contact Us stays in the mobile menu and footer — the desktop bar doesn't fit it below ~1400px */}
+                            {staticLinks.filter(l => l.href !== '/contact').map(l => (
                                 <li key={l.href}>
                                     <Link to={l.href} className={location.pathname === l.href ? 'active' : ''}>
                                         {l.icon}
