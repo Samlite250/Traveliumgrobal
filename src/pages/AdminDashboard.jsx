@@ -48,6 +48,7 @@ const navItems = [
     { key: 'services', label: 'Services', icon: <Package size={20} /> },
     { key: 'imports', label: 'Auto Imports', icon: <RefreshCw size={20} />, badge: 'imports' },
     { key: 'messages', label: 'Messages', icon: <MessageSquare size={20} />, badge: 'unread' },
+    { key: 'leads', label: 'Leads & Clicks', icon: <TrendingUp size={20} />, badge: 'leads' },
     { key: 'users', label: 'Users', icon: <Users size={20} /> },
     { key: 'settings', label: 'Settings', icon: <Settings size={20} /> },
 ]
@@ -74,6 +75,10 @@ function timeAgo(ts) {
     return `${Math.floor(sec / 86400)}d ago`
 }
 
+function hostFromUrl(url) {
+    try { return new URL(url).hostname.replace(/^www\./, '') } catch { return url || '' }
+}
+
 export default function AdminDashboard() {
     const { currentUser, logout } = useAuth()
     const toast = useToast()
@@ -95,6 +100,9 @@ export default function AdminDashboard() {
 
     const [applications, setApplications] = useState([])
     const [contacts, setContacts] = useState([])
+    const [leads, setLeads] = useState([])
+    const [clicks, setClicks] = useState([])
+    const [leadsSearch, setLeadsSearch] = useState('')
     const [services, setServices] = useState([])
     const [transactions, setTransactions] = useState([])
     const [loading, setLoading] = useState(true)
@@ -197,6 +205,8 @@ export default function AdminDashboard() {
             setOfflineMode(true)
             setApplications(loadLocalData('travelium_applications_admin'))
             setContacts(loadLocalData('travelium_contacts_admin'))
+            setLeads(loadLocalData('travelium_leads_admin'))
+            setClicks(loadLocalData('travelium_outbound_clicks_admin'))
             setServices(loadLocalData('travelium_services_admin'))
             setTransactions(loadLocalData('travelium_transactions_admin'))
             setUsers(loadLocalData('travelium_users_admin'))
@@ -215,6 +225,8 @@ export default function AdminDashboard() {
             if (local.length) {
                 if (name === 'applications') setApplications(local)
                 if (name === 'contacts') setContacts(local)
+                if (name === 'leads') setLeads(local)
+                if (name === 'outbound_clicks') setClicks(local)
                 if (name === 'services') setServices(local)
                 if (name === 'transactions') setTransactions(local)
                 if (name === 'users') setUsers(local)
@@ -236,6 +248,16 @@ export default function AdminDashboard() {
             query(collection(db, 'contacts'), orderBy('created_at', 'desc'), limit(200)),
             (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setContacts(d); saveLocal('contacts', d) },
             onError('contacts')
+        )
+        const unsubLeads = onSnapshot(
+            query(collection(db, 'leads'), orderBy('created_at', 'desc'), limit(300)),
+            (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setLeads(d); saveLocal('leads', d) },
+            onError('leads')
+        )
+        const unsubClicks = onSnapshot(
+            query(collection(db, 'outbound_clicks'), orderBy('created_at', 'desc'), limit(500)),
+            (snap) => { const d = snap.docs.map(dd => ({ id: dd.id, ...dd.data() })); setClicks(d); saveLocal('outbound_clicks', d) },
+            onError('outbound_clicks')
         )
         const unsubServices = onSnapshot(
             query(collection(db, 'services'), orderBy('created_at', 'desc')),
@@ -340,7 +362,7 @@ export default function AdminDashboard() {
             }
         }, (err) => { console.warn('Jobs realtime sync notice:', err) })
 
-        return () => { unsubApps(); unsubMsgs(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings(); unsubAdmins(); unsubJobs(); unsubImports(); unsubImportCfg() }
+        return () => { unsubApps(); unsubMsgs(); unsubLeads(); unsubClicks(); unsubServices(); unsubTx(); unsubUsers(); unsubSettings(); unsubAdmins(); unsubJobs(); unsubImports(); unsubImportCfg() }
     }, [])
 
     const stats = useMemo(() => ({
@@ -360,6 +382,7 @@ export default function AdminDashboard() {
         if (key === 'unread') return stats.unread
         if (key === 'flights') return stats.flightBookings
         if (key === 'imports') return importedListings.filter(l => l.status === 'pending').length
+        if (key === 'leads') return leads.length
         return null
     }
 
@@ -1061,6 +1084,154 @@ export default function AdminDashboard() {
             )}
         </div>
     )
+
+    const deleteLead = async (id) => {
+        if (!confirm('Delete this lead?')) return
+        if (db) {
+            try { await deleteDoc(doc(db, 'leads', id)); toast('Lead deleted.', 'success'); return }
+            catch (err) { console.error('Delete lead error:', err) }
+        }
+        const next = leads.filter(l => l.id !== id)
+        setLeads(next); saveLocal('leads', next)
+        toast('Lead deleted (offline).', 'success')
+    }
+
+    const filteredLeads = useMemo(() => {
+        const s = leadsSearch.trim().toLowerCase()
+        if (!s) return leads
+        return leads.filter(l =>
+            (l.email || '').toLowerCase().includes(s) ||
+            (l.item_title || '').toLowerCase().includes(s) ||
+            (l.source || '').toLowerCase().includes(s)
+        )
+    }, [leads, leadsSearch])
+
+    const clickStats = useMemo(() => {
+        const byUrl = {}
+        clicks.forEach(c => {
+            const url = c.url || '(unknown destination)'
+            if (!byUrl[url]) {
+                byUrl[url] = {
+                    url,
+                    title: c.title || '',
+                    type: c.type || '',
+                    count: 0,
+                    last: c.created_at || c.at || null,
+                }
+            }
+            byUrl[url].count++
+        })
+        return Object.values(byUrl).sort((a, b) => b.count - a.count)
+    }, [clicks])
+
+    const renderLeads = () => {
+        const sourceBadge = (source) => {
+            const map = {
+                scholarship: { label: 'Scholarship', bg: '#ede9fe', color: '#6d28d9' },
+                job: { label: 'Job', bg: '#dcfce7', color: '#15803d' },
+            }
+            const s = map[source] || {
+                label: source ? String(source).charAt(0).toUpperCase() + String(source).slice(1) : 'General',
+                bg: '#e2e6f0', color: '#5a6380',
+            }
+            return <span style={{ background: s.bg, color: s.color, fontSize: '0.7rem', fontWeight: 800, padding: '2px 8px', borderRadius: '6px', whiteSpace: 'nowrap' }}>{s.label}</span>
+        }
+        const startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0)
+        const clicksToday = clicks.filter(c => {
+            const raw = c.created_at || c.at
+            if (!raw) return false
+            const d = raw.toDate ? raw.toDate() : new Date(raw)
+            return !Number.isNaN(d.getTime()) && d >= startOfToday
+        }).length
+
+        return (
+            <>
+                <div className="admin-table-card">
+                    <div className="card-header">
+                        <div className="card-title-group"><Mail size={20} className="title-icon" /><h3>Email Leads</h3></div>
+                        <div className="user-search-bar">
+                            <Search size={16} className="user-search-icon" />
+                            <input type="text" placeholder="Search email or listing..." value={leadsSearch} onChange={e => setLeadsSearch(e.target.value)} />
+                            {leadsSearch && <button className="user-search-clear" onClick={() => setLeadsSearch('')}><X size={14} /></button>}
+                        </div>
+                        <span className="card-badge">{filteredLeads.length} of {leads.length}</span>
+                    </div>
+                    {filteredLeads.length === 0 ? (
+                        <div className="admin-empty" style={{ padding: '3rem' }}>
+                            <Inbox size={50} />
+                            <h3>No leads yet</h3>
+                            <p>Email signups from scholarship &amp; job detail pages (free checklists, deadline reminders, job alerts) will appear here. These are your warm contacts for follow-ups.</p>
+                        </div>
+                    ) : (
+                        <div className="admin-table-overflow">
+                            <table className="admin-table">
+                                <thead>
+                                    <tr><th>Email</th><th>Type</th><th>Listing</th><th>Page</th><th>Signed Up</th><th>Actions</th></tr>
+                                </thead>
+                                <tbody>
+                                    {filteredLeads.map(l => (
+                                        <tr key={l.id}>
+                                            <td style={{ fontWeight: 600 }}>{l.email}</td>
+                                            <td>{sourceBadge(l.source)}</td>
+                                            <td>{l.item_title || '—'}</td>
+                                            <td style={{ fontSize: '0.78rem', color: 'var(--gray-600)' }}>{l.path || l.item_slug || '—'}</td>
+                                            <td>{formatDate(l.created_at || l.created_at_client)}</td>
+                                            <td>
+                                                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                                    <button className="filter-btn" title="Email this lead" onClick={() => { window.location.href = `mailto:${l.email}` }}><Mail size={15} /></button>
+                                                    <button className="filter-btn del" title="Delete" onClick={() => deleteLead(l.id)}><Trash2 size={15} /></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+
+                <div className="admin-table-card">
+                    <div className="card-header">
+                        <div className="card-title-group"><TrendingUp size={20} className="title-icon" /><h3>Official Apply Clicks</h3></div>
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <span className="card-badge">{clicksToday} today</span>
+                            <span className="card-badge">{clicks.length} total</span>
+                        </div>
+                    </div>
+                    {clickStats.length === 0 ? (
+                        <div className="admin-empty" style={{ padding: '3rem' }}>
+                            <TrendingUp size={50} />
+                            <h3>No clicks yet</h3>
+                            <p>Every "Apply on Official Site" click from your scholarship &amp; job detail pages is logged here automatically — your conversion tracking.</p>
+                        </div>
+                    ) : (
+                        <div className="admin-table-overflow">
+                            <table className="admin-table">
+                                <thead>
+                                    <tr><th>Destination</th><th>Listing</th><th>Type</th><th>Clicks</th><th>Last Clicked</th></tr>
+                                </thead>
+                                <tbody>
+                                    {clickStats.map(c => (
+                                        <tr key={c.url}>
+                                            <td>
+                                                <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600, fontSize: '0.82rem', wordBreak: 'break-all' }}>
+                                                    {hostFromUrl(c.url)} <ExternalLink size={13} />
+                                                </a>
+                                            </td>
+                                            <td>{c.title || '—'}</td>
+                                            <td>{sourceBadge(c.type)}</td>
+                                            <td style={{ fontWeight: 800, color: '#1e2338' }}>{c.count}</td>
+                                            <td>{formatDate(c.last)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </>
+        )
+    }
 
     const renderUsers = () => (
         <div className="admin-table-card">
@@ -2334,6 +2505,7 @@ export default function AdminDashboard() {
                     {activeTab === 'services' && renderServices()}
                     {activeTab === 'imports' && renderImports()}
                     {activeTab === 'messages' && renderMessages()}
+                    {activeTab === 'leads' && renderLeads()}
                     {activeTab === 'users' && renderUsers()}
                     {activeTab === 'settings' && renderSettings()}
                 </div>
