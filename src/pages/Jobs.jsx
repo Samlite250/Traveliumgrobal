@@ -9,6 +9,7 @@ import {
     CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award, UploadCloud, FileText, ExternalLink
 } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
+import { jobSlug } from '../lib/listings'
 
 // Comprehensive Countries Data with 5 High Payable Jobs & 5 Part Time Jobs per Country
 export const JOBS_DATA = [
@@ -1041,7 +1042,7 @@ const toRequirements = (desc) => {
     return sentences.length ? sentences : ['View the original posting for the full role description.']
 }
 
-function mergeLiveJobs(curated, live) {
+export function mergeLiveJobs(curated, live) {
     const groups = curated.map(c => ({
         ...c,
         highPayableJobs: [...(c.highPayableJobs || [])],
@@ -1078,7 +1079,8 @@ function mergeLiveJobs(curated, live) {
             requirements: toRequirements(lj.description),
             auto: true,
             sourceName: lj.sourceName || lj.source || '',
-            sourceUrl: lj.sourceUrl || '',
+            sourceUrl: lj.sourceUrl || lj.applyUrl || '',
+            applyUrl: lj.applyUrl || lj.sourceUrl || '',
         }
         if (/part/i.test(lj.jobType || '')) group.partTimeJobs.push(job)
         else group.highPayableJobs.push(job)
@@ -1087,7 +1089,7 @@ function mergeLiveJobs(curated, live) {
 }
 
 export default function Jobs() {
-    const { toast } = useToast()
+    const toast = useToast()
     const [searchParams] = useSearchParams()
     const [activeCountry, setActiveCountry] = useState(JOBS_DATA[0].id)
     const [searchQuery, setSearchQuery] = useState('')
@@ -1271,7 +1273,7 @@ export default function Jobs() {
     return (
         <div className="jobs-page">
             <SEOHead
-                title="Jobs Abroad 2025 — Work in Dubai, Canada, UK, Germany & More | Travelium Global"
+                title="Jobs Abroad 2026 — Work in Dubai, Canada, UK, Germany & More | Travelium Global"
                 description="Find high-paying international jobs in Dubai, Canada, UK, Germany, Qatar, Norway & Australia. Travelium Global connects East African professionals to global career opportunities."
                 canonical="/jobs"
             />
@@ -1397,7 +1399,7 @@ export default function Jobs() {
                                                 <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
                                             </div>
 
-                                            <h4 className="job-title">{job.title}</h4>
+                                            <h4 className="job-title"><Link to={`/jobs/${jobSlug(job, currentCountryData.country)}`} className="job-title-link">{job.title}</Link></h4>
 
                                             <div className="job-meta-row">
                                                 <span className="job-company"><Building size={14} /> {job.company}</span>
@@ -1420,17 +1422,17 @@ export default function Jobs() {
 
                                             <div className="job-card-footer">
                                                 <span className="exp-badge">{job.experience}</span>
-                                                {job.auto && job.sourceUrl && (
-                                                    <a className="job-source-link" href={job.sourceUrl} target="_blank" rel="noopener noreferrer" title={`Original posting — ${job.sourceName}`}>
-                                                        Original posting <ExternalLink size={12} />
+                                                {(job.applyUrl || job.sourceUrl) && (
+                                                    <a className="job-source-link" href={job.applyUrl || job.sourceUrl} target="_blank" rel="noopener noreferrer" title={`Original posting — ${job.sourceName || 'Official'}`}>
+                                                        Official posting <ExternalLink size={12} />
                                                     </a>
                                                 )}
-                                                <button
+                                                <Link
+                                                    to={`/jobs/${jobSlug(job, currentCountryData.country)}`}
                                                     className="btn-apply-job primary"
-                                                    onClick={() => handleApplyClick(job, 'High Payable Job')}
                                                 >
-                                                    Apply Now <ArrowRight size={16} />
-                                                </button>
+                                                    View &amp; Apply <ArrowRight size={16} />
+                                                </Link>
                                             </div>
                                         </div>
                                     ))}
@@ -1468,7 +1470,7 @@ export default function Jobs() {
                                                 <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
                                             </div>
 
-                                            <h4 className="job-title">{job.title}</h4>
+                                            <h4 className="job-title"><Link to={`/jobs/${jobSlug(job, currentCountryData.country)}`} className="job-title-link">{job.title}</Link></h4>
 
                                             <div className="job-meta-row">
                                                 <span className="job-company"><Building size={14} /> {job.company}</span>
@@ -1492,12 +1494,12 @@ export default function Jobs() {
 
                                             <div className="job-card-footer">
                                                 <span className="exp-badge pt-exp">{job.type}</span>
-                                                <button
+                                                <Link
+                                                    to={`/jobs/${jobSlug(job, currentCountryData.country)}`}
                                                     className="btn-apply-job secondary"
-                                                    onClick={() => handleApplyClick(job, 'Part-Time Job')}
                                                 >
-                                                    Apply Now <ArrowRight size={16} />
-                                                </button>
+                                                    View &amp; Apply <ArrowRight size={16} />
+                                                </Link>
                                             </div>
                                         </div>
                                     ))}

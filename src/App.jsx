@@ -29,6 +29,7 @@ const Home = safeLazy(() => import('./pages/Home'))
 const StudyAbroad = safeLazy(() => import('./pages/StudyAbroad'))
 const VisaServices = safeLazy(() => import('./pages/VisaServices'))
 const Scholarships = safeLazy(() => import('./pages/Scholarships'))
+const ScholarshipDetail = safeLazy(() => import('./pages/ScholarshipDetail'))
 const About = safeLazy(() => import('./pages/About'))
 const Contact = safeLazy(() => import('./pages/Contact'))
 const Apply = safeLazy(() => import('./pages/Apply'))
@@ -37,6 +38,7 @@ const Dashboard = safeLazy(() => import('./pages/Dashboard'))
 const Flights = safeLazy(() => import('./pages/Flights'))
 const BuyTicket = safeLazy(() => import('./pages/BuyTicket'))
 const Jobs = safeLazy(() => import('./pages/Jobs'))
+const JobDetail = safeLazy(() => import('./pages/JobDetail'))
 const NotFound = safeLazy(() => import('./pages/NotFound'))
 const PrivacyPolicy = safeLazy(() => import('./pages/PrivacyPolicy'))
 const TermsOfUse = safeLazy(() => import('./pages/TermsOfUse'))
@@ -97,11 +99,13 @@ function AppLayout() {
                     <Route path="/study-abroad" element={<StudyAbroad />} />
                     <Route path="/visa-services" element={<VisaServices />} />
                     <Route path="/scholarships" element={<Scholarships />} />
+                    <Route path="/scholarships/:slug" element={<ScholarshipDetail />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/flights" element={<Flights />} />
                     <Route path="/buy-ticket" element={<BuyTicket />} />
                     <Route path="/jobs" element={<Jobs />} />
+                    <Route path="/jobs/:slug" element={<JobDetail />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                     <Route path="/terms-of-use" element={<TermsOfUse />} />
                     <Route path="/login" element={<Login />} />

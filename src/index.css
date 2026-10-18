@@ -10931,3 +10931,728 @@ textarea:focus,
   font-size: 0.95rem;
   padding: 2rem 0;
 }
+
+/* ===== LISTING DETAIL PAGES (/scholarships/:slug, /jobs/:slug) ===== */
+.listing-hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.listing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+}
+
+.listing-badge img {
+  width: 18px;
+  height: 12px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.listing-badge.gold {
+  background: var(--gold-glass);
+  border-color: rgba(245, 215, 142, 0.55);
+  color: var(--gold-light);
+}
+
+.listing-badge.gold.full {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy-dark);
+  font-weight: 800;
+}
+
+.listing-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 2.25rem;
+  align-items: start;
+}
+
+.listing-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+  background: var(--off-white);
+  border: 1px solid var(--gray-100);
+  border-radius: 12px;
+  padding: 0.6rem;
+}
+
+.listing-chip {
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.listing-chip:hover {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.listing-section {
+  scroll-margin-top: 105px;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.listing-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.listing-section h2 {
+  font-size: 1.5rem;
+  color: var(--navy);
+  margin-bottom: 1rem;
+}
+
+.listing-section p {
+  color: var(--text-light);
+  line-height: 1.75;
+  margin-bottom: 0.9rem;
+}
+
+.listing-checks {
+  list-style: none;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.listing-checks li {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  background: var(--off-white);
+  border: 1px solid var(--gray-100);
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.listing-checks li svg {
+  color: var(--success);
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.listing-steps {
+  list-style: none;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.listing-steps li {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.listing-steps .step-badge {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.listing-steps li > span:last-child {
+  color: var(--text-light);
+  line-height: 1.65;
+  padding-top: 0.3rem;
+}
+
+.listing-note {
+  background: var(--gold-glass);
+  border-left: 3px solid var(--gold);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.87rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.guide-faq {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.guide-faq-item {
+  background: var(--off-white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.guide-faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 0.95rem;
+}
+
+.guide-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.guide-faq-item summary span {
+  flex: 1;
+}
+
+.guide-faq-item summary svg {
+  transition: var(--transition);
+  flex-shrink: 0;
+  color: var(--gray-400);
+}
+
+.guide-faq-item[open] summary svg {
+  transform: rotate(180deg);
+}
+
+.guide-faq-item p {
+  padding: 0 1.1rem 1.1rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.listing-facts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.lf-item {
+  background: var(--off-white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.lf-item span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-400);
+}
+
+.lf-item strong {
+  color: var(--navy);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.listing-final-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  color: #fff;
+  border-radius: 18px;
+  padding: 1.75rem 2rem;
+  flex-wrap: wrap;
+  margin-top: 2.25rem;
+}
+
+.fc-copy h2 {
+  color: #fff;
+  font-size: 1.35rem;
+  margin: 0.4rem 0 0.5rem;
+}
+
+.fc-copy p {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.fc-copy p strong {
+  color: var(--gold-light);
+}
+
+.fc-btn {
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fc-btn:hover {
+  background: var(--gold-light);
+}
+
+.listing-aside {
+  display: grid;
+  gap: 1.25rem;
+  position: sticky;
+  top: 96px;
+}
+
+.listing-apply-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  padding: 1.4rem;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.ac-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  color: var(--navy);
+  font-size: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.ac-head svg {
+  color: var(--gold);
+}
+
+.ac-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ac-row > span {
+  color: var(--gray-400);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.67rem;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.ac-row strong {
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.87rem;
+}
+
+.ac-source {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.08);
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.btn-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.8rem 1rem;
+}
+
+.ac-note {
+  color: var(--gray-400);
+  font-size: 0.72rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ── Lead capture box ── */
+.listing-lead {
+  background: var(--off-white);
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  padding: 1.4rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.lead-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.lead-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--gold-glass);
+  color: var(--gold-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.listing-lead h4 {
+  font-size: 0.95rem;
+  color: var(--navy);
+}
+
+.listing-lead > p {
+  font-size: 0.83rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.lead-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.lead-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  transition: var(--transition);
+}
+
+.lead-input:focus-within {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px var(--navy-glass);
+}
+
+.lead-input svg {
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.lead-input input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  background: transparent;
+  color: var(--text);
+}
+
+.lead-form .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.lead-note {
+  color: var(--gray-400);
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.listing-lead.done {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(34, 197, 94, 0.07);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.listing-lead.done > svg {
+  color: var(--success);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.listing-lead.done strong {
+  color: var(--navy);
+  font-size: 0.9rem;
+}
+
+.listing-lead.done p {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-top: 0.2rem;
+}
+
+/* ── Related listings ── */
+.listing-related {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.listing-related h4 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-400);
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+}
+
+.related-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  background: var(--off-white);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: var(--transition);
+}
+
+.related-item:hover {
+  border-color: var(--navy);
+  transform: translateX(2px);
+}
+
+.ri-amount {
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: var(--navy);
+  background: var(--gold-glass);
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.ri-title {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+
+.related-item svg {
+  color: var(--navy);
+  flex-shrink: 0;
+}
+
+/* ── Internal apply form (job detail, no official URL) ── */
+.listing-internal-apply {
+  scroll-margin-top: 105px;
+  background: var(--off-white);
+  border: 1px solid var(--gray-200);
+  border-radius: 18px;
+  padding: 1.75rem;
+  margin-top: 2.25rem;
+}
+
+.listing-internal-apply h2 {
+  color: var(--navy);
+  font-size: 1.4rem;
+  margin: 0.4rem 0 0.5rem;
+}
+
+.listing-internal-apply > p {
+  color: var(--text-light);
+  font-size: 0.92rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.65;
+}
+
+.internal-apply-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.iaf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.internal-apply-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.internal-apply-form input,
+.internal-apply-form select,
+.internal-apply-form textarea {
+  font-family: var(--font);
+  font-size: 0.92rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--text);
+  outline: none;
+  transition: var(--transition);
+  resize: vertical;
+  text-transform: none;
+  font-weight: 500;
+  letter-spacing: normal;
+  width: 100%;
+}
+
+.internal-apply-form input:focus,
+.internal-apply-form select:focus,
+.internal-apply-form textarea:focus {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px var(--navy-glass);
+}
+
+.internal-apply-form .btn {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iaf-note {
+  color: var(--gray-400);
+  font-size: 0.75rem;
+}
+
+.internal-applied {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.internal-applied svg {
+  color: var(--success);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.internal-applied strong {
+  color: var(--navy);
+}
+
+.internal-applied p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-top: 0.2rem;
+}
+
+/* ── Card title links (list pages → detail pages) ── */
+.scholarship-title-link,
+.job-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.scholarship-title-link:hover,
+.job-title-link:hover {
+  color: var(--navy);
+  text-decoration: underline;
+}
+
+/* ── Detail pages responsive ── */
+@media (max-width: 992px) {
+  .listing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .listing-aside {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .listing-final-cta {
+    padding: 1.4rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fc-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .iaf-row,
+  .listing-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .listing-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .listing-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .listing-chip {
+    white-space: nowrap;
+  }
+
+  .listing-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .listing-internal-apply,
+  .listing-apply-card,
+  .listing-lead {
+    padding: 1.25rem;
+  }
+}

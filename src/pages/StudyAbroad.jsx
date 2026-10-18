@@ -71,7 +71,7 @@ export default function StudyAbroad() {
     return (
         <main>
             <SEOHead
-                title="Study Abroad 2025 — Apply for University Programs Worldwide | Travelium Global"
+                title="Study Abroad 2026 — Apply for University Programs Worldwide | Travelium Global"
                 description="Apply to study abroad at top universities in Canada, UK, USA, Germany, Australia & more. Travelium Global guides students from East Africa and worldwide through the full application process."
                 canonical="/study-abroad"
             />

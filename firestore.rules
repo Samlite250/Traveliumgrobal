@@ -44,6 +44,18 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // ── Leads (public checklist / deadline-reminder signups from detail pages) ──
+    match /leads/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Outbound apply clicks (anonymous click analytics from detail pages) ──
+    match /outbound_clicks/{docId} {
+      allow create: if true;
+      allow read, delete: if isAdmin();
+    }
+
     // ── Transactions ──
     match /transactions/{docId} {
       allow read: if request.auth != null && (resource.data.user_id == request.auth.uid || isAdmin());

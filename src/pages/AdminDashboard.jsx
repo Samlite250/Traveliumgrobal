@@ -133,7 +133,7 @@ export default function AdminDashboard() {
 
     // Service editor state
     const [editingService, setEditingService] = useState(null)
-    const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
+    const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '', applyUrl: '' })
     const [showServiceEditor, setShowServiceEditor] = useState(false)
 
     // Auto Imports state
@@ -536,7 +536,11 @@ export default function AdminDashboard() {
             updated_at: serverTimestamp(),
             // For scholarship type, also write `title` so the public /scholarships page
             // (which reads s.title) can display manually-added scholarships.
-            ...(serviceForm.type === 'scholarship' ? { title: serviceForm.name } : {}),
+            ...(serviceForm.type === 'scholarship' ? {
+                title: serviceForm.name,
+                sourceUrl: serviceForm.applyUrl || serviceForm.sourceUrl || '',
+                applyUrl: serviceForm.applyUrl || serviceForm.sourceUrl || ''
+            } : {}),
         }
         if (db) {
             try {
@@ -546,7 +550,7 @@ export default function AdminDashboard() {
                     await addDoc(collection(db, 'services'), { ...data, created_at: serverTimestamp() })
                 }
                 setShowServiceEditor(false); setEditingService(null)
-                setServiceForm({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
+                setServiceForm({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '', applyUrl: '' })
                 toast(editingService ? 'Service updated.' : 'Service created.', 'success')
                 return
             } catch (err) { console.error('Service save error:', err) }
@@ -560,12 +564,12 @@ export default function AdminDashboard() {
         }
         setServices(next); saveLocal('services', next)
         setShowServiceEditor(false); setEditingService(null)
-        setServiceForm({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' })
+        setServiceForm({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '', applyUrl: '' })
         toast(editingService ? 'Service updated (offline).' : 'Service created (offline).', 'success')
     }
     const editService = (s) => {
         setEditingService(s)
-        setServiceForm({ name: s.name || s.title || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), amount: s.amount || '', features: (s.features || []).join('\n'), active: s.active !== false, featured: s.featured || false, country: s.country || '', flag: s.flag || '', deadline: s.deadline || '', img: s.img || '' })
+        setServiceForm({ name: s.name || s.title || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), amount: s.amount || '', features: (s.features || []).join('\n'), active: s.active !== false, featured: s.featured || false, country: s.country || '', flag: s.flag || '', deadline: s.deadline || '', img: s.img || '', applyUrl: s.applyUrl || s.sourceUrl || '' })
         setShowServiceEditor(true)
     }
     const deleteService = async (id) => {
@@ -1611,7 +1615,7 @@ export default function AdminDashboard() {
             <>
                 <div className="admin-filter-bar">
                     <div className="filters-group">
-                        <button className="admin-btn-primary" onClick={() => { setEditingService(null); setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '' }); setShowServiceEditor(true) }}>
+                        <button className="admin-btn-primary" onClick={() => { setEditingService(null); setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '', applyUrl: '' }); setShowServiceEditor(true) }}>
                             <Plus size={16} /> New Service
                         </button>
                         {showSeedPrompt && (
@@ -1703,6 +1707,9 @@ export default function AdminDashboard() {
                                         <div className="form-group"><label>Funding Amount</label><input className="admin-note-input" value={serviceForm.amount} onChange={e => setServiceForm(f => ({ ...f, amount: e.target.value }))} placeholder='e.g. Full Fund or $25,000' /></div>
                                     </div>
                                 )}
+                                {serviceForm.type === 'scholarship' && (
+                                    <div className="form-group"><label>Apply URL (Official Link)</label><input className="admin-note-input" value={serviceForm.applyUrl || serviceForm.sourceUrl || ''} onChange={e => setServiceForm(f => ({ ...f, applyUrl: e.target.value }))} placeholder="https://scholarships365.info/... or official URL" /></div>
+                                )}
                                 <div className="form-group"><label>Features (one per line)</label><textarea className="admin-note-input" rows="4" value={serviceForm.features} onChange={e => setServiceForm(f => ({ ...f, features: e.target.value }))} placeholder="Free consultation&#10;Fast processing&#10;Online tracking" /></div>
                             </div>
                             <div className="admin-modal-footer">
@@ -1742,7 +1749,8 @@ export default function AdminDashboard() {
             jobType: item.jobType || 'full-time',
             source: item.source || '',
             sourceName: item.sourceName || '',
-            sourceUrl: item.sourceUrl || '',
+            sourceUrl: item.sourceUrl || item.applyUrl || '',
+            applyUrl: item.applyUrl || item.sourceUrl || '',
             auto: true,
             status: 'active',
             created_at: serverTimestamp(),
@@ -1762,7 +1770,8 @@ export default function AdminDashboard() {
             deadline: item.deadline || '',
             source: item.source || '',
             sourceName: item.sourceName || '',
-            sourceUrl: item.sourceUrl || '',
+            sourceUrl: item.sourceUrl || item.applyUrl || '',
+            applyUrl: item.applyUrl || item.sourceUrl || '',
             auto: true,
             active: true,
             created_at: serverTimestamp(),
@@ -2044,7 +2053,7 @@ export default function AdminDashboard() {
         const openAddJob = (type) => {
             setEditingJob(null)
             setEditingJobType(type)
-            setJobForm({ title: '', company: '', location: '', salary: '', type: type === 'highPayableJobs' ? 'Full-Time' : 'Part-Time', experience: '', requirements: '', hours: '' })
+            setJobForm({ title: '', company: '', location: '', salary: '', type: type === 'highPayableJobs' ? 'Full-Time' : 'Part-Time', experience: '', requirements: '', hours: '', applyUrl: '' })
             setShowJobEditor(true)
         }
 
@@ -2059,7 +2068,8 @@ export default function AdminDashboard() {
                 type: job.type || 'Full-Time',
                 experience: job.experience || '',
                 requirements: (job.requirements || []).join('\n'),
-                hours: job.hours || ''
+                hours: job.hours || '',
+                applyUrl: job.applyUrl || job.sourceUrl || ''
             })
             setShowJobEditor(true)
         }
@@ -2071,7 +2081,8 @@ export default function AdminDashboard() {
                 id: editingJob?.id || `${activeJobCountry}-${editingJobType === 'highPayableJobs' ? 'hp' : 'pt'}-${Date.now()}`,
                 title: jobForm.title, company: jobForm.company, location: jobForm.location,
                 salary: jobForm.salary, type: jobForm.type, experience: jobForm.experience,
-                requirements: reqArr, hours: jobForm.hours || undefined
+                requirements: reqArr, hours: jobForm.hours || undefined,
+                applyUrl: jobForm.applyUrl || jobForm.sourceUrl || ''
             }
             const updated = jobsData.map(c => {
                 if (c.id !== activeJobCountry) return c
@@ -2227,6 +2238,7 @@ export default function AdminDashboard() {
                                     <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Experience Required</label><input className="admin-note-input" value={jobForm.experience} onChange={e => setJobForm(f => ({ ...f, experience: e.target.value }))} placeholder="e.g. 2+ Years Exp." style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
                                 </div>
                                 {editingJobType === 'partTimeJobs' && (<div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Hours / Week</label><input className="admin-note-input" value={jobForm.hours} onChange={e => setJobForm(f => ({ ...f, hours: e.target.value }))} placeholder="e.g. 20 hrs / week" style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>)}
+                                <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Apply URL (External - Optional)</label><input className="admin-note-input" value={jobForm.applyUrl || jobForm.sourceUrl || ''} onChange={e => setJobForm(f => ({ ...f, applyUrl: e.target.value }))} placeholder="https://example.com/apply" style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
                                 <div className="form-group"><label style={{ color: '#0f172a', fontWeight: '700', fontSize: '0.85rem', marginBottom: '0.35rem', display: 'block' }}>Requirements (one per line)</label><textarea className="admin-note-input" rows="4" value={jobForm.requirements} onChange={e => setJobForm(f => ({ ...f, requirements: e.target.value }))} placeholder={"Relevant qualification\nFluent English\nTeam player"} style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1.5px solid #94a3b8', background: '#ffffff', color: '#0f172a', fontWeight: '600' }} /></div>
                             </div>
                             <div className="admin-modal-footer" style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid #e2e6f0', background: '#f8f9fc', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>

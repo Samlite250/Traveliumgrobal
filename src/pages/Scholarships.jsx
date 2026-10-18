@@ -5,16 +5,8 @@ import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { fallbackScholarships, scholarshipSlug } from '../lib/listings'
 import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink } from 'lucide-react'
-
-const fallbackScholarships = [
-    { amount: 'Full Fund', title: 'Commonwealth Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'Fully funded scholarships for students from developing countries.', deadline: 'Dec 31, 2026' },
-    { amount: '$25,000', title: 'Chevening Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'UK government global scholarship program.', deadline: 'Nov 15, 2026' },
-    { amount: '$30,000', title: 'Fulbright Program', country: 'United States', flag: 'https://flagcdn.com/w40/us.png', desc: 'International exchange program sponsored by the US government.', deadline: 'Oct 15, 2026' },
-    { amount: '$20,000', title: 'Vanier Canada Graduate', country: 'Canada', flag: 'https://flagcdn.com/w40/ca.png', desc: 'For doctoral students with leadership excellence.', deadline: 'Nov 1, 2026' },
-    { amount: 'Full Fund', title: 'DAAD Scholarship', country: 'Germany', flag: 'https://flagcdn.com/w40/de.png', desc: 'German Academic Exchange Service funding.', deadline: 'Jan 31, 2027' },
-    { amount: '$15,000', title: 'Australia Awards', country: 'Australia', flag: 'https://flagcdn.com/w40/au.png', desc: 'Awards funded by the Australian government.', deadline: 'Apr 30, 2027' },
-]
 
 export default function Scholarships() {
     const [scholarships, setScholarships] = useState([])
@@ -40,7 +32,7 @@ export default function Scholarships() {
     return (
         <main>
             <SEOHead
-                title="Scholarships 2025 for African Students — Apply Now | Travelium Global"
+                title="Scholarships 2026 for African Students — Apply Now | Travelium Global"
                 description="Discover fully funded scholarships for students in Rwanda, East Africa & worldwide. Chevening, Fulbright, DAAD, Commonwealth & more — Travelium Global helps you apply and win."
                 canonical="/scholarships"
             />
@@ -67,11 +59,12 @@ export default function Scholarships() {
                         {display.map(s => {
                             const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'Contact us')
                             const displayTitle = s.title || s.name || 'Scholarship'
+                            const detailPath = `/scholarships/${scholarshipSlug(s)}`
                             return (
                                 <div key={s.id || displayTitle} className="scholarship-card">
                                     <div className={`scholarship-amount${amount === 'Full Fund' ? ' full-fund' : ''}`}>{amount}</div>
                                     <div className="scholarship-body">
-                                        <h3>{displayTitle}</h3>
+                                        <h3><Link to={detailPath} className="scholarship-title-link">{displayTitle}</Link></h3>
                                         {s.country && <div className="scholarship-country">
                                             {s.flag && <img src={s.flag} alt={s.country} />}
                                             {s.country}
@@ -82,15 +75,15 @@ export default function Scholarships() {
                                                 <CalendarDays size={14} />
                                                 Deadline: <strong>{s.deadline}</strong>
                                             </span>}
-                                            <Link to="/apply" className="btn btn-navy scholarship-apply-btn">
-                                                Apply <ArrowRight size={14} />
+                                            <Link to={detailPath} className="btn btn-navy scholarship-apply-btn">
+                                                View &amp; Apply <ArrowRight size={14} />
                                             </Link>
                                         </div>
-                                        {s.sourceUrl && (
+                                        {(s.sourceUrl || s.applyUrl) && (
                                             <div className="scholarship-source">
                                                 <ShieldCheck size={12} />
                                                 {s.sourceName ? `${s.sourceName} — ` : ''}
-                                                <a href={s.sourceUrl} target="_blank" rel="noopener noreferrer">Official program page <ExternalLink size={11} /></a>
+                                                <a href={s.sourceUrl || s.applyUrl} target="_blank" rel="noopener noreferrer">Official program page <ExternalLink size={11} /></a>
                                             </div>
                                         )}
                                     </div>
