@@ -3,7 +3,6 @@ import { Briefcase, TrendingUp, ArrowRight, Star, Sparkles, Globe } from 'lucide
 import { useTranslation } from 'react-i18next'
 
 const destinations = [
-    { id: 'rw', flag: 'https://flagcdn.com/w80/rw.png', name: 'Rwanda', countryParam: 'Rwanda', img: 'https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?q=80&w=800&auto=format&fit=crop', jobs: '2k+', salary: 'RWF 800k+', featured: true, tag: 'East Africa Hub' },
     { id: 'ae', flag: 'https://flagcdn.com/w80/ae.png', name: 'Dubai, UAE', countryParam: 'Dubai', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop', jobs: '10k+', salary: 'AED 8k+', featured: true, tag: 'Most Popular' },
     { id: 'ca', flag: 'https://flagcdn.com/w80/ca.png', name: 'Canada', countryParam: 'Canada', img: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=800&auto=format&fit=crop', jobs: '5k+', salary: 'CAD 50k+', featured: true },
     { id: 'us', flag: 'https://flagcdn.com/w80/us.png', name: 'United States', countryParam: 'USA', img: 'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=800&auto=format&fit=crop', jobs: '6k+', salary: 'USD 55k+', featured: true },
@@ -18,6 +17,7 @@ const destinations = [
     { id: 'cn', flag: 'https://flagcdn.com/w80/cn.png', name: 'China', countryParam: 'China', img: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=800&auto=format&fit=crop', jobs: '8k+', salary: 'CNY 15k+', tag: 'High Demand' },
     { id: 'jp', flag: 'https://flagcdn.com/w80/jp.png', name: 'Japan', countryParam: 'Japan', img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop', jobs: '4k+', salary: 'JPY 300k+' },
     { id: 'nl', flag: 'https://flagcdn.com/w80/nl.png', name: 'Netherlands', countryParam: 'Netherlands', img: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=800&auto=format&fit=crop', jobs: '1.5k+', salary: 'EUR 40k+' },
+    { id: 'rw', flag: 'https://flagcdn.com/w80/rw.png', name: 'Rwanda', countryParam: 'Rwanda', img: 'https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?q=80&w=800&auto=format&fit=crop', jobs: '2k+', salary: 'RWF 800k+', featured: true, tag: 'East Africa Hub' },
 ]
 
 export default function Destinations() {
