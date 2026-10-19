@@ -8,7 +8,8 @@ import { db } from '../lib/firebase'
 import { fallbackScholarships, scholarshipSlug } from '../lib/listings'
 import {
     FlaskConical, HeartPulse, Briefcase, Scale, Palette, BookOpen,
-    MapPin, ArrowRight, Globe, Search, GraduationCap, Award, SlidersHorizontal, X
+    MapPin, ArrowRight, Globe, Search, GraduationCap, Award, SlidersHorizontal, X,
+    Check, CalendarDays
 } from 'lucide-react'
 
 const programs = [
@@ -150,6 +151,27 @@ export default function StudyAbroad() {
         () => programs.reduce((sum, p) => sum + matchesFor(p).length, 0),
         [matchesFor]
     )
+
+    const scholarshipPool = useMemo(
+        () => (scholarships.length ? scholarships : fallbackScholarships),
+        [scholarships]
+    )
+
+    const countryCounts = useMemo(() => {
+        const map = new Map()
+        for (const s of scholarshipPool) {
+            const c = normalizeCountry(s.country)
+            if (!c) continue
+            map.set(c, (map.get(c) || 0) + 1)
+        }
+        return map
+    }, [scholarshipPool])
+
+    const destinationMatches = useMemo(() => {
+        if (!destination) return []
+        const wanted = normalizeCountry(destination)
+        return scholarshipPool.filter(s => normalizeCountry(s.country) === wanted)
+    }, [scholarshipPool, destination])
 
     const activeLevel = levelTabs.find(t => t.id === level) || levelTabs[0]
 
@@ -366,35 +388,115 @@ export default function StudyAbroad() {
             {/* ── AdSense Banner Ad ── */}
             <AdSenseAd adSlot="5348613920" adFormat="auto" style={{ margin: '0 auto', maxWidth: '1200px', padding: '8px 20px' }} />
 
-            <section className="content-section destinations-strip">
+            <section className="content-section destinations-strip" id="destinations">
                 <div className="container">
                     <div className="section-header">
                         <div className="section-label">Top Destinations</div>
                         <h2 className="section-title">Where Can You Study?</h2>
-                        <p className="section-sub">Pick a destination above to see the funding and programs that match it.</p>
+                        <p className="section-sub">
+                            Tap a country to instantly filter the matched funding and programs above — counts update
+                            live from our scholarship database.
+                        </p>
                     </div>
-                    <div className="destinations-pills">
-                        {destinations.map(d => (
-                            <button
-                                key={d.name}
-                                type="button"
-                                className={`destination-pill${destination === d.name ? ' active' : ''}`}
-                                onClick={() => {
-                                    setDestination(destination === d.name ? '' : d.name)
-                                    document.querySelector('.programs-section')?.scrollIntoView({ behavior: 'smooth' })
-                                }}
-                            >
-                                <img src={d.flag} alt="" loading="lazy" />
-                                {d.name}
-                            </button>
-                        ))}
+
+                    <div className="destination-cards">
+                        {destinations.map(d => {
+                            const count = countryCounts.get(normalizeCountry(d.name)) || 0
+                            const active = destination === d.name
+                            return (
+                                <button
+                                    key={d.name}
+                                    type="button"
+                                    aria-pressed={active}
+                                    className={`destination-card${active ? ' active' : ''}`}
+                                    onClick={() => {
+                                        setDestination(active ? '' : d.name)
+                                        if (!active) {
+                                            document.querySelector('.programs-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                        }
+                                    }}
+                                >
+                                    <span className="destination-card-flag">
+                                        <img src={d.flag} alt="" loading="lazy" />
+                                    </span>
+                                    <span className="destination-card-body">
+                                        <strong>{d.name}</strong>
+                                        <small>
+                                            {count > 0
+                                                ? `${count} ${count === 1 ? 'scholarship' : 'scholarships'} matched`
+                                                : 'Programs available'}
+                                        </small>
+                                    </span>
+                                    <span className="destination-card-state">
+                                        {active ? <Check size={16} /> : <ArrowRight size={16} />}
+                                    </span>
+                                </button>
+                            )
+                        })}
                     </div>
-                    <div style={{ textAlign: 'center', marginTop: '2.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+
+                    {destination && (
+                        <div className="destination-panel">
+                            <div className="destination-panel-head">
+                                <div className="destination-panel-title">
+                                    <span className="destination-panel-icon"><Globe size={18} /></span>
+                                    <div>
+                                        <strong>{destination}</strong>
+                                        <small>
+                                            {destinationMatches.length} matched {destinationMatches.length === 1 ? 'scholarship' : 'scholarships'}
+                                            {' · '}{programs.length} fields of study
+                                        </small>
+                                    </div>
+                                </div>
+                                <button type="button" className="destination-panel-clear" onClick={() => setDestination('')}>
+                                    <X size={14} /> Clear
+                                </button>
+                            </div>
+
+                            {destinationMatches.length > 0 ? (
+                                <ul className="destination-panel-list">
+                                    {destinationMatches.slice(0, 4).map(s => (
+                                        <li key={s.id || scholarshipSlug(s)}>
+                                            <Link to={`/scholarships/${scholarshipSlug(s)}`}>
+                                                {s.title || s.name}
+                                            </Link>
+                                            <span className="destination-panel-meta">
+                                                {s.amount && <em>{s.amount}</em>}
+                                                {s.deadline && (
+                                                    <small><CalendarDays size={12} /> {s.deadline}</small>
+                                                )}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="destination-panel-empty">
+                                    No funding recorded for {destination} yet — our advisors can still match you with
+                                    suitable programs. <Link to="/contact">Talk to an advisor</Link>
+                                </p>
+                            )}
+
+                            <div className="destination-panel-actions">
+                                <Link to={`/scholarships?country=${encodeURIComponent(destination)}`} className="btn btn-primary">
+                                    See all {destination} scholarships <ArrowRight size={15} />
+                                </Link>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-navy"
+                                    onClick={() => document.querySelector('.programs-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                                >
+                                    Back to matching programs
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="destinations-cta">
                         <Link to="/apply" className="btn btn-primary" style={{ fontSize: '1rem' }}>
                             Apply for Study Abroad <ArrowRight size={18} />
                         </Link>
                         <Link to="/scholarships" className="btn btn-outline-navy" style={{ fontSize: '1rem' }}>
-                            Browse Scholarships
+                            Browse All Scholarships
                         </Link>
                     </div>
                 </div>
