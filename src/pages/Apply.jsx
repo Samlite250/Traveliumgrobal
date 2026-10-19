@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useAuth } from '../context/AuthContext'
@@ -9,10 +9,25 @@ import {
     Loader2, AlertCircle, LayoutDashboard, BookOpen
 } from 'lucide-react'
 
+const DESTINATION_OPTIONS = [
+    'Dubai (UAE)', 'Canada', 'United States', 'United Kingdom', 'Germany', 'Australia',
+    'Qatar', 'Norway', 'Poland', 'France', 'Oman', 'China', 'Japan', 'Netherlands',
+    'Rwanda',
+]
+
+const PROGRAM_TYPE_OPTIONS = [
+    'study', 'student_visa', 'tourist', 'work', 'scholarship', 'residency',
+]
+
+const EDU_LEVEL_OPTIONS = [
+    'High School', "Bachelor's Degree", "Master's Degree", 'PhD', 'Professional Certification',
+]
+
 export default function Apply() {
     const { currentUser } = useAuth()
     const navigate = useNavigate()
     const toast = useToast()
+    const [searchParams] = useSearchParams()
 
     const [form, setForm] = useState({
         full_name: '', email: '', phone: '', nationality: '',
@@ -32,6 +47,32 @@ export default function Apply() {
             setForm(f => ({ ...f, full_name: currentUser.displayName }))
         }
     }, [currentUser])
+
+    // Pre-fill from deep links (e.g. /apply?program=study&destination=Canada&field=STEM)
+    useEffect(() => {
+        const program = (searchParams.get('program') || '').trim()
+        const destination = (searchParams.get('destination') || '').trim()
+        const education = (searchParams.get('education_level') || '').trim()
+        const field = (searchParams.get('field') || '').trim()
+        const countryParam = (searchParams.get('country') || '').trim()
+
+        const destinationMatch = DESTINATION_OPTIONS.find(
+            d => d.toLowerCase() === (destination || countryParam).toLowerCase()
+        )
+        const programMatch = PROGRAM_TYPE_OPTIONS.includes(program) ? program : ''
+
+        if (!program && !destination && !education && !field && !countryParam) return
+
+        setForm(f => ({
+            ...f,
+            program_type: programMatch || f.program_type,
+            destination: destinationMatch || f.destination,
+            education_level: EDU_LEVEL_OPTIONS.includes(education) ? education : f.education_level,
+            message: field
+                ? (f.message ? f.message : `I'd like to apply for ${field}${destinationMatch ? ` in ${destinationMatch}` : ''}.`)
+                : f.message,
+        }))
+    }, [searchParams])
 
     const set = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
     const handleFile = e => setFiles(f => ({ ...f, [e.target.name]: e.target.files[0] }))
@@ -278,20 +319,9 @@ export default function Apply() {
                                             <Globe size={16} className="select-icon" />
                                             <select name="destination" value={form.destination} onChange={set} required>
                                                 <option value="">Select Destination Country</option>
-                                                <option value="Dubai (UAE)">Dubai (UAE)</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="United States">United States</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Germany">Germany</option>
-                                                <option value="Australia">Australia</option>
-                                                <option value="Qatar">Qatar</option>
-                                                <option value="Norway">Norway</option>
-                                                <option value="Poland">Poland</option>
-                                                <option value="France">France</option>
-                                                <option value="Oman">Oman</option>
-                                                <option value="China">China</option>
-                                                <option value="Japan">Japan</option>
-                                                <option value="Netherlands">Netherlands</option>
+                                                {DESTINATION_OPTIONS.map(d => (
+                                                    <option key={d} value={d}>{d}</option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
@@ -315,11 +345,9 @@ export default function Apply() {
                                     <label>Highest Education Level <span style={{ color: 'var(--error)' }}>*</span></label>
                                     <select name="education_level" value={form.education_level} onChange={set} required>
                                         <option value="">Select level</option>
-                                        <option>High School</option>
-                                        <option>Bachelor's Degree</option>
-                                        <option>Master's Degree</option>
-                                        <option>PhD</option>
-                                        <option>Professional Certification</option>
+                                        {EDU_LEVEL_OPTIONS.map(l => (
+                                            <option key={l} value={l}>{l}</option>
+                                        ))}
                                     </select>
                                 </div>
 

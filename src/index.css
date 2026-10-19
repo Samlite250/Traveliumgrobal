@@ -11929,3 +11929,371 @@ textarea:focus,
     height: 160px;
   }
 }
+
+/* ── Study Abroad: program finder (stats, toolbar, matches) ── */
+.program-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: -0.5rem 0 1.75rem;
+}
+
+.program-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.1rem;
+}
+
+.program-stat svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.program-stat div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.program-stat strong {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.program-stat span {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.program-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  background: var(--off-white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.program-search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 100px;
+  padding: 0.65rem 1.1rem;
+  transition: border-color 0.2s ease;
+}
+
+.program-search:focus-within {
+  border-color: var(--gold);
+}
+
+.program-search svg {
+  color: var(--text-light);
+  flex-shrink: 0;
+}
+
+.program-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.92rem;
+  color: var(--navy);
+  min-width: 0;
+}
+
+.program-search input::placeholder {
+  color: var(--text-light);
+}
+
+.program-search-clear {
+  border: none;
+  background: var(--gray-100);
+  color: var(--navy);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.7rem;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.program-levels,
+.program-destinations {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.program-levels-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 0.25rem;
+}
+
+.program-level-tab {
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.program-level-tab:hover {
+  border-color: var(--navy);
+}
+
+.program-level-tab.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+
+.dest-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dest-chip img {
+  width: 18px;
+  border-radius: 2px;
+}
+
+.dest-chip:hover {
+  border-color: var(--navy);
+}
+
+.dest-chip.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+
+.program-match-badge {
+  position: absolute;
+  left: 0.85rem;
+  bottom: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(11, 25, 44, 0.82);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 100px;
+  backdrop-filter: blur(4px);
+}
+
+.program-matches {
+  background: rgba(201, 162, 75, 0.08);
+  border: 1px solid rgba(201, 162, 75, 0.25);
+  border-radius: var(--radius-sm, 12px);
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.program-matches-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.program-matches ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.program-matches li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+}
+
+.program-matches li a {
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: none;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.program-matches li a:hover {
+  color: var(--gold);
+}
+
+.program-matches li em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.program-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.program-apply {
+  font-size: 0.85rem;
+  padding: 0.55rem 1.1rem;
+}
+
+.program-secondary-link {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.program-secondary-link:hover {
+  color: var(--gold);
+}
+
+.program-empty {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  background: var(--off-white);
+  border: 1px dashed var(--gray-200);
+  border-radius: var(--radius-lg);
+  color: var(--text-light);
+}
+
+.program-empty svg {
+  color: var(--gray-400, var(--gray-200));
+  margin-bottom: 0.75rem;
+}
+
+.program-empty h3 {
+  color: var(--navy);
+  font-size: 1.15rem;
+  margin-bottom: 0.4rem;
+}
+
+.program-empty-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+
+.program-note {
+  text-align: center;
+  margin-top: 1.75rem;
+  font-size: 0.88rem;
+  color: var(--text-light);
+}
+
+.program-note button {
+  border: none;
+  background: none;
+  color: var(--navy);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  font-size: 0.88rem;
+}
+
+.destination-pill.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+
+/* Scholarships: active field-filter notice */
+.filter-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(201, 162, 75, 0.12);
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  color: var(--navy);
+  font-size: 0.88rem;
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--radius, 16px);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-notice svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.filter-notice-clear {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: underline;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .program-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .program-toolbar {
+    padding: 1rem;
+  }
+
+  .program-search {
+    border-radius: var(--radius, 16px);
+    flex-wrap: wrap;
+  }
+}

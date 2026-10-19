@@ -6,7 +6,7 @@ import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { fallbackScholarships, scholarshipSlug, slugify } from '../lib/listings'
-import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe } from 'lucide-react'
+import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe, Award } from 'lucide-react'
 
 // Emoji flags for country filter tabs (case-insensitive lookup)
 const COUNTRY_FLAGS = {
@@ -121,10 +121,22 @@ export default function Scholarships() {
     }
 
     const filtered = useMemo(() => {
-        if (activeTab === 'All') return display
-        const q = activeTab.toLowerCase()
-        return display.filter(s => String(s.country || '').toLowerCase().includes(q))
-    }, [display, activeTab])
+        const keyword = (searchParams.get('program') || '').trim().toLowerCase()
+        let list = display
+        if (activeTab !== 'All') {
+            const q = activeTab.toLowerCase()
+            list = list.filter(s => String(s.country || '').toLowerCase().includes(q))
+        }
+        if (keyword) {
+            const words = keyword.split(/[^a-z0-9]+/).filter(w => w.length > 2)
+            list = list.filter(s => {
+                const haystack = [s.title, s.name, s.country, s.description, s.desc, s.sourceName, s.amount]
+                    .filter(Boolean).join(' ').toLowerCase()
+                return words.length === 0 || words.some(w => haystack.includes(w))
+            })
+        }
+        return list
+    }, [display, activeTab, searchParams])
 
     return (
         <main>
@@ -173,10 +185,22 @@ export default function Scholarships() {
                         </div>
                     )}
 
-                    {loading && <div className="admin-loading"><Loader2 size={24} className="animate-spin" /><p>Loading scholarships...</p></div>}
-                    {!loading && filtered.length === 0 && (
+                    {searchParams.get('program') && (
+                        <div className="filter-notice">
+                            <Award size={16} />
+                            Showing funding matched to <strong>{searchParams.get('program')}</strong>
+                            <Link to={`/scholarships${activeTab !== 'All' ? `?country=${encodeURIComponent(activeTab)}` : ''}`} className="filter-notice-clear">
+                                Clear
+                            </Link>
+                        </div>
+                    )}
+
+                    {loading && <div className="admin-loading"><Loader2 size={24} className="animate-spin" /><p>Loading scholarships...</p></div>}                    {!loading && filtered.length === 0 && (
                         <p style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-light)' }}>
-                            No scholarships listed for {activeTab} yet — check back soon.
+                            No scholarships match {activeTab !== 'All' ? activeTab : 'your filter'} yet — check back soon
+                            {searchParams.get('program') && (
+                                <> or <Link to="/scholarships" style={{ fontWeight: 700, textDecoration: 'underline' }}>clear the field filter</Link></>
+                            )}.
                         </p>
                     )}
                     <div className="scholarships-grid">
