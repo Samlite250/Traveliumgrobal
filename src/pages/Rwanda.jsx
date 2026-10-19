@@ -46,7 +46,7 @@ const rwandaUniversities = [
     {
         tag: 'Global Health', title: 'University of Global Health Equity (UGHE)',
         desc: 'Butaro-based institution training a new generation of global health leaders in equity-centered medicine.',
-        img: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=800&auto=format&fit=crop',
+        img: '/ughe-butaro.jpg',
     },
     {
         tag: 'Engineering', title: 'INES-Ruhengeri',
