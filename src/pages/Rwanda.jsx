@@ -31,7 +31,7 @@ const rwandaUniversities = [
     {
         tag: 'Pan-African', title: 'African Leadership University (ALU)',
         desc: 'Self-leadership-driven degrees in computer science, business and global challenges — campus in the heart of Kigali.',
-        img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop',
+        img: '/alu-kigali-campus.jpg',
     },
     {
         tag: 'Public', title: 'University of Rwanda',
