@@ -36,7 +36,7 @@ const rwandaUniversities = [
     {
         tag: 'Public', title: 'University of Rwanda',
         desc: 'The nation\'s largest public university — medicine, engineering, business, law and IT across six campuses.',
-        img: 'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=800&auto=format&fit=crop',
+        img: '/university-of-rwanda.jpg',
     },
     {
         tag: 'World-Class', title: 'Carnegie Mellon University Africa',
