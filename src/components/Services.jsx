@@ -22,49 +22,18 @@ const iconMap = { visa: <Briefcase size={24} />, flight: <Landmark size={24} />,
 const getServiceImage = (s) => {
     const name = (s.name || s.title || '').trim()
     const nameLower = name.toLowerCase()
-    const type = s.type
 
-    // Force local images for known canonical services (ignore Firestore URLs)
-    if (nameLower === 'flight booking') {
-        return '/services/flight-booking.jpg'
-    }
-    if (nameLower === 'dubai / uae work visa' || nameLower === 'dubai uae work visa' || nameLower.includes('dubai')) {
-        return '/services/dubai-work-visa.jpg'
-    }
-    if (nameLower === 'work visa (global)' || nameLower === 'work visa global' || nameLower.includes('work visa')) {
-        return '/services/work-visa-global.webp'
-    }
-    if (nameLower === 'tourist visa' || nameLower.includes('tourist')) {
-        return '/services/tourist-visa.jpg'
-    }
-    if (nameLower === 'permanent residency' || nameLower.includes('permanent') || nameLower.includes('pr') || nameLower.includes('residency')) {
-        return '/services/permanent-residency.jpg'
-    }
-    if (nameLower === 'study abroad' || nameLower.includes('study')) {
-        return '/services/study-abroad.jpg'
-    }
-    if (nameLower === 'scholarships & funding' || nameLower === 'scholarships and funding' || nameLower.includes('scholarship')) {
-        return '/services/scholarships.jpg'
-    }
-    if (nameLower === 'consultation & advisory' || nameLower === 'consultation and advisory' || nameLower.includes('consultation') || nameLower.includes('advisory')) {
-        return '/services/consultation.png'
-    }
+    // Exact matches first
+    if (nameLower === 'flight booking') return '/services/flight-booking.jpg'
+    if (nameLower === 'dubai / uae work visa' || nameLower === 'dubai uae work visa') return '/services/dubai-work-visa.jpg'
+    if (nameLower === 'work visa (global)' || nameLower === 'work visa global') return '/services/work-visa-global.webp'
+    if (nameLower === 'tourist visa') return '/services/tourist-visa.jpg'
+    if (nameLower === 'permanent residency') return '/services/permanent-residency.jpg'
+    if (nameLower === 'study abroad') return '/services/study-abroad.jpg'
+    if (nameLower === 'scholarships & funding' || nameLower === 'scholarships and funding') return '/services/scholarships.jpg'
+    if (nameLower === 'consultation & advisory' || nameLower === 'consultation and advisory') return '/services/consultation.png'
 
-    // Type-specific fallback
-    if (type === 'flight' || nameLower.includes('flight')) {
-        return '/services/flight-booking.jpg'
-    }
-    if (type === 'study' || nameLower.includes('study')) {
-        return '/services/study-abroad.jpg'
-    }
-    if (type === 'scholarship' || nameLower.includes('scholarship')) {
-        return '/services/scholarships.jpg'
-    }
-    if (type === 'visa' && (nameLower.includes('tourist') || nameLower.includes('travel'))) {
-        return '/services/tourist-visa.jpg'
-    }
-
-    // Fall back to Firestore image if available (for custom/non-canonical services)
+    // Firestore fallback only for unknown custom services
     const raw = s.img || s.image || s.imageUrl || s.photo
     if (raw && typeof raw === 'string' && raw.trim() !== '') {
         return raw
