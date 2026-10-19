@@ -106,7 +106,7 @@ export default function Navbar() {
     const { t, i18n } = useTranslation();
 
     const studyAbroadDropdown = [
-        { label: t('navbar.findUniversities', 'Find Universities'), href: '/study-abroad?view=search', icon: <Building2 size={15} /> },
+        { label: t('navbar.findUniversities', 'Find Universities'), href: '/study-abroad?view=universities', icon: <Building2 size={15} /> },
         { label: t('navbar.programs', 'Available Programs'), href: '/study-abroad?view=programs', icon: <BookOpen size={15} /> },
         { label: t('navbar.scholarships', 'Scholarships'), href: '/scholarships', icon: <Star size={15} /> },
         { label: t('navbar.destinations', 'Destinations'), href: '/study-abroad?view=destinations', icon: <MapPin size={15} /> },

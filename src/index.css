@@ -11930,6 +11930,224 @@ textarea:focus,
   }
 }
 
+/* ── Study Abroad: tab navigation ── */
+.study-tabs-wrap {
+  position: relative;
+  z-index: 3;
+  margin-top: -1.9rem;
+}
+
+.study-tabs {
+  display: inline-flex;
+  gap: 0.3rem;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 100px;
+  padding: 0.4rem;
+  box-shadow: 0 14px 36px rgba(11, 25, 44, 0.14);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.study-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.study-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--navy);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.72rem 1.35rem;
+  border-radius: 100px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.study-tab svg {
+  opacity: 0.75;
+}
+
+.study-tab:hover {
+  background: var(--gray-100);
+}
+
+.study-tab.active {
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: 0 8px 18px rgba(11, 25, 44, 0.24);
+}
+
+.study-tab.active svg {
+  color: var(--gold);
+  opacity: 1;
+}
+
+/* ── Study Abroad: university finder ── */
+.university-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.university-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius, 16px);
+  padding: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.university-card:hover {
+  border-color: transparent;
+  box-shadow: 0 18px 44px rgba(11, 25, 44, 0.1);
+  transform: translateY(-3px);
+}
+
+.university-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+.university-flag {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--gray-100);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  color: var(--navy);
+}
+
+.university-flag img {
+  width: 26px;
+  border-radius: 2px;
+}
+
+.university-identity {
+  min-width: 0;
+}
+
+.university-identity h3 {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.3;
+  margin: 0 0 0.15rem;
+}
+
+.university-identity span {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.university-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.8rem;
+}
+
+.university-tags span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--navy);
+  background: var(--gray-100);
+  padding: 0.22rem 0.6rem;
+  border-radius: 100px;
+}
+
+.university-note {
+  font-size: 0.83rem;
+  color: var(--text-light);
+  line-height: 1.55;
+  margin: 0 0 1.1rem;
+  flex: 1;
+}
+
+.university-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--gray-100);
+}
+
+.university-funding {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.university-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.university-programs-btn {
+  border: none;
+  background: none;
+  color: var(--navy);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.university-programs-btn:hover {
+  color: var(--gold);
+}
+
+.university-apply {
+  font-size: 0.78rem;
+  padding: 0.45rem 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .study-tabs-wrap {
+    margin-top: -1.4rem;
+  }
+
+  .study-tab {
+    font-size: 0.82rem;
+    padding: 0.62rem 1rem;
+  }
+
+  .study-tab span {
+    display: none;
+  }
+
+  .study-tab svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .university-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Study Abroad: hero banner ── */
 .page-hero--study {
   min-height: 440px;

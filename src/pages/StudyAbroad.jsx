@@ -9,7 +9,7 @@ import { fallbackScholarships, scholarshipSlug } from '../lib/listings'
 import {
     FlaskConical, HeartPulse, Briefcase, Scale, Palette, BookOpen,
     MapPin, ArrowRight, Globe, Search, GraduationCap, Award, SlidersHorizontal, X,
-    Check, CalendarDays
+    Check, CalendarDays, Building2, Landmark
 } from 'lucide-react'
 
 const programs = [
@@ -79,6 +79,31 @@ const programs = [
     },
 ]
 
+const universities = [
+    { name: 'University of Toronto', country: 'Canada', city: 'Toronto', fields: ['STEM', 'Medicine', 'Business', 'Law'], note: 'Research-intensive, top-ranked globally.' },
+    { name: 'University of British Columbia', country: 'Canada', city: 'Vancouver', fields: ['STEM', 'Environment', 'Business'], note: 'Strong sustainability and co-op programs.' },
+    { name: 'McGill University', country: 'Canada', city: 'Montreal', fields: ['Medicine', 'Law', 'Arts'], note: 'Historic campus with a global student body.' },
+    { name: 'New York University (NYU)', country: 'United States', city: 'New York', fields: ['Business', 'Arts', 'Law'], note: 'City-campus experience and global network.' },
+    { name: 'Arizona State University', country: 'United States', city: 'Phoenix', fields: ['STEM', 'Business', 'Education'], note: 'Large, innovation-driven public university.' },
+    { name: 'University of California, Berkeley', country: 'United States', city: 'Berkeley', fields: ['STEM', 'Environment', 'Social Sciences'], note: 'World-leading public research institution.' },
+    { name: 'University of Manchester', country: 'United Kingdom', city: 'Manchester', fields: ['STEM', 'Medicine', 'Business'], note: 'Russell Group university with strong industry links.' },
+    { name: 'University of Edinburgh', country: 'United Kingdom', city: 'Edinburgh', fields: ['Medicine', 'Law', 'Environment'], note: 'Ancient university with modern research strength.' },
+    { name: 'University College London (UCL)', country: 'United Kingdom', city: 'London', fields: ['Arts', 'STEM', 'Social Sciences'], note: 'Central London campus, highly international.' },
+    { name: 'University of Melbourne', country: 'Australia', city: 'Melbourne', fields: ['Medicine', 'Law', 'Business'], note: "Australia's top-ranked comprehensive university." },
+    { name: 'University of New South Wales (UNSW)', country: 'Australia', city: 'Sydney', fields: ['STEM', 'Business', 'Arts'], note: 'Strong engineering and design faculties.' },
+    { name: 'Monash University', country: 'Australia', city: 'Melbourne', fields: ['STEM', 'Medicine', 'Education'], note: 'Large multi-campus university with global partners.' },
+    { name: 'Technical University of Munich (TUM)', country: 'Germany', city: 'Munich', fields: ['STEM', 'Environment'], note: 'Low tuition, world-class engineering.' },
+    { name: 'Heidelberg University', country: 'Germany', city: 'Heidelberg', fields: ['Medicine', 'Social Sciences'], note: "Germany's oldest university, research-focused." },
+    { name: 'University of Auckland', country: 'New Zealand', city: 'Auckland', fields: ['STEM', 'Business', 'Environment'], note: "New Zealand's largest university." },
+    { name: 'University of Otago', country: 'New Zealand', city: 'Dunedin', fields: ['Medicine', 'Arts', 'Environment'], note: 'Historic campus with a strong student culture.' },
+    { name: 'University of Rwanda', country: 'Rwanda', city: 'Kigali', fields: ['STEM', 'Medicine', 'Law', 'Education'], note: "Rwanda's largest public university." },
+    { name: 'African Leadership University (ALU)', country: 'Rwanda', city: 'Kigali', fields: ['Business', 'STEM', 'Social Sciences'], note: 'Pan-African, mission-driven education.' },
+    { name: 'Kigali Independent University (ULK)', country: 'Rwanda', city: 'Kigali', fields: ['Law', 'Business', 'STEM'], note: "Rwanda's leading private university." },
+    { name: 'University of Global Health Equity (UGHE)', country: 'Rwanda', city: 'Butaro', fields: ['Medicine', 'Social Sciences'], note: 'Global health specialty institution.' },
+    { name: 'INES-Ruhengeri', country: 'Rwanda', city: 'Musanze', fields: ['STEM', 'Environment', 'Business'], note: 'Applied sciences and engineering.' },
+    { name: 'Rwanda Polytechnic', country: 'Rwanda', city: 'Kigali', fields: ['STEM', 'Education'], note: 'Technical and vocational training.' },
+]
+
 const destinations = [
     { name: 'Canada', flag: 'https://flagcdn.com/w40/ca.png' },
     { name: 'United States', flag: 'https://flagcdn.com/w40/us.png' },
@@ -87,6 +112,17 @@ const destinations = [
     { name: 'Germany', flag: 'https://flagcdn.com/w40/de.png' },
     { name: 'New Zealand', flag: 'https://flagcdn.com/w40/nz.png' },
 ]
+
+const COUNTRY_FLAGS = {
+    'canada': 'https://flagcdn.com/w40/ca.png',
+    'united states': 'https://flagcdn.com/w40/us.png',
+    'united kingdom': 'https://flagcdn.com/w40/gb.png',
+    'australia': 'https://flagcdn.com/w40/au.png',
+    'germany': 'https://flagcdn.com/w40/de.png',
+    'new zealand': 'https://flagcdn.com/w40/nz.png',
+    'rwanda': 'https://flagcdn.com/w40/rw.png',
+}
+const flagFor = (country) => COUNTRY_FLAGS[String(country || '').toLowerCase().trim()] || ''
 
 const DESTINATION_ALIASES = {
     usa: 'united states', 'u.s.a.': 'united states', us: 'united states', america: 'united states',
@@ -109,34 +145,39 @@ const levelTabs = [
     { id: 'phd', label: 'PhD', education: 'PhD' },
 ]
 
+const studyTabs = [
+    { id: 'universities', label: 'Find Universities', icon: <Building2 size={16} /> },
+    { id: 'programs', label: 'Available Programs', icon: <BookOpen size={16} /> },
+    { id: 'destinations', label: 'Destinations', icon: <MapPin size={16} /> },
+]
+
 export default function StudyAbroad() {
-    const [searchParams] = useSearchParams()
-    const view = searchParams.get('view') || ''
+    const [searchParams, setSearchParams] = useSearchParams()
+    const viewParam = (searchParams.get('view') || '').toLowerCase()
+    const initialTab = studyTabs.some(t => t.id === viewParam)
+        ? viewParam
+        : (viewParam === 'search' ? 'universities' : 'programs')
+    const [activeTab, setActiveTab] = useState(initialTab)
 
     const [scholarships, setScholarships] = useState([])
     const [loadingScholarships, setLoadingScholarships] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [level, setLevel] = useState('all')
     const [destination, setDestination] = useState('')
-
-    const scrollTo = (selector) => {
-        document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
+    const [uniSearch, setUniSearch] = useState('')
+    const [uniCountry, setUniCountry] = useState('All')
 
     useEffect(() => {
-        if (!view) return
-        const timer = setTimeout(() => {
-            if (view === 'destinations') {
-                scrollTo('#destinations')
-                return
-            }
-            scrollTo('#programs')
-            if (view === 'search') {
-                document.querySelector('.program-search input')?.focus({ preventScroll: true })
-            }
-        }, 200)
-        return () => clearTimeout(timer)
-    }, [view])
+        const next = studyTabs.some(t => t.id === viewParam)
+            ? viewParam
+            : (viewParam === 'search' ? 'universities' : 'programs')
+        setActiveTab(next)
+    }, [viewParam])
+
+    const switchTab = (tab) => {
+        setActiveTab(tab)
+        setSearchParams({ view: tab }, { replace: true })
+    }
 
     useEffect(() => {
         if (!db) { setScholarships(fallbackScholarships); setLoadingScholarships(false); return }
@@ -210,6 +251,21 @@ export default function StudyAbroad() {
         return `/scholarships?${params.toString()}`
     }
 
+    const universityCountries = useMemo(() => {
+        const set = new Set(universities.map(u => u.country))
+        return ['All', ...Array.from(set)]
+    }, [])
+
+    const visibleUniversities = useMemo(() => {
+        const term = uniSearch.trim().toLowerCase()
+        return universities.filter(u => {
+            if (uniCountry !== 'All' && u.country !== uniCountry) return false
+            if (!term) return true
+            return [u.name, u.country, u.city, ...u.fields, u.note]
+                .join(' ').toLowerCase().includes(term)
+        })
+    }, [uniSearch, uniCountry])
+
     return (
         <main>
             <SEOHead
@@ -228,296 +284,432 @@ export default function StudyAbroad() {
                 </div>
             </div>
 
-            <section className="content-section programs-section" id="programs">
+            <div className="study-tabs-wrap">
                 <div className="container">
-                    <div className="section-header">
-                        <div className="section-label">Fields of Study</div>
-                        <h2 className="section-title">Choose Your Program</h2>
-                        <p className="section-sub">Explore programs across all major disciplines at partner universities worldwide.</p>
-                    </div>
-
-                    <div className="program-stats">
-                        <div className="program-stat">
-                            <GraduationCap size={18} />
-                            <div>
-                                <strong>{programs.length}</strong>
-                                <span>Fields of study</span>
-                            </div>
-                        </div>
-                        <div className="program-stat">
-                            <Award size={18} />
-                            <div>
-                                <strong>{loadingScholarships ? '—' : totalMatches}</strong>
-                                <span>{destination ? `Matched scholarships in ${destination}` : 'Matched scholarships'}</span>
-                            </div>
-                        </div>
-                        <div className="program-stat">
-                            <Globe size={18} />
-                            <div>
-                                <strong>{destinations.length}</strong>
-                                <span>Top destinations</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="program-toolbar">
-                        <form
-                            className="program-search"
-                            role="search"
-                            onSubmit={(e) => {
-                                e.preventDefault()
-                                if (!searchTerm.trim()) {
-                                    e.currentTarget.querySelector('input')?.focus()
-                                    return
-                                }
-                                const target = document.querySelector('.programs-grid, .program-empty')
-                                target?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                            }}
-                        >
-                            <Search size={18} className="program-search-icon" />
-                            <input
-                                type="search"
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                                placeholder="Search a field, program or keyword (e.g. computer, nursing, MBA)"
-                                aria-label="Search fields of study"
-                            />
-                            {searchTerm && (
-                                <button
-                                    type="button"
-                                    onClick={() => setSearchTerm('')}
-                                    className="program-search-clear"
-                                    aria-label="Clear search"
-                                >
-                                    <X size={15} />
-                                </button>
-                            )}
-                            <button type="submit" className="program-search-btn">
-                                <Search size={16} />
-                                <span>Search</span>
-                            </button>
-                        </form>
-                        <div className="program-levels" role="tablist" aria-label="Degree level">
-                            <span className="program-levels-label"><SlidersHorizontal size={14} /> Level</span>
-                            {levelTabs.map(t => (
-                                <button
-                                    key={t.id}
-                                    type="button"
-                                    role="tab"
-                                    aria-selected={level === t.id}
-                                    className={`program-level-tab${level === t.id ? ' active' : ''}`}
-                                    onClick={() => setLevel(t.id)}
-                                >
-                                    {t.label}
-                                </button>
-                            ))}
-                        </div>
-                        <div className="program-destinations" role="group" aria-label="Preferred destination">
-                            <span className="program-levels-label"><Globe size={14} /> Destination</span>
+                    <div className="study-tabs" role="tablist" aria-label="Study abroad sections">
+                        {studyTabs.map(tab => (
                             <button
+                                key={tab.id}
                                 type="button"
-                                className={`dest-chip${destination === '' ? ' active' : ''}`}
-                                onClick={() => setDestination('')}
+                                role="tab"
+                                aria-selected={activeTab === tab.id}
+                                aria-label={tab.label}
+                                className={`study-tab${activeTab === tab.id ? ' active' : ''}`}
+                                onClick={() => switchTab(tab.id)}
                             >
-                                Any
+                                {tab.icon}
+                                <span>{tab.label}</span>
                             </button>
-                            {destinations.map(d => (
-                                <button
-                                    key={d.name}
-                                    type="button"
-                                    className={`dest-chip${destination === d.name ? ' active' : ''}`}
-                                    onClick={() => setDestination(destination === d.name ? '' : d.name)}
-                                >
-                                    <img src={d.flag} alt="" loading="lazy" />
-                                    {d.name}
-                                </button>
-                            ))}
-                        </div>
+                        ))}
                     </div>
+                </div>
+            </div>
 
-                    {visiblePrograms.length === 0 ? (
-                        <div className="program-empty">
-                            <Search size={28} />
-                            <h3>No field matches “{searchTerm}”</h3>
-                            <p>Try another keyword, or explore our matched scholarships instead.</p>
-                            <div className="program-empty-actions">
-                                <button type="button" className="btn btn-outline" onClick={() => setSearchTerm('')}>Reset search</button>
-                                <Link to="/scholarships" className="btn btn-primary">Browse scholarships <ArrowRight size={16} /></Link>
+            {activeTab === 'universities' && (
+                <section className="content-section" id="universities">
+                    <div className="container">
+                        <div className="section-header">
+                            <div className="section-label">Find Universities</div>
+                            <h2 className="section-title">Partner Universities Worldwide</h2>
+                            <p className="section-sub">
+                                Browse institutions we support across our study destinations, then jump straight to
+                                the funding that matches them.
+                            </p>
+                        </div>
+
+                        <div className="program-toolbar">
+                            <form className="program-search" role="search" onSubmit={e => e.preventDefault()}>
+                                <Search size={18} className="program-search-icon" />
+                                <input
+                                    type="search"
+                                    value={uniSearch}
+                                    onChange={e => setUniSearch(e.target.value)}
+                                    placeholder="Search a university, city or field (e.g. Toronto, engineering)"
+                                    aria-label="Search universities"
+                                />
+                                {uniSearch && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setUniSearch('')}
+                                        className="program-search-clear"
+                                        aria-label="Clear search"
+                                    >
+                                        <X size={15} />
+                                    </button>
+                                )}
+                            </form>
+                            <div className="program-destinations" role="group" aria-label="Filter by country">
+                                <span className="program-levels-label"><Globe size={14} /> Country</span>
+                                {universityCountries.map(c => (
+                                    <button
+                                        key={c}
+                                        type="button"
+                                        className={`dest-chip${uniCountry === c ? ' active' : ''}`}
+                                        onClick={() => setUniCountry(c)}
+                                    >
+                                        {c !== 'All' && flagFor(c) && <img src={flagFor(c)} alt="" loading="lazy" />}
+                                        {c === 'All' ? 'All Countries' : c}
+                                    </button>
+                                ))}
                             </div>
                         </div>
-                    ) : (
-                        <div className="programs-grid">
-                            {visiblePrograms.map(p => {
-                                const matched = matchesFor(p)
-                                const preview = matched.slice(0, 2)
-                                return (
-                                    <div key={p.title} className="program-card">
-                                        <div className="program-card-img">
-                                            <img src={p.img} alt={p.title} loading="lazy" />
-                                            <span className="program-tag">{p.tag}</span>
-                                            <span className="program-match-badge">
-                                                <Award size={12} />
-                                                {matched.length} {matched.length === 1 ? 'scholarship' : 'scholarships'}
-                                            </span>
-                                        </div>
-                                        <div className="program-card-body">
-                                            <div className="program-icon">{p.icon}</div>
-                                            <h3>{p.title}</h3>
-                                            <p>{p.desc}</p>
 
-                                            {preview.length > 0 && (
-                                                <div className="program-matches">
-                                                    <span className="program-matches-label">
-                                                        <Award size={13} /> Matching funding
-                                                    </span>
-                                                    <ul>
-                                                        {preview.map(s => (
-                                                            <li key={s.id || scholarshipSlug(s)}>
-                                                                <Link to={`/scholarships/${scholarshipSlug(s)}`}>
-                                                                    {s.title || s.name}
-                                                                </Link>
-                                                                {s.amount && <em>{s.amount}</em>}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                        {visibleUniversities.length === 0 ? (
+                            <div className="program-empty">
+                                <Search size={28} />
+                                <h3>No university matches your search</h3>
+                                <p>Try a different name, city or field — or clear the filters.</p>
+                                <div className="program-empty-actions">
+                                    <button type="button" className="btn btn-outline" onClick={() => { setUniSearch(''); setUniCountry('All') }}>
+                                        Reset filters
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="university-grid">
+                                {visibleUniversities.map(u => {
+                                    const count = countryCounts.get(normalizeCountry(u.country)) || 0
+                                    return (
+                                        <article key={u.name} className="university-card">
+                                            <div className="university-card-head">
+                                                <span className="university-flag">
+                                                    {flagFor(u.country)
+                                                        ? <img src={flagFor(u.country)} alt="" loading="lazy" />
+                                                        : <Landmark size={18} />}
+                                                </span>
+                                                <div className="university-identity">
+                                                    <h3>{u.name}</h3>
+                                                    <span>{u.city}, {u.country}</span>
                                                 </div>
-                                            )}
+                                            </div>
 
-                                            <div className="program-actions">
-                                                <Link to={applyHref(p)} className="btn btn-primary program-apply">
-                                                    Apply Now <ArrowRight size={15} />
-                                                </Link>
-                                                <Link to={scholarshipHref(p)} className="program-secondary-link">
-                                                    {matched.length > 0 ? `See ${matched.length} scholarship${matched.length === 1 ? '' : 's'}` : 'Find funding'}
-                                                </Link>
+                                            <div className="university-tags">
+                                                {u.fields.map(f => <span key={f}>{f}</span>)}
+                                            </div>
+
+                                            <p className="university-note">{u.note}</p>
+
+                                            <div className="university-card-foot">
+                                                <span className="university-funding">
+                                                    <Award size={13} />
+                                                    {count > 0 ? `${count} ${count === 1 ? 'scholarship' : 'scholarships'} in ${u.country}` : 'Funding via advisor'}
+                                                </span>
+                                                <div className="university-actions">
+                                                    <button
+                                                        type="button"
+                                                        className="university-programs-btn"
+                                                        onClick={() => { setDestination(u.country); switchTab('programs') }}
+                                                    >
+                                                        Programs
+                                                    </button>
+                                                    <Link
+                                                        to={`/apply?program=study&destination=${encodeURIComponent(u.country)}&field=${encodeURIComponent(`${u.name} — Study Abroad`)}`}
+                                                        className="btn btn-primary university-apply"
+                                                    >
+                                                        Apply <ArrowRight size={14} />
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    )
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </section>
+            )}
+
+            {activeTab === 'programs' && (
+                <section className="content-section programs-section" id="programs">
+                    <div className="container">
+                        <div className="section-header">
+                            <div className="section-label">Fields of Study</div>
+                            <h2 className="section-title">Choose Your Program</h2>
+                            <p className="section-sub">Explore programs across all major disciplines at partner universities worldwide.</p>
+                        </div>
+
+                        <div className="program-stats">
+                            <div className="program-stat">
+                                <GraduationCap size={18} />
+                                <div>
+                                    <strong>{programs.length}</strong>
+                                    <span>Fields of study</span>
+                                </div>
+                            </div>
+                            <div className="program-stat">
+                                <Award size={18} />
+                                <div>
+                                    <strong>{loadingScholarships ? '—' : totalMatches}</strong>
+                                    <span>{destination ? `Matched scholarships in ${destination}` : 'Matched scholarships'}</span>
+                                </div>
+                            </div>
+                            <div className="program-stat">
+                                <Globe size={18} />
+                                <div>
+                                    <strong>{destinations.length}</strong>
+                                    <span>Top destinations</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="program-toolbar">
+                            <form
+                                className="program-search"
+                                role="search"
+                                onSubmit={(e) => {
+                                    e.preventDefault()
+                                    if (!searchTerm.trim()) {
+                                        e.currentTarget.querySelector('input')?.focus()
+                                    }
+                                }}
+                            >
+                                <Search size={18} className="program-search-icon" />
+                                <input
+                                    type="search"
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                    placeholder="Search a field, program or keyword (e.g. computer, nursing, MBA)"
+                                    aria-label="Search fields of study"
+                                />
+                                {searchTerm && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearchTerm('')}
+                                        className="program-search-clear"
+                                        aria-label="Clear search"
+                                    >
+                                        <X size={15} />
+                                    </button>
+                                )}
+                                <button type="submit" className="program-search-btn">
+                                    <Search size={16} />
+                                    <span>Search</span>
+                                </button>
+                            </form>
+                            <div className="program-levels" role="tablist" aria-label="Degree level">
+                                <span className="program-levels-label"><SlidersHorizontal size={14} /> Level</span>
+                                {levelTabs.map(t => (
+                                    <button
+                                        key={t.id}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={level === t.id}
+                                        className={`program-level-tab${level === t.id ? ' active' : ''}`}
+                                        onClick={() => setLevel(t.id)}
+                                    >
+                                        {t.label}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="program-destinations" role="group" aria-label="Preferred destination">
+                                <span className="program-levels-label"><Globe size={14} /> Destination</span>
+                                <button
+                                    type="button"
+                                    className={`dest-chip${destination === '' ? ' active' : ''}`}
+                                    onClick={() => setDestination('')}
+                                >
+                                    Any
+                                </button>
+                                {destinations.map(d => (
+                                    <button
+                                        key={d.name}
+                                        type="button"
+                                        className={`dest-chip${destination === d.name ? ' active' : ''}`}
+                                        onClick={() => setDestination(destination === d.name ? '' : d.name)}
+                                    >
+                                        <img src={d.flag} alt="" loading="lazy" />
+                                        {d.name}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {visiblePrograms.length === 0 ? (
+                            <div className="program-empty">
+                                <Search size={28} />
+                                <h3>No field matches “{searchTerm}”</h3>
+                                <p>Try another keyword, or explore our matched scholarships instead.</p>
+                                <div className="program-empty-actions">
+                                    <button type="button" className="btn btn-outline" onClick={() => setSearchTerm('')}>Reset search</button>
+                                    <Link to="/scholarships" className="btn btn-primary">Browse scholarships <ArrowRight size={16} /></Link>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="programs-grid">
+                                {visiblePrograms.map(p => {
+                                    const matched = matchesFor(p)
+                                    const preview = matched.slice(0, 2)
+                                    return (
+                                        <div key={p.title} className="program-card">
+                                            <div className="program-card-img">
+                                                <img src={p.img} alt={p.title} loading="lazy" />
+                                                <span className="program-tag">{p.tag}</span>
+                                                <span className="program-match-badge">
+                                                    <Award size={12} />
+                                                    {matched.length} {matched.length === 1 ? 'scholarship' : 'scholarships'}
+                                                </span>
+                                            </div>
+                                            <div className="program-card-body">
+                                                <div className="program-icon">{p.icon}</div>
+                                                <h3>{p.title}</h3>
+                                                <p>{p.desc}</p>
+
+                                                {preview.length > 0 && (
+                                                    <div className="program-matches">
+                                                        <span className="program-matches-label">
+                                                            <Award size={13} /> Matching funding
+                                                        </span>
+                                                        <ul>
+                                                            {preview.map(s => (
+                                                                <li key={s.id || scholarshipSlug(s)}>
+                                                                    <Link to={`/scholarships/${scholarshipSlug(s)}`}>
+                                                                        {s.title || s.name}
+                                                                    </Link>
+                                                                    {s.amount && <em>{s.amount}</em>}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                                <div className="program-actions">
+                                                    <Link to={applyHref(p)} className="btn btn-primary program-apply">
+                                                        Apply Now <ArrowRight size={15} />
+                                                    </Link>
+                                                    <Link to={scholarshipHref(p)} className="program-secondary-link">
+                                                        {matched.length > 0 ? `See ${matched.length} scholarship${matched.length === 1 ? '' : 's'}` : 'Find funding'}
+                                                    </Link>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    )
+                                })}
+                            </div>
+                        )}
+
+                        {destination && (
+                            <p className="program-note">
+                                Showing funding matched to <strong>{destination}</strong>.
+                                <button type="button" onClick={() => setDestination('')}>Clear destination</button>
+                            </p>
+                        )}
+                    </div>
+                </section>
+            )}
+
+            {activeTab === 'destinations' && (
+                <section className="content-section destinations-strip" id="destinations">
+                    <div className="container">
+                        <div className="section-header">
+                            <div className="section-label">Top Destinations</div>
+                            <h2 className="section-title">Where Can You Study?</h2>
+                            <p className="section-sub">
+                                Tap a country to see matched funding and programs — counts update live from our
+                                scholarship database.
+                            </p>
+                        </div>
+
+                        <div className="destination-cards">
+                            {destinations.map(d => {
+                                const count = countryCounts.get(normalizeCountry(d.name)) || 0
+                                const active = destination === d.name
+                                return (
+                                    <button
+                                        key={d.name}
+                                        type="button"
+                                        aria-pressed={active}
+                                        className={`destination-card${active ? ' active' : ''}`}
+                                        onClick={() => setDestination(active ? '' : d.name)}
+                                    >
+                                        <span className="destination-card-flag">
+                                            <img src={d.flag} alt="" loading="lazy" />
+                                        </span>
+                                        <span className="destination-card-body">
+                                            <strong>{d.name}</strong>
+                                            <small>
+                                                {count > 0
+                                                    ? `${count} ${count === 1 ? 'scholarship' : 'scholarships'} matched`
+                                                    : 'Programs available'}
+                                            </small>
+                                        </span>
+                                        <span className="destination-card-state">
+                                            {active ? <Check size={16} /> : <ArrowRight size={16} />}
+                                        </span>
+                                    </button>
                                 )
                             })}
                         </div>
-                    )}
 
-                    {destination && (
-                        <p className="program-note">
-                            Showing funding matched to <strong>{destination}</strong>.
-                            <button type="button" onClick={() => setDestination('')}>Clear destination</button>
-                        </p>
-                    )}
-                </div>
-            </section>
+                        {destination && (
+                            <div className="destination-panel">
+                                <div className="destination-panel-head">
+                                    <div className="destination-panel-title">
+                                        <span className="destination-panel-icon"><Globe size={18} /></span>
+                                        <div>
+                                            <strong>{destination}</strong>
+                                            <small>
+                                                {destinationMatches.length} matched {destinationMatches.length === 1 ? 'scholarship' : 'scholarships'}
+                                                {' · '}{universities.filter(u => u.country === destination).length} partner universities
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <button type="button" className="destination-panel-clear" onClick={() => setDestination('')}>
+                                        <X size={14} /> Clear
+                                    </button>
+                                </div>
+
+                                {destinationMatches.length > 0 ? (
+                                    <ul className="destination-panel-list">
+                                        {destinationMatches.slice(0, 4).map(s => (
+                                            <li key={s.id || scholarshipSlug(s)}>
+                                                <Link to={`/scholarships/${scholarshipSlug(s)}`}>
+                                                    {s.title || s.name}
+                                                </Link>
+                                                <span className="destination-panel-meta">
+                                                    {s.amount && <em>{s.amount}</em>}
+                                                    {s.deadline && (
+                                                        <small><CalendarDays size={12} /> {s.deadline}</small>
+                                                    )}
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="destination-panel-empty">
+                                        No funding recorded for {destination} yet — our advisors can still match you with
+                                        suitable programs. <Link to="/contact">Talk to an advisor</Link>
+                                    </p>
+                                )}
+
+                                <div className="destination-panel-actions">
+                                    <Link to={`/scholarships?country=${encodeURIComponent(destination)}`} className="btn btn-primary">
+                                        See all {destination} scholarships <ArrowRight size={15} />
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        className="btn btn-outline-navy"
+                                        onClick={() => { setUniCountry(destination); switchTab('universities') }}
+                                    >
+                                        View {destination} universities
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="destinations-cta">
+                            <Link to="/apply" className="btn btn-primary" style={{ fontSize: '1rem' }}>
+                                Apply for Study Abroad <ArrowRight size={18} />
+                            </Link>
+                            <Link to="/scholarships" className="btn btn-outline-navy" style={{ fontSize: '1rem' }}>
+                                Browse All Scholarships
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* ── AdSense Banner Ad ── */}
             <AdSenseAd adSlot="5348613920" adFormat="auto" style={{ margin: '0 auto', maxWidth: '1200px', padding: '8px 20px' }} />
-
-            <section className="content-section destinations-strip" id="destinations">
-                <div className="container">
-                    <div className="section-header">
-                        <div className="section-label">Top Destinations</div>
-                        <h2 className="section-title">Where Can You Study?</h2>
-                        <p className="section-sub">
-                            Tap a country to instantly filter the matched funding and programs above — counts update
-                            live from our scholarship database.
-                        </p>
-                    </div>
-
-                    <div className="destination-cards">
-                        {destinations.map(d => {
-                            const count = countryCounts.get(normalizeCountry(d.name)) || 0
-                            const active = destination === d.name
-                            return (
-                                <button
-                                    key={d.name}
-                                    type="button"
-                                    aria-pressed={active}
-                                    className={`destination-card${active ? ' active' : ''}`}
-                                    onClick={() => setDestination(active ? '' : d.name)}
-                                >
-                                    <span className="destination-card-flag">
-                                        <img src={d.flag} alt="" loading="lazy" />
-                                    </span>
-                                    <span className="destination-card-body">
-                                        <strong>{d.name}</strong>
-                                        <small>
-                                            {count > 0
-                                                ? `${count} ${count === 1 ? 'scholarship' : 'scholarships'} matched`
-                                                : 'Programs available'}
-                                        </small>
-                                    </span>
-                                    <span className="destination-card-state">
-                                        {active ? <Check size={16} /> : <ArrowRight size={16} />}
-                                    </span>
-                                </button>
-                            )
-                        })}
-                    </div>
-
-                    {destination && (
-                        <div className="destination-panel">
-                            <div className="destination-panel-head">
-                                <div className="destination-panel-title">
-                                    <span className="destination-panel-icon"><Globe size={18} /></span>
-                                    <div>
-                                        <strong>{destination}</strong>
-                                        <small>
-                                            {destinationMatches.length} matched {destinationMatches.length === 1 ? 'scholarship' : 'scholarships'}
-                                            {' · '}{programs.length} fields of study
-                                        </small>
-                                    </div>
-                                </div>
-                                <button type="button" className="destination-panel-clear" onClick={() => setDestination('')}>
-                                    <X size={14} /> Clear
-                                </button>
-                            </div>
-
-                            {destinationMatches.length > 0 ? (
-                                <ul className="destination-panel-list">
-                                    {destinationMatches.slice(0, 4).map(s => (
-                                        <li key={s.id || scholarshipSlug(s)}>
-                                            <Link to={`/scholarships/${scholarshipSlug(s)}`}>
-                                                {s.title || s.name}
-                                            </Link>
-                                            <span className="destination-panel-meta">
-                                                {s.amount && <em>{s.amount}</em>}
-                                                {s.deadline && (
-                                                    <small><CalendarDays size={12} /> {s.deadline}</small>
-                                                )}
-                                            </span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="destination-panel-empty">
-                                    No funding recorded for {destination} yet — our advisors can still match you with
-                                    suitable programs. <Link to="/contact">Talk to an advisor</Link>
-                                </p>
-                            )}
-
-                            <div className="destination-panel-actions">
-                                <Link to={`/scholarships?country=${encodeURIComponent(destination)}`} className="btn btn-primary">
-                                    See all {destination} scholarships <ArrowRight size={15} />
-                                </Link>
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-navy"
-                                    onClick={() => document.querySelector('.programs-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                                >
-                                    Back to matching programs
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="destinations-cta">
-                        <Link to="/apply" className="btn btn-primary" style={{ fontSize: '1rem' }}>
-                            Apply for Study Abroad <ArrowRight size={18} />
-                        </Link>
-                        <Link to="/scholarships" className="btn btn-outline-navy" style={{ fontSize: '1rem' }}>
-                            Browse All Scholarships
-                        </Link>
-                    </div>
-                </div>
-            </section>
 
             <CTABanner />
         </main >

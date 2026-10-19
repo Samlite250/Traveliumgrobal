@@ -12,7 +12,7 @@ import {
 const DESTINATION_OPTIONS = [
     'Dubai (UAE)', 'Canada', 'United States', 'United Kingdom', 'Germany', 'Australia',
     'Qatar', 'Norway', 'Poland', 'France', 'Oman', 'China', 'Japan', 'Netherlands',
-    'Rwanda',
+    'Rwanda', 'New Zealand',
 ]
 
 const PROGRAM_TYPE_OPTIONS = [
