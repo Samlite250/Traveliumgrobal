@@ -309,9 +309,38 @@ export default function StudyAbroad() {
                             </p>
                         </div>
 
-                        <div className="program-toolbar">
-                            <form className="program-search" role="search" onSubmit={e => e.preventDefault()}>
-                                <Search size={18} className="program-search-icon" />
+                        <div className="uni-finder">
+                            <div className="uni-finder-head">
+                                <div className="uni-finder-title">
+                                    <span className="uni-finder-icon"><Building2 size={18} /></span>
+                                    <div>
+                                        <strong>{visibleUniversities.length} universities</strong>
+                                        <small>
+                                            {uniCountry === 'All' ? 'across all destinations' : `in ${uniCountry}`}
+                                            {uniSearch.trim() && <> · matching “{uniSearch.trim()}”</>}
+                                        </small>
+                                    </div>
+                                </div>
+                                {(uniSearch || uniCountry !== 'All') && (
+                                    <button
+                                        type="button"
+                                        className="uni-finder-reset"
+                                        onClick={() => { setUniSearch(''); setUniCountry('All') }}
+                                    >
+                                        <X size={14} /> Reset
+                                    </button>
+                                )}
+                            </div>
+
+                            <form
+                                className="uni-search"
+                                role="search"
+                                onSubmit={(e) => {
+                                    e.preventDefault()
+                                    if (!uniSearch.trim()) e.currentTarget.querySelector('input')?.focus()
+                                }}
+                            >
+                                <Search size={18} className="uni-search-icon" />
                                 <input
                                     type="search"
                                     value={uniSearch}
@@ -323,26 +352,38 @@ export default function StudyAbroad() {
                                     <button
                                         type="button"
                                         onClick={() => setUniSearch('')}
-                                        className="program-search-clear"
+                                        className="uni-search-clear"
                                         aria-label="Clear search"
                                     >
                                         <X size={15} />
                                     </button>
                                 )}
+                                <button type="submit" className="uni-search-btn">
+                                    <Search size={16} />
+                                    <span>Search</span>
+                                </button>
                             </form>
-                            <div className="program-destinations" role="group" aria-label="Filter by country">
-                                <span className="program-levels-label"><Globe size={14} /> Country</span>
-                                {universityCountries.map(c => (
-                                    <button
-                                        key={c}
-                                        type="button"
-                                        className={`dest-chip${uniCountry === c ? ' active' : ''}`}
-                                        onClick={() => setUniCountry(c)}
-                                    >
-                                        {c !== 'All' && flagFor(c) && <img src={flagFor(c)} alt="" loading="lazy" />}
-                                        {c === 'All' ? 'All Countries' : c}
-                                    </button>
-                                ))}
+
+                            <div className="uni-filters" role="group" aria-label="Filter by country">
+                                <span className="uni-filters-label"><Globe size={14} /> Country</span>
+                                <div className="uni-chips">
+                                    {universityCountries.map(c => {
+                                        const count = c === 'All' ? universities.length : universities.filter(u => u.country === c).length
+                                        return (
+                                            <button
+                                                key={c}
+                                                type="button"
+                                                aria-pressed={uniCountry === c}
+                                                className={`uni-chip${uniCountry === c ? ' active' : ''}`}
+                                                onClick={() => setUniCountry(c)}
+                                            >
+                                                {c !== 'All' && flagFor(c) && <img src={flagFor(c)} alt="" loading="lazy" />}
+                                                <span>{c === 'All' ? 'All Countries' : c}</span>
+                                                <em>{count}</em>
+                                            </button>
+                                        )
+                                    })}
+                                </div>
                             </div>
                         </div>
 
