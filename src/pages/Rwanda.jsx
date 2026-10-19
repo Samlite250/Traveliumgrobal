@@ -3,19 +3,17 @@ import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
 import { fallbackScholarships, scholarshipSlug, trackOutbound } from '../lib/listings'
 import {
-    ShieldCheck, TrendingUp, Cpu, Stamp, Leaf, Plane,
+    ShieldCheck, TrendingUp, Cpu, Stamp, Plane,
     CalendarDays, ArrowRight, ExternalLink, GraduationCap, MapPin, Briefcase, Star,
     BookOpen, DollarSign, Globe
 } from 'lucide-react'
 
-// ── "Why Rwanda" highlights ──
-const rwandaHighlights = [
-    { icon: <ShieldCheck size={28} />, title: 'Africa\'s Safest Country', desc: 'Ranked the safest country in Africa for 8+ consecutive years — live and work with peace of mind.' },
-    { icon: <TrendingUp size={28} />, title: 'Fastest-Growing Economy', desc: 'Sustained 7–8% annual GDP growth with a business-friendly government and zero red-tape reforms.' },
-    { icon: <Cpu size={28} />, title: 'Kigali Innovation City', desc: 'A booming tech hub hosting Apple\'s AI campus, smart-device assembly plants and hundreds of startups.' },
-    { icon: <Stamp size={28} />, title: 'Visa-on-Arrival', desc: 'All African citizens get visas on arrival; e-visas available for travellers from 200+ countries worldwide.' },
-    { icon: <Leaf size={28} />, title: 'Clean & Green Capital', desc: 'Kigali is Africa\'s cleanest city — car-free days, monthly Umuganda community service and a plastic-free nation.' },
-    { icon: <Plane size={28} />, title: 'East Africa\'s Gateway', desc: 'Direct RwandAir flights to Dubai, Europe, Asia, India and the Americas — the perfect regional base.' },
+// ── Key facts shown as chips inside the hero ──
+const heroFacts = [
+    { icon: <ShieldCheck size={16} />, label: 'Africa\'s Safest Country' },
+    { icon: <TrendingUp size={16} />, label: '7–8% Annual GDP Growth' },
+    { icon: <Stamp size={16} />, label: 'Visa-on-Arrival' },
+    { icon: <Cpu size={16} />, label: 'Kigali Innovation City' },
 ]
 
 // ── Featured jobs in Rwanda (curated from our Rwanda jobs board) ──
@@ -87,51 +85,37 @@ export default function Rwanda() {
                     <div className="breadcrumb">
                         <Link to="/">Home</Link><span className="sep">›</span><span>Rwanda</span>
                     </div>
-                    <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+                    <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
                         <img src="https://flagcdn.com/w80/rw.png" alt="Rwanda flag" width="40" height="27" loading="eager" style={{ borderRadius: '3px', objectFit: 'cover', display: 'block' }} />
                         Discover Rwanda
                     </h1>
-                    <p>East Africa's fastest-growing tech, hospitality & services hub — local jobs, scholarships, universities and relocation support, all in one place.</p>
-                    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
+                    <p>East Africa's fastest-growing tech, hospitality & services hub — safe, clean, connected and hungry for talent. Browse local jobs, scholarships, universities and relocation support, all in one place.</p>
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '1.25rem' }}>
+                        {heroFacts.map(f => (
+                            <span key={f.label} style={{
+                                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                                padding: '0.4rem 0.85rem', borderRadius: '999px',
+                                border: '1px solid rgba(255,255,255,0.28)', background: 'rgba(255,255,255,0.10)',
+                                color: '#fff', fontSize: '0.8rem', fontWeight: 600, backdropFilter: 'blur(6px)',
+                            }}>
+                                <span style={{ color: 'var(--gold)', display: 'inline-flex' }}>{f.icon}</span>
+                                {f.label}
+                            </span>
+                        ))}
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.5rem', justifyContent: 'center' }}>
                         <Link to="/jobs?country=Rwanda" className="btn btn-primary">
                             <Briefcase size={16} /> Browse Rwanda Jobs
                         </Link>
                         <Link to="/apply" className="btn btn-navy">
                             Apply Now <ArrowRight size={16} />
                         </Link>
-                    </div>
-                </div>
-            </div>
-
-            {/* ── Why Rwanda ── */}
-            <section className="dubai-spotlight section">
-                <div className="container">
-                    <div className="dubai-spotlight-header">
-                        <div className="section-label"><Star size={20} className="icon-fire" /> Featured Destination</div>
-                        <h2 className="section-title">Why Rwanda?</h2>
-                        <p className="section-sub">
-                            The "Land of a Thousand Hills" is Africa's biggest success story — safe, clean, connected and hungry for talent.
-                        </p>
-                    </div>
-                    <div className="dubai-highlights-grid">
-                        {rwandaHighlights.map(h => (
-                            <div key={h.title} className="dubai-highlight-card">
-                                <div className="dubai-highlight-icon">{h.icon}</div>
-                                <h4>{h.title}</h4>
-                                <p>{h.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="dubai-spotlight-cta">
-                        <Link to="/apply" className="btn btn-primary">
-                            Start Your Rwanda Journey <ArrowRight size={16} />
-                        </Link>
-                        <Link to="/contact" className="btn btn-outline">
+                        <Link to="/contact" className="btn btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.35)' }}>
                             <ShieldCheck size={16} /> Free Consultation
                         </Link>
                     </div>
                 </div>
-            </section>
+            </div>
 
             {/* ── Featured Rwanda Jobs ── */}
             <section className="content-section">
