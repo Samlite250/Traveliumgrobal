@@ -5,7 +5,7 @@ import { fallbackScholarships, scholarshipSlug, trackOutbound } from '../lib/lis
 import {
     ShieldCheck, TrendingUp, Cpu, Stamp, Leaf, Plane,
     CalendarDays, ArrowRight, ExternalLink, GraduationCap, MapPin, Briefcase, Star,
-    BookOpen, DollarSign
+    BookOpen, DollarSign, Globe
 } from 'lucide-react'
 
 // ── "Why Rwanda" highlights ──
@@ -82,7 +82,7 @@ export default function Rwanda() {
 
             {/* ── Hero ── */}
             <div className="page-hero">
-                <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?q=80&w=1600&auto=format&fit=crop)' }} />
+                <div className="page-hero-bg" style={{ backgroundImage: 'url(/kigali-convention-centre.jpg)' }} />
                 <div className="container page-hero-content">
                     <div className="breadcrumb">
                         <Link to="/">Home</Link><span className="sep">›</span><span>Rwanda</span>
