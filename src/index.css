@@ -10799,6 +10799,28 @@ textarea:focus,
   background: var(--white);
 }
 
+/* Study Abroad: center section headers & toolbars within each tab */
+#universities .section-header,
+#programs .section-header,
+#destinations .section-header {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#universities .section-sub,
+#programs .section-sub,
+#destinations .section-sub {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#universities .uni-finder-head,
+#universities .uni-filters,
+#destinations .destination-panel-head {
+  justify-content: center;
+}
+
 /* ===== SCHOLARSHIPS GRID ===== */
 .scholarships-grid {
   display: grid;
@@ -11935,6 +11957,8 @@ textarea:focus,
   position: relative;
   z-index: 3;
   margin-top: -1.9rem;
+  display: flex;
+  justify-content: center;
 }
 
 .study-tabs {

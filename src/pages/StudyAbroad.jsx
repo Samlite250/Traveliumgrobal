@@ -167,8 +167,11 @@ export default function StudyAbroad() {
     }, [viewParam])
 
     const switchTab = (tab) => {
+        const section = document.querySelector('.study-tabs-wrap')
+        const y = section ? section.getBoundingClientRect().top + window.scrollY - 16 : null
         setActiveTab(tab)
         setSearchParams({ view: tab }, { replace: true })
+        if (y !== null) window.scrollTo({ top: y, behavior: 'auto' })
     }
 
     useEffect(() => {
