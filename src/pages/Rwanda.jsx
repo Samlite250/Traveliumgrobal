@@ -56,7 +56,7 @@ const rwandaUniversities = [
     {
         tag: 'TVET', title: 'Rwanda Polytechnic (RP)',
         desc: 'Hands-on TVET colleges nationwide — welding, automotive, ICT, hospitality and advanced manufacturing skills.',
-        img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800&auto=format&fit=crop',
+        img: '/rwanda-polytechnic.jpg',
     },
 ]
 
