@@ -6,14 +6,14 @@ import { Briefcase, Landmark, Palmtree, GraduationCap, ArrowRight, Loader2 } fro
 import { useTranslation } from 'react-i18next'
 
 const fallbackServices = [
-    { title: 'Flight Booking', img: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=800&auto=format&fit=crop', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', type: 'flight' },
-    { title: 'Dubai / UAE Work Visa', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop', desc: 'Fast-track your UAE work visa. We handle the entire process — job offer verification, Emirates ID, and more.', href: '/visa-services', type: 'visa' },
-    { title: 'Work Visa (Global)', img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop', desc: 'Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.', href: '/visa-services', type: 'visa' },
-    { title: 'Tourist Visa', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', desc: 'Travel the world with ease. We handle your tourist visa process end-to-end.', href: '/visa-services', type: 'visa' },
-    { title: 'Permanent Residency', img: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop', desc: 'Pathway to Permanent Residency. Secure your future in Canada, Australia, Europe or another destination.', href: '/visa-services', type: 'visa' },
-    { title: 'Study Abroad', img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800&auto=format&fit=crop', desc: 'Discover the best universities and degree programs worldwide with our expert academic guidance.', href: '/study-abroad', type: 'study' },
-    { title: 'Scholarships & Funding', img: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=800&auto=format&fit=crop', desc: 'Access fully funded scholarships from top institutions — Commonwealth, Chevening, Fulbright & more.', href: '/scholarships', type: 'scholarship' },
-    { title: 'Consultation & Advisory', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop', desc: 'Expert one-on-one guidance to plan your international journey, from visa to settlement.', href: '/contact', type: 'visa' },
+    { title: 'Flight Booking', img: '/services/flight-booking.jpg', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', type: 'flight' },
+    { title: 'Dubai / UAE Work Visa', img: '/services/dubai-work-visa.jpg', desc: 'Fast-track your UAE work visa. We handle the entire process — job offer verification, Emirates ID, and more.', href: '/visa-services', type: 'visa' },
+    { title: 'Work Visa (Global)', img: '/services/work-visa-global.jpg', desc: 'Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.', href: '/visa-services', type: 'visa' },
+    { title: 'Tourist Visa', img: '/services/tourist-visa.jpg', desc: 'Travel the world with ease. We handle your tourist visa process end-to-end.', href: '/visa-services', type: 'visa' },
+    { title: 'Permanent Residency', img: '/services/permanent-residency.jpg', desc: 'Pathway to Permanent Residency. Secure your future in Canada, Australia, Europe or another destination.', href: '/visa-services', type: 'visa' },
+    { title: 'Study Abroad', img: '/services/study-abroad.jpg', desc: 'Discover the best universities and degree programs worldwide with our expert academic guidance.', href: '/study-abroad', type: 'study' },
+    { title: 'Scholarships & Funding', img: '/services/scholarships.jpg', desc: 'Access fully funded scholarships from top institutions — Commonwealth, Chevening, Fulbright & more.', href: '/scholarships', type: 'scholarship' },
+    { title: 'Consultation & Advisory', img: '/services/consultation.jpg', desc: 'Expert one-on-one guidance to plan your international journey, from visa to settlement.', href: '/contact', type: 'visa' },
 ]
 
 const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-abroad', scholarship: '/scholarships' }
@@ -23,23 +23,32 @@ const getServiceImage = (s) => {
     const nameLower = (s.name || s.title || '').toLowerCase()
     // Type-specific images take priority to avoid wrong Firestore URLs
     if (nameLower.includes('flight') || s.type === 'flight') {
-        return 'https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=800&auto=format&fit=crop'
+        return '/services/flight-booking.jpg'
     }
     if (nameLower.includes('tourist') || nameLower.includes('travel')) {
-        return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop'
+        return '/services/tourist-visa.jpg'
     }
     if (nameLower.includes('study') || s.type === 'study') {
-        return 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800&auto=format&fit=crop'
+        return '/services/study-abroad.jpg'
+    }
+    if (nameLower.includes('scholarship') || s.type === 'scholarship') {
+        return '/services/scholarships.jpg'
     }
     if (nameLower.includes('residency') || nameLower.includes('pr')) {
-        return 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop'
+        return '/services/permanent-residency.jpg'
+    }
+    if (nameLower.includes('dubai') || nameLower.includes('uae')) {
+        return '/services/dubai-work-visa.jpg'
+    }
+    if (nameLower.includes('consult') || nameLower.includes('advisory')) {
+        return '/services/consultation.jpg'
     }
     // Fall back to Firestore image if available
     const raw = s.img || s.image || s.imageUrl || s.photo
     if (raw && typeof raw === 'string' && raw.trim() !== '') {
         return raw
     }
-    return 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop'
+    return '/services/work-visa-global.jpg'
 }
 
 export default function Services() {
@@ -112,9 +121,9 @@ export default function Services() {
                                         e.target.onerror = null;
                                         const nameLower = (s.name || s.title || '').toLowerCase();
                                         if (nameLower.includes('flight') || s.type === 'flight') {
-                                            e.target.src = 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&auto=format&fit=crop';
+                                            e.target.src = '/services/flight-booking.jpg';
                                         } else {
-                                            e.target.src = 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop';
+                                            e.target.src = '/services/work-visa-global.jpg';
                                         }
                                     }}
                                 />
