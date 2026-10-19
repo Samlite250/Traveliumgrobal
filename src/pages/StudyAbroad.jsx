@@ -8,7 +8,7 @@ import { db } from '../lib/firebase'
 import { fallbackScholarships, scholarshipSlug } from '../lib/listings'
 import {
     FlaskConical, HeartPulse, Briefcase, Scale, Palette, BookOpen,
-    MapPin, ArrowRight, Globe, Search, GraduationCap, Award, SlidersHorizontal
+    MapPin, ArrowRight, Globe, Search, GraduationCap, Award, SlidersHorizontal, X
 } from 'lucide-react'
 
 const programs = [
@@ -173,8 +173,8 @@ export default function StudyAbroad() {
                 description="Apply to study abroad at top universities in Canada, UK, USA, Germany, Australia & more. Travelium Global guides students from East Africa and worldwide through the full application process."
                 canonical="/study-abroad"
             />
-            <div className="page-hero">
-                <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=1600&auto=format&fit=crop)' }} />
+            <div className="page-hero page-hero--study">
+                <div className="page-hero-bg" style={{ backgroundImage: 'url(/study-abroad-hero.jpg)' }} />
                 <div className="container page-hero-content">
                     <div className="breadcrumb">
                         <Link to="/">Home</Link><span className="sep">›</span><span>Study Abroad</span>
@@ -217,8 +217,20 @@ export default function StudyAbroad() {
                     </div>
 
                     <div className="program-toolbar">
-                        <div className="program-search">
-                            <Search size={18} />
+                        <form
+                            className="program-search"
+                            role="search"
+                            onSubmit={(e) => {
+                                e.preventDefault()
+                                if (!searchTerm.trim()) {
+                                    e.currentTarget.querySelector('input')?.focus()
+                                    return
+                                }
+                                const target = document.querySelector('.programs-grid, .program-empty')
+                                target?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                            }}
+                        >
+                            <Search size={18} className="program-search-icon" />
                             <input
                                 type="search"
                                 value={searchTerm}
@@ -227,11 +239,20 @@ export default function StudyAbroad() {
                                 aria-label="Search fields of study"
                             />
                             {searchTerm && (
-                                <button type="button" onClick={() => setSearchTerm('')} className="program-search-clear">
-                                    Clear
+                                <button
+                                    type="button"
+                                    onClick={() => setSearchTerm('')}
+                                    className="program-search-clear"
+                                    aria-label="Clear search"
+                                >
+                                    <X size={15} />
                                 </button>
                             )}
-                        </div>
+                            <button type="submit" className="program-search-btn">
+                                <Search size={16} />
+                                <span>Search</span>
+                            </button>
+                        </form>
                         <div className="program-levels" role="tablist" aria-label="Degree level">
                             <span className="program-levels-label"><SlidersHorizontal size={14} /> Level</span>
                             {levelTabs.map(t => (
