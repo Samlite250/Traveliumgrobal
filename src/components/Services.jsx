@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 const fallbackServices = [
     { title: 'Flight Booking', img: '/services/flight-booking.jpg', desc: 'Find and book cheap flights globally. Best rates guaranteed, flexible options, and 24/7 travel support.', href: '/flights', type: 'flight' },
     { title: 'Dubai / UAE Work Visa', img: '/services/dubai-work-visa.jpg', desc: 'Fast-track your UAE work visa. We handle the entire process — job offer verification, Emirates ID, and more.', href: '/visa-services', type: 'visa' },
-    { title: 'Work Visa (Global)', img: '/services/work-visa-global.jpg', desc: 'Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.', href: '/visa-services', type: 'visa' },
+    { title: 'Work Visa (Global)', img: '/services/work-visa-global.webp', desc: 'Employment-based visas for Canada, UK, Germany, USA & more. Our 98% success rate speaks for itself.', href: '/visa-services', type: 'visa' },
     { title: 'Tourist Visa', img: '/services/tourist-visa.jpg', desc: 'Travel the world with ease. We handle your tourist visa process end-to-end.', href: '/visa-services', type: 'visa' },
     { title: 'Permanent Residency', img: '/services/permanent-residency.jpg', desc: 'Pathway to Permanent Residency. Secure your future in Canada, Australia, Europe or another destination.', href: '/visa-services', type: 'visa' },
     { title: 'Study Abroad', img: '/services/study-abroad.jpg', desc: 'Discover the best universities and degree programs worldwide with our expert academic guidance.', href: '/study-abroad', type: 'study' },
@@ -48,7 +48,7 @@ const getServiceImage = (s) => {
     if (raw && typeof raw === 'string' && raw.trim() !== '') {
         return raw
     }
-    return '/services/work-visa-global.jpg'
+    return '/services/work-visa-global.webp'
 }
 
 export default function Services() {
@@ -123,7 +123,7 @@ export default function Services() {
                                         if (nameLower.includes('flight') || s.type === 'flight') {
                                             e.target.src = '/services/flight-booking.jpg';
                                         } else {
-                                            e.target.src = '/services/work-visa-global.jpg';
+                                            e.target.src = '/services/work-visa-global.webp';
                                         }
                                     }}
                                 />
