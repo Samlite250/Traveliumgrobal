@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { GraduationCap, ClipboardCheck, School, Globe, Award } from 'lucide-react'
+import { GraduationCap, ClipboardCheck, School, Globe, Award, Briefcase } from 'lucide-react'
 
 const stats = [
     { icon: <GraduationCap size={20} />, value: 15000, suffix: '+', label: 'Students Assisted' },
     { icon: <ClipboardCheck size={20} />, value: 9500, suffix: '+', label: 'Visa Approvals' },
     { icon: <School size={20} />, value: 200, suffix: '+', label: 'Partner Universities' },
     { icon: <Globe size={20} />, value: 20, suffix: '+', label: 'Countries Covered' },
+    { icon: <Briefcase size={20} />, value: 12000, suffix: '+', label: 'Jobs Placed' },
     { icon: <Award size={20} />, value: 98, suffix: '%', label: 'Success Rate' },
 ]
 
