@@ -20,18 +20,24 @@ const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-ab
 const iconMap = { visa: <Briefcase size={24} />, flight: <Landmark size={24} />, study: <GraduationCap size={24} />, scholarship: <Palmtree size={24} /> }
 
 const getServiceImage = (s) => {
-    const name = (s.name || s.title || '').trim()
-    const nameLower = name.toLowerCase()
+    const nameLower = (s.name || s.title || '').trim().toLowerCase()
+    const typeLower = (s.type || '').trim().toLowerCase()
 
-    // Exact matches first
-    if (nameLower === 'flight booking') return '/services/flight-booking.jpg'
-    if (nameLower === 'dubai / uae work visa' || nameLower === 'dubai uae work visa') return '/services/dubai-work-visa.jpg'
-    if (nameLower === 'work visa (global)' || nameLower === 'work visa global') return '/services/work-visa-global.webp'
-    if (nameLower === 'tourist visa') return '/services/tourist-visa.jpg'
-    if (nameLower === 'permanent residency') return '/services/permanent-residency.jpg'
-    if (nameLower === 'study abroad') return '/services/study-abroad.jpg'
-    if (nameLower === 'scholarships & funding' || nameLower === 'scholarships and funding') return '/services/scholarships.jpg'
-    if (nameLower === 'consultation & advisory' || nameLower === 'consultation and advisory') return '/services/consultation.png'
+    // Ordered keyword matching — specific before generic
+    const match = (keywords) => keywords.some(k => nameLower.includes(k))
+
+    if (match(['dubai', 'uae', 'emirates'])) return '/services/dubai-work-visa.jpg'
+    if (match(['flight', 'airfare', 'airline', 'ticket'])) return '/services/flight-booking.jpg'
+    if (match(['tourist', 'visit visa', 'holiday', 'vacation'])) return '/services/tourist-visa.jpg'
+    if (match(['permanent', 'residency', 'green card'])) return '/services/permanent-residency.jpg'
+    if (match(['scholarship', 'funding', 'grant', 'bursary'])) return '/services/scholarships.jpg'
+    if (match(['study', 'student', 'university', 'admission'])) return '/services/study-abroad.jpg'
+    if (match(['consult', 'advisory', 'advisor', 'promotion'])) return '/services/consultation.png'
+    if (match(['work visa', 'work permit', 'employment', 'job visa', 'career'])) return '/services/work-visa-global.webp'
+
+    if (typeLower === 'flight') return '/services/flight-booking.jpg'
+    if (typeLower === 'study') return '/services/study-abroad.jpg'
+    if (typeLower === 'scholarship') return '/services/scholarships.jpg'
 
     // Firestore fallback only for unknown custom services
     const raw = s.img || s.image || s.imageUrl || s.photo
