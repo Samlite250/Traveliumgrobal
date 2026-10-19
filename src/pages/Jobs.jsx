@@ -1279,6 +1279,7 @@ export default function Jobs() {
             />
             {/* ── Hero Banner ── */}
             <section className="jobs-hero">
+                <div className="jobs-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container">
                     <div className="jobs-hero-badge">
                         <Globe size={16} /> Global Career Hub

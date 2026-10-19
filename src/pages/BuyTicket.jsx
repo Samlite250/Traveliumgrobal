@@ -52,6 +52,7 @@ export default function BuyTicket() {
     return (
         <main className="buy-ticket-page">
             <div className="page-hero-premium">
+                <div className="page-hero-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1600&auto=format&fit=crop)' }} />
                 <div className="container">
                     <div className="hero-content-stack animate-reveal">
                         <span className="hero-badge">Ticketing Center</span>
