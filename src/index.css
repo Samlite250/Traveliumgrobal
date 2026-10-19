@@ -2085,7 +2085,7 @@ button {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(15, 26, 61, 0.95), rgba(36, 54, 114, 0.85));
+  background: linear-gradient(135deg, rgba(15, 26, 61, 0.35), rgba(36, 54, 114, 0.2));
   z-index: 1;
 }
 
@@ -10683,7 +10683,8 @@ textarea:focus,
   inset: 0;
   background-size: cover;
   background-position: center;
-  opacity: 0.35;
+  opacity: 0.9;
+  mix-blend-mode: normal;
   transform: scale(1.04);
   transition: transform 8s ease;
 }
@@ -10697,9 +10698,9 @@ textarea:focus,
   position: absolute;
   inset: 0;
   background: linear-gradient(160deg,
-      hsla(226, 60%, 12%, 0.82) 0%,
-      hsla(226, 56%, 22%, 0.65) 60%,
-      hsla(45, 54%, 44%, 0.18) 100%);
+      hsla(226, 60%, 12%, 0.4) 0%,
+      hsla(226, 56%, 22%, 0.25) 60%,
+      hsla(45, 54%, 44%, 0.08) 100%);
   z-index: 1;
 }
 
