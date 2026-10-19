@@ -11681,8 +11681,7 @@ textarea:focus,
   }
 }
 
-/* ── Rwanda nav tab flag icon ── */
-.nav-flag-icon {
-  font-size: 15px;
-  line-height: 1;
+/* ── Lucide icons inside dark spotlight highlight cards ── */
+.dubai-highlight-icon svg {
+  color: var(--gold);
 }

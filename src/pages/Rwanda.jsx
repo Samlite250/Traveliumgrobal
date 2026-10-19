@@ -3,18 +3,19 @@ import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
 import { fallbackScholarships, scholarshipSlug, trackOutbound } from '../lib/listings'
 import {
-    ShieldCheck, TrendingUp, Stamp, Plane,
-    CalendarDays, ArrowRight, ExternalLink, GraduationCap, MapPin, Briefcase, Star
+    ShieldCheck, TrendingUp, Cpu, Stamp, Leaf, Plane,
+    CalendarDays, ArrowRight, ExternalLink, GraduationCap, MapPin, Briefcase, Star,
+    BookOpen, DollarSign
 } from 'lucide-react'
 
 // ── "Why Rwanda" highlights ──
 const rwandaHighlights = [
-    { icon: '🛡️', title: 'Africa\'s Safest Country', desc: 'Ranked the safest country in Africa for 8+ consecutive years — live and work with peace of mind.' },
-    { icon: '🚀', title: 'Fastest-Growing Economy', desc: 'Sustained 7–8% annual GDP growth with a business-friendly government and zero red-tape reforms.' },
-    { icon: '💻', title: 'Kigali Innovation City', desc: 'A booming tech hub hosting Apple\'s AI campus, smart-device assembly plants and hundreds of startups.' },
-    { icon: '🛂', title: 'Visa-on-Arrival', desc: 'All African citizens get visas on arrival; e-visas available for travellers from 200+ countries worldwide.' },
-    { icon: '🌿', title: 'Clean & Green Capital', desc: 'Kigali is Africa\'s cleanest city — car-free days, monthly Umuganda community service and a plastic-free nation.' },
-    { icon: '✈️', title: 'East Africa\'s Gateway', desc: 'Direct RwandAir flights to Dubai, Europe, Asia, India and the Americas — the perfect regional base.' },
+    { icon: <ShieldCheck size={28} />, title: 'Africa\'s Safest Country', desc: 'Ranked the safest country in Africa for 8+ consecutive years — live and work with peace of mind.' },
+    { icon: <TrendingUp size={28} />, title: 'Fastest-Growing Economy', desc: 'Sustained 7–8% annual GDP growth with a business-friendly government and zero red-tape reforms.' },
+    { icon: <Cpu size={28} />, title: 'Kigali Innovation City', desc: 'A booming tech hub hosting Apple\'s AI campus, smart-device assembly plants and hundreds of startups.' },
+    { icon: <Stamp size={28} />, title: 'Visa-on-Arrival', desc: 'All African citizens get visas on arrival; e-visas available for travellers from 200+ countries worldwide.' },
+    { icon: <Leaf size={28} />, title: 'Clean & Green Capital', desc: 'Kigali is Africa\'s cleanest city — car-free days, monthly Umuganda community service and a plastic-free nation.' },
+    { icon: <Plane size={28} />, title: 'East Africa\'s Gateway', desc: 'Direct RwandAir flights to Dubai, Europe, Asia, India and the Americas — the perfect regional base.' },
 ]
 
 // ── Featured jobs in Rwanda (curated from our Rwanda jobs board) ──
@@ -86,7 +87,10 @@ export default function Rwanda() {
                     <div className="breadcrumb">
                         <Link to="/">Home</Link><span className="sep">›</span><span>Rwanda</span>
                     </div>
-                    <h1>🇷🇼 Discover Rwanda</h1>
+                    <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+                        <img src="https://flagcdn.com/w80/rw.png" alt="Rwanda flag" width="40" height="27" loading="eager" style={{ borderRadius: '3px', objectFit: 'cover', display: 'block' }} />
+                        Discover Rwanda
+                    </h1>
                     <p>East Africa's fastest-growing tech, hospitality & services hub — local jobs, scholarships, universities and relocation support, all in one place.</p>
                     <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
                         <Link to="/jobs?country=Rwanda" className="btn btn-primary">
@@ -301,10 +305,10 @@ export default function Rwanda() {
                     </div>
                     <div className="dubai-highlights-grid">
                         {[
-                            { icon: '📍', title: 'Capital', desc: 'Kigali — clean, safe & tech-forward, home to 1.2M+ residents.' },
-                            { icon: '🗣️', title: 'Languages', desc: 'Kinyarwanda, English, French & Swahili — English widely spoken.' },
-                            { icon: '💵', title: 'Currency', desc: 'Rwandan Franc (RWF); USD widely accepted in Kigali.' },
-                            { icon: '🌍', title: 'Region', desc: 'East African Community (EAC) member — free movement for EAC citizens.' },
+                            { icon: <MapPin size={26} />, title: 'Capital', desc: 'Kigali — clean, safe & tech-forward, home to 1.2M+ residents.' },
+                            { icon: <BookOpen size={26} />, title: 'Languages', desc: 'Kinyarwanda, English, French & Swahili — English widely spoken.' },
+                            { icon: <DollarSign size={26} />, title: 'Currency', desc: 'Rwandan Franc (RWF); USD widely accepted in Kigali.' },
+                            { icon: <Globe size={26} />, title: 'Region', desc: 'East African Community (EAC) member — free movement for EAC citizens.' },
                         ].map(f => (
                             <div key={f.title} className="dubai-highlight-card" style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}>
                                 <div className="dubai-highlight-icon">{f.icon}</div>

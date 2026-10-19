@@ -14,7 +14,7 @@ const marqueeImages = [
     {
         src: 'https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?w=600&q=80&auto=format&fit=crop',
         alt: 'Kigali, Rwanda',
-        label: '🇷🇼 Work in Rwanda',
+        label: 'Work in Rwanda',
         desc: 'Rwanda\'s booming tech, hospitality & services sectors. Local jobs & scholarships, updated daily.',
         cta: 'Explore Rwanda',
         link: '/rwanda'

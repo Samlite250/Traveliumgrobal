@@ -143,7 +143,7 @@ export default function Navbar() {
     ]
 
     const staticLinks = [
-        { label: t('navbar.rwanda', 'Rwanda'), href: '/rwanda', icon: <span className="nav-flag-icon" aria-hidden="true">🇷🇼</span> },
+        { label: t('navbar.rwanda', 'Rwanda'), href: '/rwanda', icon: <MapPin size={16} /> },
         { label: t('navbar.contactUs', 'Contact Us'), href: '/contact', icon: <PhoneCall size={16} /> },
     ]
 
