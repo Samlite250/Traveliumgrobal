@@ -3453,30 +3453,25 @@ tr:hover td {
   /* ── Stats ── */
   .stats-bar .container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 1rem;
-    padding: 1.5rem 1rem;
+    padding: 0;
   }
 
-  .stat-divider {
-    display: none;
-  }
-
-  .stat-item {
-    flex-direction: column;
-    text-align: center;
-    padding: 1.25rem 0.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--radius);
-    gap: 0.5rem;
+  .stats-bar .stat-item,
+  .stats-bar .stat-item--featured {
+    grid-column: span 1;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 1.25rem 1.35rem;
+    gap: 1.1rem;
     width: 100%;
     min-width: 0;
   }
 
-  .stat-item:last-child {
-    grid-column: span 2;
-    width: 100%;
+  .stats-bar .stat-number-wrap {
+    margin-top: 0;
   }
 
   /* ── Services ── */
