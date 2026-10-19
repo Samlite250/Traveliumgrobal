@@ -96,12 +96,6 @@ const universities = [
     { name: 'Heidelberg University', country: 'Germany', city: 'Heidelberg', fields: ['Medicine', 'Social Sciences'], note: "Germany's oldest university, research-focused." },
     { name: 'University of Auckland', country: 'New Zealand', city: 'Auckland', fields: ['STEM', 'Business', 'Environment'], note: "New Zealand's largest university." },
     { name: 'University of Otago', country: 'New Zealand', city: 'Dunedin', fields: ['Medicine', 'Arts', 'Environment'], note: 'Historic campus with a strong student culture.' },
-    { name: 'University of Rwanda', country: 'Rwanda', city: 'Kigali', fields: ['STEM', 'Medicine', 'Law', 'Education'], note: "Rwanda's largest public university." },
-    { name: 'African Leadership University (ALU)', country: 'Rwanda', city: 'Kigali', fields: ['Business', 'STEM', 'Social Sciences'], note: 'Pan-African, mission-driven education.' },
-    { name: 'Kigali Independent University (ULK)', country: 'Rwanda', city: 'Kigali', fields: ['Law', 'Business', 'STEM'], note: "Rwanda's leading private university." },
-    { name: 'University of Global Health Equity (UGHE)', country: 'Rwanda', city: 'Butaro', fields: ['Medicine', 'Social Sciences'], note: 'Global health specialty institution.' },
-    { name: 'INES-Ruhengeri', country: 'Rwanda', city: 'Musanze', fields: ['STEM', 'Environment', 'Business'], note: 'Applied sciences and engineering.' },
-    { name: 'Rwanda Polytechnic', country: 'Rwanda', city: 'Kigali', fields: ['STEM', 'Education'], note: 'Technical and vocational training.' },
 ]
 
 const destinations = [
@@ -120,7 +114,6 @@ const COUNTRY_FLAGS = {
     'australia': 'https://flagcdn.com/w40/au.png',
     'germany': 'https://flagcdn.com/w40/de.png',
     'new zealand': 'https://flagcdn.com/w40/nz.png',
-    'rwanda': 'https://flagcdn.com/w40/rw.png',
 }
 const flagFor = (country) => COUNTRY_FLAGS[String(country || '').toLowerCase().trim()] || ''
 
@@ -191,16 +184,20 @@ export default function StudyAbroad() {
         return unsub
     }, [])
 
+    const scholarshipPool = useMemo(() => {
+        const base = scholarships.length ? scholarships : fallbackScholarships
+        return base.filter(s => normalizeCountry(s.country) !== 'rwanda')
+    }, [scholarships])
+
     const matchesFor = useMemo(() => {
-        const pool = scholarships.length ? scholarships : fallbackScholarships
         const wanted = destination ? normalizeCountry(destination) : ''
-        return (program) => pool.filter((s) => {
+        return (program) => scholarshipPool.filter((s) => {
             const country = normalizeCountry(s.country)
             if (wanted && country && country !== wanted) return false
             const haystack = searchable(s)
             return program.keywords.some(k => haystack.includes(k))
         })
-    }, [scholarships, destination])
+    }, [scholarshipPool, destination])
 
     const visiblePrograms = useMemo(() => {
         const term = searchTerm.trim().toLowerCase()
@@ -213,11 +210,6 @@ export default function StudyAbroad() {
     const totalMatches = useMemo(
         () => programs.reduce((sum, p) => sum + matchesFor(p).length, 0),
         [matchesFor]
-    )
-
-    const scholarshipPool = useMemo(
-        () => (scholarships.length ? scholarships : fallbackScholarships),
-        [scholarships]
     )
 
     const countryCounts = useMemo(() => {
