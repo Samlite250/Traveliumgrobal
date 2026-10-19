@@ -249,63 +249,57 @@ export default function Rwanda() {
                 </div>
             </section>
 
-            {/* ── Plan Your Move ── */}
-            <section className="dubai-spotlight section">
+            {/* ── Plan Your Move + Rwanda at a Glance ── */}
+            <section className="content-section rwanda-move-section">
                 <div className="container">
-                    <div className="dubai-spotlight-header">
-                        <div className="section-label"><Plane size={20} /> Relocation Support</div>
+                    <div className="section-header">
+                        <div className="section-label"><Plane size={16} /> Relocation Support</div>
                         <h2 className="section-title">Plan Your Move to Rwanda</h2>
                         <p className="section-sub">From your first application to your first day in Kigali — our team walks with you every step.</p>
                     </div>
-                    <div className="dubai-highlights-grid">
-                        {moveSteps.map(s => (
-                            <div key={s.step} className="dubai-highlight-card">
-                                <div className="dubai-highlight-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                                    {s.icon}
-                                    <span style={{ fontWeight: 900, fontSize: '1.1rem' }}>{s.step}</span>
-                                </div>
-                                <h4>{s.title}</h4>
-                                <p>{s.desc}</p>
-                            </div>
-                        ))}
+
+                    <div className="rwanda-move-grid">
+                        <ol className="rwanda-steps">
+                            {moveSteps.map(s => (
+                                <li key={s.step} className="rwanda-step">
+                                    <span className="rwanda-step-num">{s.step}</span>
+                                    <div>
+                                        <h4>{s.icon} {s.title}</h4>
+                                        <p>{s.desc}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ol>
+
+                        <aside className="rwanda-glance">
+                            <h3><TrendingUp size={17} /> Rwanda at a Glance</h3>
+                            <ul className="rwanda-glance-list">
+                                {[
+                                    { icon: <MapPin size={17} />, label: 'Capital', value: 'Kigali — clean, safe & tech-forward, home to 1.2M+ residents.' },
+                                    { icon: <BookOpen size={17} />, label: 'Languages', value: 'Kinyarwanda, English, French & Swahili — English widely spoken.' },
+                                    { icon: <DollarSign size={17} />, label: 'Currency', value: 'Rwandan Franc (RWF); USD widely accepted in Kigali.' },
+                                    { icon: <Globe size={17} />, label: 'Region', value: 'East African Community (EAC) — free movement for EAC citizens.' },
+                                ].map(f => (
+                                    <li key={f.label}>
+                                        <span className="rwanda-glance-icon">{f.icon}</span>
+                                        <div>
+                                            <strong>{f.label}</strong>
+                                            <span>{f.value}</span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </aside>
                     </div>
-                    <div className="dubai-spotlight-cta">
-                        <Link to="/visa-services" className="btn btn-primary">
+
+                    <div className="rwanda-move-cta">
+                        <Link to="/visa-services" className="btn btn-navy">
                             <Stamp size={16} /> Visa & Work Permit Guide
                         </Link>
-                        <Link to="/flights" className="btn btn-outline">
+                        <Link to="/flights" className="btn btn-primary">
                             <Plane size={16} /> Flights to Kigali
                         </Link>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── Quick Facts ── */}
-            <section className="content-section" style={{ background: 'var(--navy, #0B192C)', color: '#fff' }}>
-                <div className="container">
-                    <div className="section-header">
-                        <div className="section-label" style={{ color: 'var(--gold, #C9A24B)' }}><TrendingUp size={16} /> Good to Know</div>
-                        <h2 className="section-title" style={{ color: '#fff' }}>Rwanda at a Glance</h2>
-                    </div>
-                    <div className="dubai-highlights-grid">
-                        {[
-                            { icon: <MapPin size={26} />, title: 'Capital', desc: 'Kigali — clean, safe & tech-forward, home to 1.2M+ residents.' },
-                            { icon: <BookOpen size={26} />, title: 'Languages', desc: 'Kinyarwanda, English, French & Swahili — English widely spoken.' },
-                            { icon: <DollarSign size={26} />, title: 'Currency', desc: 'Rwandan Franc (RWF); USD widely accepted in Kigali.' },
-                            { icon: <Globe size={26} />, title: 'Region', desc: 'East African Community (EAC) member — free movement for EAC citizens.' },
-                        ].map(f => (
-                            <div key={f.title} className="dubai-highlight-card" style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}>
-                                <div className="dubai-highlight-icon">{f.icon}</div>
-                                <h4 style={{ color: '#fff' }}>{f.title}</h4>
-                                <p style={{ color: '#cbd5e1' }}>{f.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <div style={{ textAlign: 'center', marginTop: '2.5rem', display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                        <Link to="/apply" className="btn btn-primary">
-                            Apply Now <ArrowRight size={16} />
-                        </Link>
-                        <Link to="/contact" className="btn btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.35)' }}>
+                        <Link to="/contact" className="btn btn-outline">
                             <Star size={16} /> Talk to Our Kigali Team
                         </Link>
                     </div>

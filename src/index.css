@@ -11685,3 +11685,147 @@ textarea:focus,
 .dubai-highlight-icon svg {
   color: var(--gold);
 }
+
+/* ── Rwanda: Plan Your Move + At a Glance section ── */
+.rwanda-move-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .rwanda-move-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rwanda-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rwanda-step {
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.4rem;
+  transition: var(--transition, all 0.2s ease);
+}
+
+.rwanda-step:hover {
+  border-color: rgba(201, 162, 75, 0.45);
+}
+
+.rwanda-step-num {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--navy, #0b192c);
+  color: var(--gold, #c9a24b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.rwanda-step h4 {
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy, #0b192c);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rwanda-step h4 svg {
+  color: var(--gold, #c9a24b);
+}
+
+.rwanda-step p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.rwanda-glance {
+  background: #f7f9fc;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.7rem;
+}
+
+.rwanda-glance h3 {
+  margin: 0 0 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--navy, #0b192c);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rwanda-glance h3 svg {
+  color: var(--gold, #c9a24b);
+}
+
+.rwanda-glance-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rwanda-glance-list li {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.rwanda-glance-icon {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(201, 162, 75, 0.14);
+  color: var(--gold, #c9a24b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rwanda-glance-list strong {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy, #0b192c);
+  margin-bottom: 0.1rem;
+}
+
+.rwanda-glance-list span {
+  font-size: 0.87rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.rwanda-move-cta {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+}
