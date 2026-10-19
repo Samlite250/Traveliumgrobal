@@ -409,12 +409,7 @@ export default function StudyAbroad() {
                                     type="button"
                                     aria-pressed={active}
                                     className={`destination-card${active ? ' active' : ''}`}
-                                    onClick={() => {
-                                        setDestination(active ? '' : d.name)
-                                        if (!active) {
-                                            document.querySelector('.programs-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                                        }
-                                    }}
+                                    onClick={() => setDestination(active ? '' : d.name)}
                                 >
                                     <span className="destination-card-flag">
                                         <img src={d.flag} alt="" loading="lazy" />
