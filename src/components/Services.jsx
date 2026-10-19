@@ -20,30 +20,51 @@ const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-ab
 const iconMap = { visa: <Briefcase size={24} />, flight: <Landmark size={24} />, study: <GraduationCap size={24} />, scholarship: <Palmtree size={24} /> }
 
 const getServiceImage = (s) => {
-    const nameLower = (s.name || s.title || '').toLowerCase()
-    // Type-specific images take priority to avoid wrong Firestore URLs
-    if (nameLower.includes('flight') || s.type === 'flight') {
+    const name = (s.name || s.title || '').trim()
+    const nameLower = name.toLowerCase()
+    const type = s.type
+
+    // Force local images for known canonical services (ignore Firestore URLs)
+    if (nameLower === 'flight booking') {
         return '/services/flight-booking.jpg'
     }
-    if (nameLower.includes('tourist') || nameLower.includes('travel')) {
-        return '/services/tourist-visa.jpg'
-    }
-    if (nameLower.includes('study') || s.type === 'study') {
-        return '/services/study-abroad.jpg'
-    }
-    if (nameLower.includes('scholarship') || s.type === 'scholarship') {
-        return '/services/scholarships.jpg'
-    }
-    if (nameLower.includes('residency') || nameLower.includes('pr')) {
-        return '/services/permanent-residency.jpg'
-    }
-    if (nameLower.includes('dubai') || nameLower.includes('uae')) {
+    if (nameLower === 'dubai / uae work visa' || nameLower === 'dubai uae work visa' || nameLower.includes('dubai')) {
         return '/services/dubai-work-visa.jpg'
     }
-    if (nameLower.includes('consult') || nameLower.includes('advisory')) {
+    if (nameLower === 'work visa (global)' || nameLower === 'work visa global' || nameLower.includes('work visa')) {
+        return '/services/work-visa-global.webp'
+    }
+    if (nameLower === 'tourist visa' || nameLower.includes('tourist')) {
+        return '/services/tourist-visa.jpg'
+    }
+    if (nameLower === 'permanent residency' || nameLower.includes('permanent') || nameLower.includes('pr') || nameLower.includes('residency')) {
+        return '/services/permanent-residency.jpg'
+    }
+    if (nameLower === 'study abroad' || nameLower.includes('study')) {
+        return '/services/study-abroad.jpg'
+    }
+    if (nameLower === 'scholarships & funding' || nameLower === 'scholarships and funding' || nameLower.includes('scholarship')) {
+        return '/services/scholarships.jpg'
+    }
+    if (nameLower === 'consultation & advisory' || nameLower === 'consultation and advisory' || nameLower.includes('consultation') || nameLower.includes('advisory')) {
         return '/services/consultation.png'
     }
-    // Fall back to Firestore image if available
+
+    // Type-specific fallback
+    if (type === 'flight' || nameLower.includes('flight')) {
+        return '/services/flight-booking.jpg'
+    }
+    if (type === 'study' || nameLower.includes('study')) {
+        return '/services/study-abroad.jpg'
+    }
+    if (type === 'scholarship' || nameLower.includes('scholarship')) {
+        return '/services/scholarships.jpg'
+    }
+    if (type === 'visa' && (nameLower.includes('tourist') || nameLower.includes('travel'))) {
+        return '/services/tourist-visa.jpg'
+    }
+
+    // Fall back to Firestore image if available (for custom/non-canonical services)
     const raw = s.img || s.image || s.imageUrl || s.photo
     if (raw && typeof raw === 'string' && raw.trim() !== '') {
         return raw
