@@ -1,16 +1,29 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useMemo } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { fallbackScholarships, scholarshipSlug } from '../lib/listings'
-import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink } from 'lucide-react'
+import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe } from 'lucide-react'
+
+// Emoji flags for country filter tabs (case-insensitive lookup)
+const COUNTRY_FLAGS = {
+    'rwanda': '🇷🇼', 'burundi': '🇧🇮', 'uganda': '🇺🇬', 'kenya': '🇰🇪', 'tanzania': '🇹🇿',
+    'united kingdom': '🇬🇧', 'uk': '🇬🇧', 'united states': '🇺🇸', 'usa': '🇺🇸', 'canada': '🇨🇦',
+    'germany': '🇩🇪', 'australia': '🇦🇺', 'france': '🇫🇷', 'netherlands': '🇳🇱', 'poland': '🇵🇱',
+    'japan': '🇯🇵', 'switzerland': '🇨🇭', 'united arab emirates': '🇦🇪', 'uae': '🇦🇪',
+    'european union': '🇪🇺', 'china': '🇨🇳', 'norway': '🇳🇴', 'qatar': '🇶🇦', 'oman': '🇴🇲',
+    'india': '🇮🇳', 'nigeria': '🇳🇬', 'south africa': '🇿🇦', 'ghana': '🇬🇭', 'egypt': '🇪🇬',
+}
+const flagFor = (country) => COUNTRY_FLAGS[String(country || '').toLowerCase().trim()] || '🌍'
 
 export default function Scholarships() {
     const [scholarships, setScholarships] = useState([])
     const [loading, setLoading] = useState(true)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [activeTab, setActiveTab] = useState(() => searchParams.get('country') || 'All')
 
     useEffect(() => {
         if (!db) { setLoading(false); return }
@@ -28,6 +41,44 @@ export default function Scholarships() {
     }, [])
 
     const display = loading ? fallbackScholarships : scholarships
+
+    // Country tabs derived from the data: All + Rwanda first, then the rest A–Z
+    const countryTabs = useMemo(() => {
+        const seen = new Map()
+        for (const s of display) {
+            const raw = String(s.country || '').trim()
+            if (!raw) continue
+            const key = raw.toLowerCase()
+            if (!seen.has(key)) seen.set(key, raw)
+        }
+        const names = [...seen.values()]
+        const rwanda = names.filter(n => n.toLowerCase() === 'rwanda')
+        const others = names.filter(n => n.toLowerCase() !== 'rwanda').sort((a, b) => a.localeCompare(b))
+        return ['All', ...rwanda, ...others]
+    }, [display])
+
+    // Keep tab in sync with URL (deep links like /scholarships?country=Rwanda)
+    useEffect(() => {
+        const urlCountry = searchParams.get('country')
+        if (urlCountry) {
+            const match = countryTabs.find(c => c.toLowerCase() === urlCountry.toLowerCase())
+            setActiveTab(match || 'All')
+        } else {
+            setActiveTab('All')
+        }
+    }, [searchParams, countryTabs])
+
+    const selectTab = (name) => {
+        setActiveTab(name)
+        if (name === 'All') setSearchParams({}, { replace: true })
+        else setSearchParams({ country: name }, { replace: true })
+    }
+
+    const filtered = useMemo(() => {
+        if (activeTab === 'All') return display
+        const q = activeTab.toLowerCase()
+        return display.filter(s => String(s.country || '').toLowerCase().includes(q))
+    }, [display, activeTab])
 
     return (
         <main>
@@ -54,9 +105,36 @@ export default function Scholarships() {
                         <h2 className="section-title">Find Your Scholarship</h2>
                         <p className="section-sub">Browse top scholarships available for international students across the globe.</p>
                     </div>
+
+                    {/* Country filter tabs — same styling as the Jobs page */}
+                    {countryTabs.length > 1 && (
+                        <div className="country-tabs-wrapper">
+                            <div className="country-tabs-header">
+                                <Globe size={18} /> Filter by Country:
+                            </div>
+                            <div className="country-tabs-scroll">
+                                {countryTabs.map((name) => (
+                                    <button
+                                        key={name}
+                                        className={`country-tab-btn ${activeTab === name ? 'active' : ''}`}
+                                        onClick={() => selectTab(name)}
+                                    >
+                                        <span className="c-code">{name === 'All' ? '🌍' : flagFor(name)}</span>
+                                        <span className="c-name">{name === 'All' ? 'All Countries' : name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     {loading && <div className="admin-loading"><Loader2 size={24} className="animate-spin" /><p>Loading scholarships...</p></div>}
+                    {!loading && filtered.length === 0 && (
+                        <p style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-light)' }}>
+                            No scholarships listed for {activeTab} yet — check back soon.
+                        </p>
+                    )}
                     <div className="scholarships-grid">
-                        {display.map(s => {
+                        {filtered.map(s => {
                             const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'Contact us')
                             const displayTitle = s.title || s.name || 'Scholarship'
                             const detailPath = `/scholarships/${scholarshipSlug(s)}`

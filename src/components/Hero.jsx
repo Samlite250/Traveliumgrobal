@@ -12,6 +12,14 @@ const heroBgImages = [
 
 const marqueeImages = [
     {
+        src: 'https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?w=600&q=80&auto=format&fit=crop',
+        alt: 'Kigali, Rwanda',
+        label: '🇷🇼 Work in Rwanda',
+        desc: 'Rwanda\'s booming tech, hospitality & services sectors. Local jobs & scholarships, updated daily.',
+        cta: 'Explore Rwanda',
+        link: '/jobs?country=Rwanda'
+    },
+    {
         src: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80&auto=format&fit=crop',
         alt: 'Dubai Skyline',
         label: '🔥 Work in Dubai — UAE',
@@ -365,7 +373,15 @@ export default function Hero() {
                         {[...marqueeImages, ...marqueeImages].map((img, i) => (
                             <div className="hero-dest-card" key={i}>
                                 <div className="hero-dest-img">
-                                    <img src={img.src} alt={img.alt} loading="lazy" />
+                                    <img
+                                        src={img.src}
+                                        alt={img.alt}
+                                        loading="lazy"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80&auto=format&fit=crop';
+                                        }}
+                                    />
                                     <div className="hero-dest-img-overlay" />
                                     <span className="hero-dest-img-label">{img.label}</span>
                                 </div>

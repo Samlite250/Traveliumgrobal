@@ -120,6 +120,7 @@ export default function Navbar() {
     ]
 
     const workAbroadDropdown = [
+        { label: 'Rwanda', href: '/jobs?country=Rwanda', icon: <MapPin size={15} />, tag: 'New', sub: 'Local Jobs & Scholarships' },
         { label: 'Dubai', href: '/jobs?country=Dubai', icon: <MapPin size={15} />, tag: 'Hot', sub: t('navbar.jobsWorkVisas', 'Jobs & Work Visas') },
         { label: 'Canada', href: '/jobs?country=Canada', icon: <MapPin size={15} />, tag: 'Hot', sub: t('navbar.jobsExpress', 'Jobs & Express Entry') },
         { label: 'USA', href: '/jobs?country=USA', icon: <MapPin size={15} />, tag: 'Trending', sub: t('navbar.jobsH1B', 'Jobs & H-1B Visa') },

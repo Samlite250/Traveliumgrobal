@@ -1899,6 +1899,7 @@ export default function AdminDashboard() {
         'United States': 'us', 'United Kingdom': 'gb', 'Germany': 'de', 'Canada': 'ca',
         'Australia': 'au', 'France': 'fr', 'Netherlands': 'nl', 'Poland': 'pl',
         'Japan': 'jp', 'Switzerland': 'ch', 'United Arab Emirates': 'ae', 'European Union': 'eu',
+        'Rwanda': 'rw', 'Burundi': 'bi', 'Uganda': 'ug', 'Kenya': 'ke', 'Tanzania': 'tz',
     }
     const SOURCE_LABELS = { arbeitnow: 'Arbeitnow', remotive: 'Remotive', adzuna: 'Adzuna', official: 'Official Programs' }
     const DEFAULT_IMPORT_SOURCES = {

@@ -1011,6 +1011,97 @@ export const JOBS_DATA = [
                 requirements: ['Guest welcoming skills', 'Basic computer proficiency', 'Neat appearance']
             }
         ]
+    },
+    {
+        id: 'rwanda',
+        country: 'Rwanda',
+        code: 'RWA',
+        flag: '🇷🇼',
+        tagline: 'East Africa\'s Fastest-Growing Tech & Service Hub',
+        highPayableJobs: [
+            {
+                id: 'rwa-hp-1',
+                title: 'Software Engineer / Full Stack Developer',
+                company: 'Kigali Innovation City — Tech Startups',
+                location: 'Kigali, Rwanda',
+                salary: 'RWF 1,200,000 - 2,500,000 / month',
+                type: 'Full-Time',
+                experience: '2+ Years Software Dev',
+                requirements: ['React/Node.js/Python', 'Git & agile delivery', 'Good English communication']
+            },
+            {
+                id: 'rwa-hp-2',
+                title: 'Hospitality & Hotel Operations Manager',
+                company: 'Kigali Serena Hotel & Resort Group',
+                location: 'Kigali, Rwanda',
+                salary: 'RWF 1,500,000 - 2,800,000 / month',
+                type: 'Full-Time',
+                experience: '3+ Years Hospitality',
+                requirements: ['Hotel operations leadership', 'Guest service excellence', 'Fluent English & Kinyarwanda']
+            },
+            {
+                id: 'rwa-hp-3',
+                title: 'Financial Analyst & Accountant',
+                company: 'Kigali Financial Services Group',
+                location: 'Kigali, Rwanda',
+                salary: 'RWF 1,100,000 - 1,900,000 / month',
+                type: 'Full-Time',
+                experience: 'Finance / Accounting Degree',
+                requirements: ['IFRS & financial modeling', 'QuickBooks / SAP', 'CPA/ACCA progress a plus']
+            },
+            {
+                id: 'rwa-hp-4',
+                title: 'English–French Bilingual Customer Success Lead',
+                company: 'Rwanda Global Business Hub (GBH)',
+                location: 'Kigali, Rwanda',
+                salary: 'RWF 1,000,000 - 1,600,000 / month',
+                type: 'Full-Time',
+                experience: '2+ Years Customer Success',
+                requirements: ['Fluent English & French', 'CRM tools', 'Team leadership skills']
+            }
+        ],
+        partTimeJobs: [
+            {
+                id: 'rwa-pt-1',
+                title: 'Café Barista & Guest Host',
+                company: 'Kigali Specialty Coffee Shops',
+                location: 'Kigali, Rwanda',
+                salary: 'RWF 80,000 - 150,000 / month',
+                type: 'Part-Time / Shift',
+                hours: '20-25 hrs / week',
+                requirements: ['Coffee preparation basics', 'Friendly customer attitude', 'Punctuality']
+            },
+            {
+                id: 'rwa-pt-2',
+                title: 'Ride-Hailing Driver Partner',
+                company: 'Yego & Local Mobility Services',
+                location: 'Kigali, Rwanda',
+                salary: 'RWF 150,000 - 350,000 / month',
+                type: 'Part-Time / Flexible',
+                hours: 'Flexible hours',
+                requirements: ['Valid Rwandan driving licence', 'Smartphone', 'Clean driving record']
+            },
+            {
+                id: 'rwa-pt-3',
+                title: 'Digital Marketing & Social Media Assistant',
+                company: 'Kigali Creative Agencies',
+                location: 'Kigali, Rwanda (Hybrid)',
+                salary: 'RWF 100,000 - 200,000 / month',
+                type: 'Part-Time / Remote Option',
+                hours: '15-20 hrs / week',
+                requirements: ['Content creation skills', 'Instagram/X/TikTok fluency', 'Basic graphic design (Canva)']
+            },
+            {
+                id: 'rwa-pt-4',
+                title: 'University Tutor & Academic Assistant',
+                company: 'University of Rwanda Student Services',
+                location: 'Kigali, Rwanda',
+                salary: 'RWF 90,000 - 160,000 / month',
+                type: 'On-Campus Part-Time',
+                hours: '10-15 hrs / week',
+                requirements: ['Bachelor\'s degree progress', 'Strong academic record', 'Teaching patience']
+            }
+        ]
     }
 ]
 
@@ -1020,12 +1111,14 @@ const COUNTRY_GROUP_MAP = {
     'Canada': 'canada', 'United Kingdom': 'uk', 'UK': 'uk',
     'Germany': 'germany', 'United States': 'usa', 'USA': 'usa', 'US': 'usa',
     'Australia': 'australia', 'Qatar': 'qatar', 'Norway': 'norway', 'Poland': 'poland',
+    'Rwanda': 'rwanda', 'Kigali': 'rwanda',
 }
 const ISO2_CODES = {
     'United States': 'us', 'United Kingdom': 'gb', 'Germany': 'de', 'Canada': 'ca',
     'Australia': 'au', 'France': 'fr', 'Netherlands': 'nl', 'Poland': 'pl',
     'Japan': 'jp', 'Switzerland': 'ch', 'United Arab Emirates': 'ae', 'Qatar': 'qa',
     'Norway': 'no', 'European Union': 'eu', 'China': 'cn', 'Oman': 'om',
+    'Rwanda': 'rw', 'Burundi': 'bi',
 }
 
 const isoToEmoji = (cc) => (cc && cc.length === 2)
@@ -1040,6 +1133,16 @@ const toRequirements = (desc) => {
         .slice(0, 3)
         .map(s => (s.length > 90 ? s.slice(0, 87).trim() + '…' : s))
     return sentences.length ? sentences : ['View the original posting for the full role description.']
+}
+
+// Merge cloud/localStorage job groups with the hardcoded defaults so newly
+// added country tabs (e.g. Rwanda) never disappear when an older cloud doc
+// loads. Cloud groups always win for matching ids; default-only groups append.
+export function mergeWithDefaults(cloud, defaults = JOBS_DATA) {
+    if (!Array.isArray(cloud) || cloud.length === 0) return defaults
+    const cloudIds = new Set(cloud.map(g => g?.id).filter(Boolean))
+    const missing = defaults.filter(g => !cloudIds.has(g.id))
+    return missing.length ? [...cloud, ...missing] : cloud
 }
 
 export function mergeLiveJobs(curated, live) {
@@ -1098,20 +1201,6 @@ export default function Jobs() {
     const [isApplying, setIsApplying] = useState(false)
     const [submitted, setSubmitted] = useState(false)
 
-    // Auto-select country from URL query parameter if present
-    useEffect(() => {
-        const queryCountry = searchParams.get('country')
-        if (queryCountry) {
-            const found = JOBS_DATA.find(c =>
-                c.country.toLowerCase().includes(queryCountry.toLowerCase()) ||
-                c.id.toLowerCase().includes(queryCountry.toLowerCase())
-            )
-            if (found) {
-                setActiveCountry(found.id)
-            }
-        }
-    }, [searchParams])
-
     const [form, setForm] = useState({
         fullName: '',
         email: '',
@@ -1130,9 +1219,10 @@ export default function Jobs() {
             try {
                 unsubFirestore = onSnapshot(doc(db, 'settings', 'jobs'), (snap) => {
                     if (snap.exists() && snap.data()?.jobs) {
-                        // Cloud data from admin ALWAYS wins — this is the source of truth.
-                        // The local hardcoded JOBS_DATA is only a UI placeholder until Firestore responds.
-                        const cloudJobs = snap.data().jobs
+                        // Cloud data from admin wins per-group, but groups that only
+                        // exist in the hardcoded defaults (e.g. rwanda) are appended
+                        // so new tabs survive an older settings/jobs document.
+                        const cloudJobs = mergeWithDefaults(snap.data().jobs, JOBS_DATA)
                         setAllJobsData(cloudJobs)
                         try { localStorage.setItem('travelium_jobs_config', JSON.stringify(cloudJobs)) } catch { }
                     }
@@ -1144,7 +1234,7 @@ export default function Jobs() {
         const handleUpdate = () => {
             try {
                 const saved = localStorage.getItem('travelium_jobs_config')
-                if (saved) setAllJobsData(JSON.parse(saved))
+                if (saved) setAllJobsData(mergeWithDefaults(JSON.parse(saved), JOBS_DATA))
             } catch { }
         }
 
@@ -1156,7 +1246,7 @@ export default function Jobs() {
             bc = new BroadcastChannel('travelium_admin_sync')
             bc.onmessage = (e) => {
                 if (e.data?.type === 'JOBS_UPDATED' && e.data?.payload) {
-                    setAllJobsData(e.data.payload)
+                    setAllJobsData(mergeWithDefaults(e.data.payload, JOBS_DATA))
                 }
             }
         }
@@ -1189,6 +1279,22 @@ export default function Jobs() {
 
     const displayJobsData = useMemo(() => mergeLiveJobs(allJobsData, liveJobs), [allJobsData, liveJobs])
     const currentCountryData = displayJobsData.find(c => c.id === activeCountry) || displayJobsData[0]
+
+    // Auto-select country from URL query parameter if present
+    // (searches the merged list so default-only tabs like Rwanda and
+    // auto-created live-job groups are deep-linkable too)
+    useEffect(() => {
+        const queryCountry = searchParams.get('country')
+        if (queryCountry) {
+            const q = queryCountry.toLowerCase()
+            const found = displayJobsData.find(c =>
+                c.country?.toLowerCase().includes(q) || c.id?.toLowerCase().includes(q)
+            )
+            if (found) {
+                setActiveCountry(found.id)
+            }
+        }
+    }, [searchParams, displayJobsData])
 
     // Filter jobs based on search & filterType
     const filterJobList = (jobs) => {
@@ -1273,8 +1379,8 @@ export default function Jobs() {
     return (
         <div className="jobs-page">
             <SEOHead
-                title="Jobs Abroad 2026 — Work in Dubai, Canada, UK, Germany & More | Travelium Global"
-                description="Find high-paying international jobs in Dubai, Canada, UK, Germany, Qatar, Norway & Australia. Travelium Global connects East African professionals to global career opportunities."
+                title="Jobs Abroad 2026 — Rwanda, Dubai, Canada, UK, Germany & More | Travelium Global"
+                description="Find jobs in Rwanda, Dubai, Canada, UK, Germany, Qatar, Norway & Australia. Travelium Global connects East African professionals to local Kigali roles and global career opportunities."
                 canonical="/jobs"
             />
             {/* ── Hero Banner ── */}
