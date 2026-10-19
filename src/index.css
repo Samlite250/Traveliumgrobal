@@ -3452,31 +3452,12 @@ tr:hover td {
 
   /* ── Stats ── */
   .stats-bar .container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    padding: 1.5rem 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
   }
 
   .stat-divider {
     display: none;
-  }
-
-  .stat-item {
-    flex-direction: column;
-    text-align: center;
-    padding: 1.25rem 0.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--radius);
-    gap: 0.5rem;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .stat-item:last-child {
-    grid-column: span 2;
-    width: 100%;
   }
 
   /* ── Services ── */
@@ -9007,99 +8988,103 @@ main {
 
 /* ===== STATS BAR (Home KPI Cards) ===== */
 .stats-bar {
-  background: #090d16;
-  padding: 3rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--navy);
+  padding: 2.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .stats-bar .container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
   align-items: stretch;
 }
 
-/* Every stat-item is a high-contrast card */
-.stats-bar .stat-item,
-.stat-item {
-  display: flex !important;
-  align-items: center !important;
-  gap: 1.25rem !important;
-  background: rgba(15, 23, 42, 0.85) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
-  border-radius: 18px !important;
-  padding: 1.5rem 1.75rem !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+.stats-bar .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.35rem;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
 
-.stats-bar .stat-item:hover,
-.stat-item:hover {
-  background: rgba(30, 41, 59, 0.95) !important;
-  border-color: #fbbf24 !important;
-  transform: translateY(-4px) !important;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(251, 191, 36, 0.25) !important;
+.stats-bar .stat-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(200, 168, 75, 0.5);
+  transform: translateY(-3px);
 }
 
-/* Last card center-aligned */
-.stat-item:last-child {
-  justify-content: flex-start;
+.stats-bar .stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: rgba(200, 168, 75, 0.14);
+  border: 1px solid rgba(200, 168, 75, 0.32);
+  color: var(--gold);
 }
 
-/* Icon wrapper */
-.stats-bar .stat-icon,
-.stat-icon {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 52px !important;
-  height: 52px !important;
-  flex-shrink: 0 !important;
-  border-radius: 14px !important;
-  background: rgba(251, 191, 36, 0.2) !important;
-  border: 1px solid rgba(251, 191, 36, 0.4) !important;
-  color: #fbbf24 !important;
+.stats-bar .stat-value {
+  display: block;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
 }
 
-/* Animated number value - High contrast white */
-.stats-bar .stat-value,
-.stat-value {
-  display: block !important;
-  font-size: 2.2rem !important;
-  font-weight: 900 !important;
-  color: #ffffff !important;
-  line-height: 1.1 !important;
-  letter-spacing: -0.02em !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+.stats-bar .stat-label {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.68);
+  margin-top: 0.35rem;
 }
 
-/* Label below the number - High contrast light slate */
-.stats-bar .stat-label,
-.stat-label {
-  display: block !important;
-  font-size: 0.85rem !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.08em !important;
-  color: #f1f5f9 !important;
-  margin-top: 0.4rem !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
-}
-
-/* Divider between cards — hidden since we use grid */
 .stat-divider {
   display: none;
 }
 
-/* Responsive: single column on mobile — last card full width */
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
   .stats-bar .container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-bar {
+    padding: 2rem 0;
   }
 
-  .stat-item:last-child {
-    grid-column: 1 / -1;
+  .stats-bar .container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .stats-bar .stat-item {
+    padding: 1.1rem 1.15rem;
+    gap: 0.75rem;
+  }
+
+  .stats-bar .stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .stats-bar .stat-value {
+    font-size: 1.35rem;
+  }
+
+  .stats-bar .stat-label {
+    font-size: 0.68rem;
   }
 }
 
