@@ -8982,7 +8982,7 @@ main {
 
 .stats-bar .stat-value {
   display: block;
-  font-size: 1.05rem !important;
+  font-size: 1.5rem !important;
   font-weight: 800 !important;
   color: var(--navy) !important;
   line-height: 1.1 !important;
@@ -8991,7 +8991,7 @@ main {
 
 .stats-bar .stat-label {
   display: block;
-  font-size: 0.62rem !important;
+  font-size: 0.72rem !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.06em !important;
@@ -9030,11 +9030,11 @@ main {
   }
 
   .stats-bar .stat-value {
-    font-size: 1rem !important;
+    font-size: 1.3rem !important;
   }
 
   .stats-bar .stat-label {
-    font-size: 0.58rem !important;
+    font-size: 0.66rem !important;
   }
 }
 
