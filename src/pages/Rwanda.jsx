@@ -86,7 +86,7 @@ export default function Rwanda() {
                         <Link to="/">Home</Link><span className="sep">›</span><span>Rwanda</span>
                     </div>
                     <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
-                        <img src="https://flagcdn.com/w80/rw.png" alt="Rwanda flag" width="40" height="27" loading="eager" style={{ borderRadius: '3px', objectFit: 'cover', display: 'block' }} />
+                            <img src="https://flagcdn.com/w80/rw.png" alt="Rwanda flag" width="44" height="44" loading="eager" style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', display: 'block', border: '2px solid rgba(255,255,255,0.55)', boxShadow: '0 2px 10px rgba(0,0,0,0.28)' }} />
                         Discover Rwanda
                     </h1>
                     <p>East Africa's fastest-growing tech, hospitality & services hub — safe, clean, connected and hungry for talent. Browse local jobs, scholarships, universities and relocation support, all in one place.</p>
