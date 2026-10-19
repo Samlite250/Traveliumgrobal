@@ -110,7 +110,7 @@ export default function Rwanda() {
                         <Link to="/apply" className="btn btn-navy">
                             Apply Now <ArrowRight size={16} />
                         </Link>
-                        <Link to="/contact" className="btn btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.35)' }}>
+                        <Link to="/contact" className="btn btn-outline">
                             <ShieldCheck size={16} /> Free Consultation
                         </Link>
                     </div>
@@ -299,7 +299,7 @@ export default function Rwanda() {
                         <Link to="/flights" className="btn btn-primary">
                             <Plane size={16} /> Flights to Kigali
                         </Link>
-                        <Link to="/contact" className="btn btn-outline">
+                        <Link to="/contact" className="btn btn-outline-navy">
                             <Star size={16} /> Talk to Our Kigali Team
                         </Link>
                     </div>

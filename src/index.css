@@ -200,6 +200,18 @@ button {
   color: var(--navy);
 }
 
+/* Outline button for light backgrounds — navy text/border, navy fill on hover */
+.btn-outline-navy {
+  border: 2px solid var(--navy);
+  color: var(--navy);
+  background: transparent;
+}
+
+.btn-outline-navy:hover {
+  background: var(--navy);
+  color: var(--white);
+}
+
 .btn-navy {
   background: var(--navy);
   color: var(--white);
