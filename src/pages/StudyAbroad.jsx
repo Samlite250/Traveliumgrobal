@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
@@ -110,11 +110,33 @@ const levelTabs = [
 ]
 
 export default function StudyAbroad() {
+    const [searchParams] = useSearchParams()
+    const view = searchParams.get('view') || ''
+
     const [scholarships, setScholarships] = useState([])
     const [loadingScholarships, setLoadingScholarships] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [level, setLevel] = useState('all')
     const [destination, setDestination] = useState('')
+
+    const scrollTo = (selector) => {
+        document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    useEffect(() => {
+        if (!view) return
+        const timer = setTimeout(() => {
+            if (view === 'destinations') {
+                scrollTo('#destinations')
+                return
+            }
+            scrollTo('#programs')
+            if (view === 'search') {
+                document.querySelector('.program-search input')?.focus({ preventScroll: true })
+            }
+        }, 200)
+        return () => clearTimeout(timer)
+    }, [view])
 
     useEffect(() => {
         if (!db) { setScholarships(fallbackScholarships); setLoadingScholarships(false); return }
@@ -206,7 +228,7 @@ export default function StudyAbroad() {
                 </div>
             </div>
 
-            <section className="content-section programs-section">
+            <section className="content-section programs-section" id="programs">
                 <div className="container">
                     <div className="section-header">
                         <div className="section-label">Fields of Study</div>
