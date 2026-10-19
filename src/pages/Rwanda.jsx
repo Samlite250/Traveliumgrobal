@@ -39,9 +39,9 @@ const rwandaUniversities = [
         img: '/university-of-rwanda.jpg',
     },
     {
-        tag: 'World-Class', title: 'Carnegie Mellon University Africa',
-        desc: 'Master\'s programs in electrical & computer engineering and information technology from a top-10 US university — right in Kigali.',
-        img: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?q=80&w=800&auto=format&fit=crop',
+        tag: 'Private', title: 'Kigali Independent University (ULK)',
+        desc: 'Rwanda\'s leading private university since 1996 — law, business, IT, education and health sciences across Kigali & Gisenyi campuses.',
+        img: '/ulk-kigali.jpg',
     },
     {
         tag: 'Global Health', title: 'University of Global Health Equity (UGHE)',
