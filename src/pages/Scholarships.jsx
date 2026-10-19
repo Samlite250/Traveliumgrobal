@@ -5,7 +5,7 @@ import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
-import { fallbackScholarships, scholarshipSlug } from '../lib/listings'
+import { fallbackScholarships, scholarshipSlug, slugify } from '../lib/listings'
 import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe } from 'lucide-react'
 
 // Emoji flags for country filter tabs (case-insensitive lookup)
@@ -40,7 +40,53 @@ export default function Scholarships() {
         return unsub
     }, [])
 
-    const display = loading ? fallbackScholarships : scholarships
+    const display = useMemo(() => {
+        const raw = loading ? fallbackScholarships : scholarships
+        const STOP = new Set(['program', 'programme', 'scholarship', 'scholarships', 'the', 'of', 'for', 'and', 'a', 'an'])
+        const dupKey = (s) => slugify(s.title || s.name || '').split('-').filter(t => t && !STOP.has(t)).join(' ')
+        const COUNTRY_ALIASES = {
+            usa: 'us', 'u.s.a.': 'us', 'u.s.': 'us', 'united states': 'us', 'united states of america': 'us', america: 'us',
+            uk: 'uk', 'united kingdom': 'uk', england: 'uk', britain: 'uk', 'great britain': 'uk',
+            uae: 'ae', 'united arab emirates': 'ae',
+        }
+        const sameCountry = (a, b) => {
+            const norm = (v) => {
+                const c = String(v || '').toLowerCase().trim()
+                return COUNTRY_ALIASES[c] || c
+            }
+            const ca = norm(a?.country)
+            const cb = norm(b?.country)
+            return !ca || !cb || ca === cb
+        }
+        const isDuplicate = (a, b) => {
+            if (!a || !b) return false
+            if (!sameCountry(a, b)) return false
+            if (a === b) return true
+            const [short, long] = a.length <= b.length ? [a, b] : [b, a]
+            return short.length >= 8 && long.startsWith(short)
+        }
+
+        const kept = []
+        const keptKeys = []
+        for (const s of raw) {
+            const key = dupKey(s)
+            if (key && keptKeys.some(k => isDuplicate(k, key))) continue
+            if (key) keptKeys.push(key)
+            kept.push(s)
+        }
+
+        if (kept.length < raw.length) {
+            for (const f of fallbackScholarships) {
+                if (kept.length >= raw.length) break
+                const key = dupKey(f)
+                if (key && keptKeys.some(k => isDuplicate(k, key))) continue
+                if (kept.some(s => (s.id && f.id && s.id === f.id))) continue
+                if (key) keptKeys.push(key)
+                kept.push(f)
+            }
+        }
+        return kept
+    }, [loading, scholarships])
 
     // Country tabs derived from the data: All + Rwanda first, then the rest A–Z
     const countryTabs = useMemo(() => {
