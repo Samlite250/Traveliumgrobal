@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { GraduationCap, ClipboardCheck, School, Globe, Award } from 'lucide-react'
 
 const stats = [
+    { icon: <Award size={22} />, value: 98, suffix: '%', label: 'Success Rate', featured: true },
     { icon: <GraduationCap size={20} />, value: 15000, suffix: '+', label: 'Students Assisted' },
     { icon: <ClipboardCheck size={20} />, value: 9500, suffix: '+', label: 'Visa Approvals' },
     { icon: <School size={20} />, value: 200, suffix: '+', label: 'Partner Universities' },
     { icon: <Globe size={20} />, value: 20, suffix: '+', label: 'Countries Covered' },
-    { icon: <Award size={20} />, value: 98, suffix: '%', label: 'Success Rate' },
 ]
 
 function AnimatedNumber({ target, suffix }) {
@@ -42,17 +42,17 @@ export default function StatsBar() {
     return (
         <div className="stats-bar">
             <div className="container">
-                {stats.map((s, i) => (
-                    <React.Fragment key={s.label}>
-                        <div className="stat-item">
-                            <div className="stat-icon">{s.icon}</div>
-                            <div>
-                                <AnimatedNumber target={s.value} suffix={s.suffix} />
-                                <div className="stat-label">{s.label}</div>
-                            </div>
+                {stats.map(s => (
+                    <div
+                        key={s.label}
+                        className={`stat-item${s.featured ? ' stat-item--featured' : ''}`}
+                    >
+                        <div className="stat-icon">{s.icon}</div>
+                        <div className="stat-number-wrap">
+                            <AnimatedNumber target={s.value} suffix={s.suffix} />
+                            <div className="stat-label">{s.label}</div>
                         </div>
-                        {i < stats.length - 1 && <div className="stat-divider" />}
-                    </React.Fragment>
+                    </div>
                 ))}
             </div>
         </div>
