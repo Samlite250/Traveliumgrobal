@@ -51,7 +51,7 @@ const rwandaUniversities = [
     {
         tag: 'Engineering', title: 'INES-Ruhengeri',
         desc: 'Leading institute of engineering and applied sciences — water, energy, environment and ICT programs in Musanze.',
-        img: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=800&auto=format&fit=crop',
+        img: '/ines-ruhengeri.jpg',
     },
     {
         tag: 'TVET', title: 'Rwanda Polytechnic (RP)',
