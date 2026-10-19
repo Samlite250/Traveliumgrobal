@@ -8982,7 +8982,7 @@ main {
 
 .stats-bar .stat-value {
   display: block;
-  font-size: 1.40rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--navy);
   line-height: 1.05;
@@ -8991,7 +8991,7 @@ main {
 
 .stats-bar .stat-label {
   display: block;
-  font-size: 0.66rem;
+  font-size: 0.56rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
