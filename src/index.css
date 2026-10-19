@@ -12061,96 +12061,6 @@ textarea:focus,
   background: var(--gray-200);
 }
 
-.uni-search {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: var(--white);
-  border: 1.5px solid var(--gray-200);
-  border-radius: 100px;
-  padding: 0.4rem 0.4rem 0.4rem 1.1rem;
-  margin-bottom: 1.1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.uni-search:focus-within {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.14);
-}
-
-.uni-search-icon {
-  color: var(--text-light);
-  flex-shrink: 0;
-}
-
-.uni-search input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 0.92rem;
-  color: var(--navy);
-  min-width: 0;
-  padding: 0.35rem 0;
-}
-
-.uni-search input::placeholder {
-  color: var(--text-light);
-}
-
-.uni-search input::-webkit-search-cancel-button {
-  display: none;
-}
-
-.uni-search-clear {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 50%;
-  background: var(--gray-100);
-  color: var(--text-light);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.uni-search-clear:hover {
-  background: var(--gray-200);
-  color: var(--navy);
-}
-
-.uni-search-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  background: var(--navy);
-  color: var(--white);
-  border: none;
-  border-radius: 100px;
-  padding: 0.62rem 1.35rem;
-  font-size: 0.86rem;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  flex-shrink: 0;
-  box-shadow: 0 6px 16px rgba(11, 25, 44, 0.22);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.uni-search-btn:hover {
-  background: var(--gold);
-  color: var(--navy);
-  transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(201, 162, 75, 0.35);
-}
-
-.uni-search-btn:active {
-  transform: translateY(0);
-}
-
 .uni-filters {
   display: flex;
   align-items: center;
@@ -12386,20 +12296,6 @@ textarea:focus,
 
   .uni-finder {
     padding: 1.1rem;
-  }
-
-  .uni-search {
-    flex-wrap: wrap;
-    border-radius: var(--radius, 16px);
-  }
-
-  .uni-search input {
-    width: 100%;
-  }
-
-  .uni-search-btn {
-    width: 100%;
-    justify-content: center;
   }
 
   .uni-filters {

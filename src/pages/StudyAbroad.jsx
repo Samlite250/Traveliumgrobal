@@ -157,7 +157,6 @@ export default function StudyAbroad() {
     const [searchTerm, setSearchTerm] = useState('')
     const [level, setLevel] = useState('all')
     const [destination, setDestination] = useState('')
-    const [uniSearch, setUniSearch] = useState('')
     const [uniCountry, setUniCountry] = useState('All')
 
     useEffect(() => {
@@ -249,14 +248,8 @@ export default function StudyAbroad() {
     }, [])
 
     const visibleUniversities = useMemo(() => {
-        const term = uniSearch.trim().toLowerCase()
-        return universities.filter(u => {
-            if (uniCountry !== 'All' && u.country !== uniCountry) return false
-            if (!term) return true
-            return [u.name, u.country, u.city, ...u.fields, u.note]
-                .join(' ').toLowerCase().includes(term)
-        })
-    }, [uniSearch, uniCountry])
+        return universities.filter(u => uniCountry === 'All' || u.country === uniCountry)
+    }, [uniCountry])
 
     return (
         <main>
@@ -317,52 +310,19 @@ export default function StudyAbroad() {
                                         <strong>{visibleUniversities.length} universities</strong>
                                         <small>
                                             {uniCountry === 'All' ? 'across all destinations' : `in ${uniCountry}`}
-                                            {uniSearch.trim() && <> · matching “{uniSearch.trim()}”</>}
                                         </small>
                                     </div>
                                 </div>
-                                {(uniSearch || uniCountry !== 'All') && (
+                                {uniCountry !== 'All' && (
                                     <button
                                         type="button"
                                         className="uni-finder-reset"
-                                        onClick={() => { setUniSearch(''); setUniCountry('All') }}
+                                        onClick={() => setUniCountry('All')}
                                     >
                                         <X size={14} /> Reset
                                     </button>
                                 )}
                             </div>
-
-                            <form
-                                className="uni-search"
-                                role="search"
-                                onSubmit={(e) => {
-                                    e.preventDefault()
-                                    if (!uniSearch.trim()) e.currentTarget.querySelector('input')?.focus()
-                                }}
-                            >
-                                <Search size={18} className="uni-search-icon" />
-                                <input
-                                    type="search"
-                                    value={uniSearch}
-                                    onChange={e => setUniSearch(e.target.value)}
-                                    placeholder="Search a university, city or field (e.g. Toronto, engineering)"
-                                    aria-label="Search universities"
-                                />
-                                {uniSearch && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setUniSearch('')}
-                                        className="uni-search-clear"
-                                        aria-label="Clear search"
-                                    >
-                                        <X size={15} />
-                                    </button>
-                                )}
-                                <button type="submit" className="uni-search-btn">
-                                    <Search size={16} />
-                                    <span>Search</span>
-                                </button>
-                            </form>
 
                             <div className="uni-filters" role="group" aria-label="Filter by country">
                                 <span className="uni-filters-label"><Globe size={14} /> Country</span>
@@ -393,7 +353,7 @@ export default function StudyAbroad() {
                                 <h3>No university matches your search</h3>
                                 <p>Try a different name, city or field — or clear the filters.</p>
                                 <div className="program-empty-actions">
-                                    <button type="button" className="btn btn-outline" onClick={() => { setUniSearch(''); setUniCountry('All') }}>
+                                    <button type="button" className="btn btn-outline" onClick={() => setUniCountry('All')}>
                                         Reset filters
                                     </button>
                                 </div>
