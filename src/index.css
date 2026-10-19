@@ -8982,21 +8982,21 @@ main {
 
 .stats-bar .stat-value {
   display: block;
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--navy);
-  line-height: 1.05;
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  color: var(--navy) !important;
+  line-height: 1.1 !important;
   letter-spacing: -0.01em;
 }
 
 .stats-bar .stat-label {
   display: block;
-  font-size: 0.56rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--gray-600);
-  margin-top: 0.35rem;
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: var(--gray-600) !important;
+  margin-top: 0.3rem;
 }
 
 .stat-divider {
@@ -9030,11 +9030,11 @@ main {
   }
 
   .stats-bar .stat-value {
-    font-size: 1.35rem;
+    font-size: 1rem !important;
   }
 
   .stats-bar .stat-label {
-    font-size: 0.68rem;
+    font-size: 0.58rem !important;
   }
 }
 
