@@ -13,7 +13,7 @@ const fallbackServices = [
     { title: 'Permanent Residency', img: '/services/permanent-residency.jpg', desc: 'Pathway to Permanent Residency. Secure your future in Canada, Australia, Europe or another destination.', href: '/visa-services', type: 'visa' },
     { title: 'Study Abroad', img: '/services/study-abroad.jpg', desc: 'Discover the best universities and degree programs worldwide with our expert academic guidance.', href: '/study-abroad', type: 'study' },
     { title: 'Scholarships & Funding', img: '/services/scholarships.jpg', desc: 'Access fully funded scholarships from top institutions — Commonwealth, Chevening, Fulbright & more.', href: '/scholarships', type: 'scholarship' },
-    { title: 'Consultation & Advisory', img: '/services/consultation.jpg', desc: 'Expert one-on-one guidance to plan your international journey, from visa to settlement.', href: '/contact', type: 'visa' },
+    { title: 'Consultation & Advisory', img: '/services/consultation.png', desc: 'Expert one-on-one guidance to plan your international journey, from visa to settlement.', href: '/contact', type: 'visa' },
 ]
 
 const typeHref = { visa: '/visa-services', flight: '/flights', study: '/study-abroad', scholarship: '/scholarships' }
@@ -41,7 +41,7 @@ const getServiceImage = (s) => {
         return '/services/dubai-work-visa.jpg'
     }
     if (nameLower.includes('consult') || nameLower.includes('advisory')) {
-        return '/services/consultation.jpg'
+        return '/services/consultation.png'
     }
     // Fall back to Firestore image if available
     const raw = s.img || s.image || s.imageUrl || s.photo
