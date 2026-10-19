@@ -11842,73 +11842,90 @@ textarea:focus,
   margin-top: 2.5rem;
 }
 
-/* ── Home: Services grid — professional bento arrangement ── */
+/* ── Home: Services grid — compact, evenly measured cards ── */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
   align-items: stretch;
 }
 
-/* Row 1 — two large feature cards */
-.services-grid .service-card:nth-child(1),
-.services-grid .service-card:nth-child(2) {
-  grid-column: span 2;
+.services-grid .service-card:nth-child(n) {
+  grid-column: auto;
 }
 
-.services-grid .service-card:nth-child(1) .service-img,
-.services-grid .service-card:nth-child(2) .service-img {
-  height: 260px;
+/* Compact image */
+.services-grid .service-card:nth-child(n) .service-img {
+  height: 140px;
 }
 
-.services-grid .service-card:nth-child(1) .service-content h3,
-.services-grid .service-card:nth-child(2) .service-content h3 {
-  font-size: 1.35rem;
+/* Tight, uniform content block */
+.services-grid .service-card:nth-child(n) .service-content {
+  padding: 1.1rem 1.1rem 1.2rem;
 }
 
-/* Row 2 — four compact cards */
-.services-grid .service-card:nth-child(n + 3):nth-child(-n + 6) .service-img {
-  height: 150px;
+.services-grid .service-card:nth-child(n) .service-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  margin-bottom: 0.7rem;
 }
 
-.services-grid .service-card:nth-child(n + 3):nth-child(-n + 6) .service-content {
-  padding: 1.25rem 1.25rem 1.4rem;
+.services-grid .service-card:nth-child(n) .service-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
-/* Row 3 — two half-width cards */
-.services-grid .service-card:nth-child(n + 7) {
-  grid-column: span 2;
+.services-grid .service-card:nth-child(n) .service-content h3,
+.services-grid .service-card:nth-child(n) .service-card h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.4rem;
 }
 
-.services-grid .service-card:nth-child(n + 7) .service-img {
-  height: 190px;
+/* Clamp description so every card lines up */
+.services-grid .service-card:nth-child(n) .service-content p {
+  font-size: 0.8rem;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.services-grid .service-card:nth-child(n) .service-link {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: auto;
+}
+
+.services-grid .service-card:nth-child(n) .service-link svg {
+  width: 14px;
+  height: 14px;
 }
 
 @media (max-width: 1279px) {
   .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .services-grid .service-card:nth-child(n) {
-    grid-column: span 1;
-  }
-
-  .services-grid .service-card:nth-child(n) .service-img {
-    height: 200px;
-  }
-
-  .services-grid .service-card:nth-child(n) .service-content {
-    padding: 1.5rem 1.4rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
   .services-grid {
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: 1rem;
   }
 
   .services-grid .service-card:nth-child(n) .service-img {
-    height: 180px;
+    height: 160px;
   }
 }
