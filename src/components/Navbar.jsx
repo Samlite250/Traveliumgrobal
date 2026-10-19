@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from './LanguageSwitcher'
 import {
     Mail, Phone, Globe, Send, Play,
-    Plane, GraduationCap, Landmark, Award, Info, PhoneCall,
+    Plane, GraduationCap, Landmark, Award, PhoneCall,
     User, ArrowRight, Menu, X, ChevronDown, Home,
     BookOpen, Building2, FileText, Briefcase, MapPin, Star
 } from 'lucide-react'
@@ -120,7 +120,7 @@ export default function Navbar() {
     ]
 
     const workAbroadDropdown = [
-        { label: 'Rwanda', href: '/jobs?country=Rwanda', icon: <MapPin size={15} />, tag: 'New', sub: 'Local Jobs & Scholarships' },
+        { label: 'Rwanda', href: '/rwanda', icon: <MapPin size={15} />, tag: 'New', sub: 'Jobs, Scholarships & Life in Rwanda' },
         { label: 'Dubai', href: '/jobs?country=Dubai', icon: <MapPin size={15} />, tag: 'Hot', sub: t('navbar.jobsWorkVisas', 'Jobs & Work Visas') },
         { label: 'Canada', href: '/jobs?country=Canada', icon: <MapPin size={15} />, tag: 'Hot', sub: t('navbar.jobsExpress', 'Jobs & Express Entry') },
         { label: 'USA', href: '/jobs?country=USA', icon: <MapPin size={15} />, tag: 'Trending', sub: t('navbar.jobsH1B', 'Jobs & H-1B Visa') },
@@ -143,7 +143,7 @@ export default function Navbar() {
     ]
 
     const staticLinks = [
-        { label: t('navbar.aboutUs', 'About Us'), href: '/about', icon: <Info size={16} /> },
+        { label: t('navbar.rwanda', 'Rwanda'), href: '/rwanda', icon: <span className="nav-flag-icon" aria-hidden="true">🇷🇼</span> },
         { label: t('navbar.contactUs', 'Contact Us'), href: '/contact', icon: <PhoneCall size={16} /> },
     ]
 

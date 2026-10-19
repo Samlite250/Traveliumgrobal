@@ -17,7 +17,7 @@ const marqueeImages = [
         label: '🇷🇼 Work in Rwanda',
         desc: 'Rwanda\'s booming tech, hospitality & services sectors. Local jobs & scholarships, updated daily.',
         cta: 'Explore Rwanda',
-        link: '/jobs?country=Rwanda'
+        link: '/rwanda'
     },
     {
         src: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80&auto=format&fit=crop',

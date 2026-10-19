@@ -39,6 +39,7 @@ const Flights = safeLazy(() => import('./pages/Flights'))
 const BuyTicket = safeLazy(() => import('./pages/BuyTicket'))
 const Jobs = safeLazy(() => import('./pages/Jobs'))
 const JobDetail = safeLazy(() => import('./pages/JobDetail'))
+const Rwanda = safeLazy(() => import('./pages/Rwanda'))
 const NotFound = safeLazy(() => import('./pages/NotFound'))
 const PrivacyPolicy = safeLazy(() => import('./pages/PrivacyPolicy'))
 const TermsOfUse = safeLazy(() => import('./pages/TermsOfUse'))
@@ -106,6 +107,7 @@ function AppLayout() {
                     <Route path="/buy-ticket" element={<BuyTicket />} />
                     <Route path="/jobs" element={<Jobs />} />
                     <Route path="/jobs/:slug" element={<JobDetail />} />
+                    <Route path="/rwanda" element={<Rwanda />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                     <Route path="/terms-of-use" element={<TermsOfUse />} />
                     <Route path="/login" element={<Login />} />

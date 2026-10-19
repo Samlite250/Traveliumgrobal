@@ -56,6 +56,7 @@ export default function Footer() {
                             <h4>{t('footer.quickLinks', 'Quick Links')}</h4>
                             <ul>
                                 <li><Link to="/">{t('navbar.home', 'Home')}</Link></li>
+                                <li><Link to="/rwanda">{t('footer.rwanda', 'Rwanda Hub')}</Link></li>
                                 <li><Link to="/jobs">{t('footer.jobs', 'Jobs & Careers')}</Link></li>
                                 <li><Link to="/about">{t('footer.about', 'About Travelium')}</Link></li>
                                 <li><Link to="/visa-services">{t('footer.visaSolutions', 'Visa Solutions')}</Link></li>

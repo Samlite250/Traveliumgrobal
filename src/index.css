@@ -11680,3 +11680,9 @@ textarea:focus,
     padding: 1.25rem;
   }
 }
+
+/* ── Rwanda nav tab flag icon ── */
+.nav-flag-icon {
+  font-size: 15px;
+  line-height: 1;
+}
