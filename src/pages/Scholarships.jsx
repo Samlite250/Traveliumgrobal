@@ -5,7 +5,7 @@ import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
-import { fallbackScholarships, scholarshipSlug, slugify } from '../lib/listings'
+import { fallbackScholarships, scholarshipSlug, slugify, isVerifiedListing } from '../lib/listings'
 import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe, Award } from 'lucide-react'
 
 // Emoji flags for country filter tabs (case-insensitive lookup)
@@ -32,8 +32,9 @@ export default function Scholarships() {
         const q = query(collection(db, 'services'), where('type', '==', 'scholarship'))
         const unsub = onSnapshot(q, (snap) => {
             const all = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-            // Exclude only if explicitly set to false
-            const data = all.filter(s => s.active !== false)
+            // Exclude if explicitly disabled; also drop auto-imported listings
+            // that have no real application route or tripped scam signals.
+            const data = all.filter(s => s.active !== false && (!s.auto || isVerifiedListing(s)))
             setScholarships(data.length ? data : fallbackScholarships)
             setLoading(false)
         }, () => { setScholarships(fallbackScholarships); setLoading(false) })

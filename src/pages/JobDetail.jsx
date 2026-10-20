@@ -3,7 +3,7 @@ import { Link, useParams, Navigate } from 'react-router-dom'
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { JOBS_DATA, mergeLiveJobs } from './Jobs'
-import { jobSlug, buildJobArticle, openOfficial } from '../lib/listings'
+import { jobSlug, buildJobArticle, openOfficial, isVerifiedListing } from '../lib/listings'
 import SEOHead from '../components/SEOHead'
 import JsonLd from '../components/JsonLd'
 import LeadCapture from '../components/LeadCapture'
@@ -60,7 +60,8 @@ export default function JobDetail() {
                     if (!j.expires_at) return true
                     const exp = j.expires_at.toDate ? j.expires_at.toDate().getTime() : new Date(j.expires_at).getTime()
                     return !Number.isNaN(exp) && exp > now
-                }))
+                })
+                .filter(j => !j.auto || isVerifiedListing(j)))
             setLoading(false)
         }, () => setLoading(false))
 

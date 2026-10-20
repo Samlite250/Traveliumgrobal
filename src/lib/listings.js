@@ -6,17 +6,42 @@ export const slugify = (s) => String(s || '').toLowerCase().trim().replace(/[^a-
 export const scholarshipSlug = (s) => slugify(s?.title || s?.name || '')
 export const jobSlug = (job, countryName) => slugify(`${job?.title || ''} ${countryName || job?.country || ''}`)
 
+// ─── URL helpers ───
+const APPLICATION_URL_RE = /^https?:\/\/.{5,}/i
+const INSTITUTION_ONLY_ORIGINS = ['risb.rw', 'alueducation.com', 'ur.ac.rw', 'vanier.gc.ca', 'dfat.gov.au']
+
+export function isApplicationUrl(url) {
+    if (!url || !APPLICATION_URL_RE.test(url)) return false
+    try {
+        const host = new URL(url).hostname.replace(/^www\./, '')
+        return !INSTITUTION_ONLY_ORIGINS.some(o => host === o || host.endsWith('.' + o))
+    } catch { return false }
+}
+
+export function resolveApplyUrl(listing) {
+    const source = listing?.applyUrl || listing?.applicationUrl || listing?.apply_url || listing?.sourceUrl || listing?.source_url
+    if (source && isApplicationUrl(source)) return source
+    return ''
+}
+
+// ─── Verified-listing policy ───
+// Only "serious" listings go public: a real application route must exist and the
+// listing must not have tripped the scam-signal scanner.
+export function isVerifiedListing(listing) {
+    if (!listing) return false
+    if (listing.flagged === true) return false
+    if (Array.isArray(listing.flags) && listing.flags.length > 0) return false
+    if (listing.verified === false) return false
+    return isApplicationUrl(resolveApplyUrl(listing))
+}
+
 // ─── Fallback scholarships (offline / empty Firestore) ───
+// Verified programs only — each must expose a genuine online application route.
 export const fallbackScholarships = [
-    { amount: 'Full Fund', title: 'Rwanda Government Scholarship (RISBP)', country: 'Rwanda', flag: 'https://flagcdn.com/w40/rw.png', desc: 'Government of Rwanda merit scholarship for outstanding students at accredited universities.', deadline: 'Mar 31, 2027', sourceUrl: 'https://www.risb.rw/', sourceName: 'Rwanda Education Board' },
-    { amount: 'Full Fund', title: 'African Leadership University (ALU) Scholarship', country: 'Rwanda', flag: 'https://flagcdn.com/w40/rw.png', desc: 'Need-based & merit scholarships for African students studying at ALU Kigali.', deadline: 'Rolling admissions', sourceUrl: 'https://www.alueducation.com/', sourceName: 'ALU Kigali' },
-    { amount: '70% Tuition', title: 'University of Rwanda Merit Award', country: 'Rwanda', flag: 'https://flagcdn.com/w40/rw.png', desc: 'Tuition support for high-achieving Rwandan and East African students.', deadline: 'Aug 31, 2026', sourceUrl: 'https://www.ur.ac.rw/', sourceName: 'University of Rwanda' },
-    { amount: 'Full Fund', title: 'Commonwealth Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'Fully funded scholarships for students from developing countries.', deadline: 'Dec 31, 2026', sourceUrl: 'https://cscuk.fcdo.gov.uk/scholarships/commonwealth-scholarships/', sourceName: 'Commonwealth Scholarships' },
-    { amount: '$25,000', title: 'Chevening Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'UK government global scholarship program.', deadline: 'Nov 15, 2026', sourceUrl: 'https://www.chevening.org/scholarships/', sourceName: 'Chevening' },
-    { amount: '$30,000', title: 'Fulbright Program', country: 'United States', flag: 'https://flagcdn.com/w40/us.png', desc: 'International exchange program sponsored by the US government.', deadline: 'Oct 15, 2026', sourceUrl: 'https://foreign.fulbrightprogram.org/', sourceName: 'Fulbright' },
-    { amount: '$20,000', title: 'Vanier Canada Graduate', country: 'Canada', flag: 'https://flagcdn.com/w40/ca.png', desc: 'For doctoral students with leadership excellence.', deadline: 'Nov 1, 2026', sourceUrl: 'https://vanier.gc.ca/en/recipients.html', sourceName: 'Vanier Canada' },
-    { amount: 'Full Fund', title: 'DAAD Scholarship', country: 'Germany', flag: 'https://flagcdn.com/w40/de.png', desc: 'German Academic Exchange Service funding.', deadline: 'Jan 31, 2027', sourceUrl: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/', sourceName: 'DAAD' },
-    { amount: '$15,000', title: 'Australia Awards', country: 'Australia', flag: 'https://flagcdn.com/w40/au.png', desc: 'Awards funded by the Australian government.', deadline: 'Apr 30, 2027', sourceUrl: 'https://www.dfat.gov.au/australias-awards', sourceName: 'Australia Awards' },
+    { amount: 'Full Fund', title: 'Commonwealth Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'Fully funded scholarships for students from developing countries to study at UK universities.', deadline: 'Dec 31, 2026', sourceUrl: 'https://cscuk.fcdo.gov.uk/scholarships/commonwealth-scholarships/', applyUrl: 'https://cscuk.fcdo.gov.uk/apply/', sourceName: 'Commonwealth Scholarships' },
+    { amount: '$25,000', title: 'Chevening Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'UK government global scholarship program for future leaders.', deadline: 'Nov 15, 2026', sourceUrl: 'https://www.chevening.org/scholarships/', applyUrl: 'https://www.chevening.org/apply/', sourceName: 'Chevening' },
+    { amount: '$30,000', title: 'Fulbright Program', country: 'United States', flag: 'https://flagcdn.com/w40/us.png', desc: 'Flagship US exchange programme bringing international students to American universities for graduate study.', deadline: 'Oct 15, 2026', sourceUrl: 'https://foreign.fulbrightonline.org/', applyUrl: 'https://foreign.fulbrightonline.org/apply', sourceName: 'Fulbright' },
+    { amount: 'Full Fund', title: 'DAAD Scholarship', country: 'Germany', flag: 'https://flagcdn.com/w40/de.png', desc: 'German Academic Exchange Service scholarships for international students and researchers.', deadline: 'Jan 31, 2027', sourceUrl: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/', applyUrl: 'https://www2.daad.de/deutschland/stipendium/datenbank/en/21148-scholarship-database/', sourceName: 'DAAD' },
 ]
 
 // ─── Outbound click tracking (anonymous analytics → outbound_clicks) ───

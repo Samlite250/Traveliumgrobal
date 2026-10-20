@@ -7,6 +7,7 @@ import {
     scholarshipSlug,
     buildScholarshipArticle,
     openOfficial,
+    isVerifiedListing,
 } from '../lib/listings'
 import SEOHead from '../components/SEOHead'
 import JsonLd from '../components/JsonLd'
@@ -40,7 +41,9 @@ export default function ScholarshipDetail() {
         if (!db) { setItems(fallbackScholarships); setLoading(false); return }
         const q = query(collection(db, 'services'), where('type', '==', 'scholarship'))
         const unsub = onSnapshot(q, (snap) => {
-            const all = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(s => s.active !== false)
+            const all = snap.docs
+                .map(d => ({ id: d.id, ...d.data() }))
+                .filter(s => s.active !== false && (!s.auto || isVerifiedListing(s)))
             setItems(all.length ? all : fallbackScholarships)
             setLoading(false)
         }, () => { setItems(fallbackScholarships); setLoading(false) })

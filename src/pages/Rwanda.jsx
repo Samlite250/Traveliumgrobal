@@ -16,16 +16,6 @@ const heroFacts = [
     { icon: <Cpu size={16} />, label: 'Kigali Innovation City' },
 ]
 
-// ── Featured jobs in Rwanda (curated from our Rwanda jobs board) ──
-const rwandaJobs = [
-    { title: 'Software Engineer / Full Stack Developer', company: 'Kigali Innovation City — Tech Startups', location: 'Kigali, Rwanda', salary: 'RWF 1,200,000 – 2,500,000 / month', type: 'Full-Time', tag: 'High Pay', tagClass: 'hp-badge' },
-    { title: 'Hospitality & Hotel Operations Manager', company: 'Kigali Serena Hotel & Resort Group', location: 'Kigali, Rwanda', salary: 'RWF 1,500,000 – 2,800,000 / month', type: 'Full-Time', tag: 'High Pay', tagClass: 'hp-badge' },
-    { title: 'Financial Analyst & Accountant', company: 'Kigali Financial Services Group', location: 'Kigali, Rwanda', salary: 'RWF 1,100,000 – 1,900,000 / month', type: 'Full-Time', tag: 'High Pay', tagClass: 'hp-badge' },
-    { title: 'English–French Bilingual Customer Success Lead', company: 'Rwanda Global Business Hub (GBH)', location: 'Kigali, Rwanda', salary: 'RWF 1,000,000 – 1,600,000 / month', type: 'Full-Time', tag: 'Bilingual', tagClass: 'verified-badge' },
-    { title: 'Ride-Hailing Driver Partner', company: 'Yego & Local Mobility Services', location: 'Kigali, Rwanda', salary: 'RWF 150,000 – 350,000 / month', type: 'Part-Time / Flexible', tag: 'Flexible', tagClass: 'verified-badge' },
-    { title: 'Digital Marketing & Social Media Assistant', company: 'Kigali Creative Agencies', location: 'Kigali, Rwanda (Hybrid)', salary: 'RWF 100,000 – 200,000 / month', type: 'Part-Time / Remote Option', tag: 'Hybrid', tagClass: 'verified-badge' },
-]
-
 // ── Top universities & schools in Rwanda ──
 const rwandaUniversities = [
     {
@@ -86,7 +76,7 @@ export default function Rwanda() {
                         <Link to="/">Home</Link><span className="sep">›</span><span>Rwanda</span>
                     </div>
                     <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
-                            <img src="https://flagcdn.com/w80/rw.png" alt="Rwanda flag" width="44" height="44" loading="eager" style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', display: 'block', border: '2px solid rgba(255,255,255,0.55)', boxShadow: '0 2px 10px rgba(0,0,0,0.28)' }} />
+                        <img src="https://flagcdn.com/w80/rw.png" alt="Rwanda flag" width="44" height="44" loading="eager" style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', display: 'block', border: '2px solid rgba(255,255,255,0.55)', boxShadow: '0 2px 10px rgba(0,0,0,0.28)' }} />
                         Discover Rwanda
                     </h1>
                     <p>East Africa's fastest-growing tech, hospitality & services hub — safe, clean, connected and hungry for talent. Browse local jobs, scholarships, universities and relocation support, all in one place.</p>
@@ -122,41 +112,15 @@ export default function Rwanda() {
                 <div className="container">
                     <div className="section-header">
                         <div className="section-label"><Briefcase size={16} /> Work in Rwanda</div>
-                        <h2 className="section-title">Featured Jobs in Rwanda</h2>
-                        <p className="section-sub">High-paying and flexible roles from Kigali's tech, finance, hospitality & creative sectors — updated daily.</p>
+                        <h2 className="section-title">Jobs in Rwanda</h2>
+                        <p className="section-sub">High-paying and flexible roles from Kigali's tech, finance, hospitality &amp; creative sectors — updated daily from our live jobs board.</p>
                     </div>
-                    <div className="jobs-grid">
-                        {rwandaJobs.map(job => (
-                            <div key={job.title} className="job-card">
-                                <div className="job-card-top">
-                                    <div className={`job-badge ${job.tagClass}`}>{job.tag}</div>
-                                    <span className="job-country-tag"><MapPin size={13} /> Rwanda</span>
-                                </div>
-
-                                <h4 className="job-title">{job.title}</h4>
-
-                                <div className="job-meta-row">
-                                    <span className="job-company"><Briefcase size={14} /> {job.company}</span>
-                                    <span className="job-location"><MapPin size={14} /> {job.location}</span>
-                                </div>
-
-                                <div className="job-salary-box">
-                                    <TrendingUp size={18} />
-                                    <span className="salary-text">{job.salary}</span>
-                                </div>
-
-                                <div className="job-card-footer">
-                                    <span className="exp-badge">{job.type}</span>
-                                    <Link to="/jobs?country=Rwanda" className="btn-apply-job primary">
-                                        View &amp; Apply <ArrowRight size={16} />
-                                    </Link>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+                    <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                        <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>
+                            Live Rwanda job listings are loaded directly from our verified jobs board. Click below to browse current openings.
+                        </p>
                         <Link to="/jobs?country=Rwanda" className="btn btn-primary" style={{ fontSize: '1rem' }}>
-                            Browse All Rwanda Jobs & Careers <ArrowRight size={18} />
+                            <Briefcase size={18} /> Browse All Rwanda Jobs &amp; Careers <ArrowRight size={18} />
                         </Link>
                     </div>
                 </div>
