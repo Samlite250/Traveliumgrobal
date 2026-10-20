@@ -304,8 +304,8 @@ export default function Rwanda() {
                             </div>
 
                             {mifotraStatus.loading && !mifotraJobs.length ? (
-                                <div className="jobs-grid">
-                                    {[0, 1, 2].map(i => (
+                                <div className="jobs-grid mifotra-grid">
+                                    {[0, 1, 2, 3, 4, 5].map(i => (
                                         <div key={i} className="job-card mifotra-card mifotra-skeleton">
                                             <Loader2 size={26} className="mif-spin" />
                                             <p>Loading live MIFOTRA vacancies…</p>
@@ -332,7 +332,7 @@ export default function Rwanda() {
                                 </div>
                             ) : (
                                 <>
-                                    <div className="jobs-grid">
+                                    <div className="jobs-grid mifotra-grid">
                                         {mifotraJobs.slice(0, mifotraVisible).map(job => (
                                             <div key={job.id} className="job-card mifotra-card">
                                                 <div className="job-card-top">
