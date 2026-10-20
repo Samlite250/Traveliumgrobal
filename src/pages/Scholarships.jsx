@@ -5,7 +5,7 @@ import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
-import { fallbackScholarships, scholarshipSlug, slugify } from '../lib/listings'
+import { fallbackScholarships, scholarshipSlug, slugify, resolveApplyUrl } from '../lib/listings'
 import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe, Award } from 'lucide-react'
 
 // Emoji flags for country filter tabs (case-insensitive lookup)
@@ -227,11 +227,11 @@ export default function Scholarships() {
                                                 View &amp; Apply <ArrowRight size={14} />
                                             </Link>
                                         </div>
-                                        {(s.sourceUrl || s.applyUrl) && (
+                                        {resolveApplyUrl(s) && (
                                             <div className="scholarship-source">
                                                 <ShieldCheck size={12} />
                                                 {s.sourceName ? `${s.sourceName} — ` : ''}
-                                                <a href={s.sourceUrl || s.applyUrl} target="_blank" rel="noopener noreferrer">Official program page <ExternalLink size={11} /></a>
+                                                <a href={resolveApplyUrl(s)} target="_blank" rel="noopener noreferrer">Apply on official site <ExternalLink size={11} /></a>
                                             </div>
                                         )}
                                     </div>

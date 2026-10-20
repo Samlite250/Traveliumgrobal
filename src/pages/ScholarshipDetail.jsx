@@ -7,6 +7,7 @@ import {
     scholarshipSlug,
     buildScholarshipArticle,
     openOfficial,
+    resolveApplyUrl,
 } from '../lib/listings'
 import SEOHead from '../components/SEOHead'
 import JsonLd from '../components/JsonLd'
@@ -54,7 +55,7 @@ export default function ScholarshipDetail() {
 
     const title = s.title || s.name || 'Scholarship'
     const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'Funding available')
-    const officialUrl = s.sourceUrl || s.applyUrl || ''
+    const officialUrl = resolveApplyUrl(s)
     const canonicalPath = `/scholarships/${slug}`
     const seoDesc = `${amount !== 'Funding available' ? amount + ' — ' : ''}${title}${s.country ? ' in ' + s.country : ''}: eligibility, required documents, step-by-step application guide and the official apply link.${s.deadline ? ' Deadline ' + s.deadline + '.' : ''}`
     const faqSection = sections.find(x => x.faq)

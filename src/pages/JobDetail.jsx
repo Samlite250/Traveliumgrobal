@@ -3,7 +3,7 @@ import { Link, useParams, Navigate } from 'react-router-dom'
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { JOBS_DATA, mergeLiveJobs } from './Jobs'
-import { jobSlug, buildJobArticle, openOfficial } from '../lib/listings'
+import { jobSlug, buildJobArticle, openOfficial, resolveApplyUrl } from '../lib/listings'
 import SEOHead from '../components/SEOHead'
 import JsonLd from '../components/JsonLd'
 import LeadCapture from '../components/LeadCapture'
@@ -83,7 +83,7 @@ export default function JobDetail() {
     const title = job.title || 'Job Opening'
     const company = job.company || 'Verified employer'
     const countryName = job.countryName || job.location || ''
-    const officialUrl = job.applyUrl || job.sourceUrl || ''
+    const officialUrl = resolveApplyUrl(job)
     const canonicalPath = `/jobs/${slug}`
     const seoDesc = `${title} at ${company}${countryName ? ' — ' + countryName : ''}. ${job.salary || 'Competitive salary'}. Requirements, benefits, visa notes and how to apply. Travelium Global verified international job posting.`
 

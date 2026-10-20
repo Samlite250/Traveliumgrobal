@@ -6,16 +6,43 @@ export const slugify = (s) => String(s || '').toLowerCase().trim().replace(/[^a-
 export const scholarshipSlug = (s) => slugify(s?.title || s?.name || '')
 export const jobSlug = (job, countryName) => slugify(`${job?.title || ''} ${countryName || job?.country || ''}`)
 
+// ─── Apply-link resolution ───
+// Visitors must land on the APPLICATION site, not the institution/organisation
+// homepage. We accept an explicit `applyUrl` (importers/admins set this for a
+// real application route) or a `sourceUrl` that itself points at an
+// application/portal page. Everything else (institutional homepages, program
+// overview pages) is rejected so the UI routes the visitor to Travelium instead.
+const APPLY_URL_PATTERN = /(apply|application|applicant|admission|admissions|enrol|enroll|register|registration|onlineregistration|vacanc|careers?\/(?:apply|job)|job-application|recruit|submission|portal\/apply|stipendium|bewerbung|scholarship-database)/i
+
+export function isApplicationUrl(url) {
+    if (!url || typeof url !== 'string') return false
+    let u
+    try { u = new URL(url) } catch { return false }
+    if (!/^https?:$/.test(u.protocol)) return false
+    const target = `${u.hostname}${u.pathname}${u.search}`
+    return APPLY_URL_PATTERN.test(target)
+}
+
+// Returns the best genuine application URL, or '' when none qualifies.
+export function resolveApplyUrl(listing) {
+    if (!listing) return ''
+    const explicit = listing.applyUrl || listing.apply_url
+    if (explicit && isApplicationUrl(explicit)) return explicit
+    const source = listing.sourceUrl || listing.officialUrl
+    if (source && isApplicationUrl(source)) return source
+    return ''
+}
+
 // ─── Fallback scholarships (offline / empty Firestore) ───
 export const fallbackScholarships = [
     { amount: 'Full Fund', title: 'Rwanda Government Scholarship (RISBP)', country: 'Rwanda', flag: 'https://flagcdn.com/w40/rw.png', desc: 'Government of Rwanda merit scholarship for outstanding students at accredited universities.', deadline: 'Mar 31, 2027', sourceUrl: 'https://www.risb.rw/', sourceName: 'Rwanda Education Board' },
     { amount: 'Full Fund', title: 'African Leadership University (ALU) Scholarship', country: 'Rwanda', flag: 'https://flagcdn.com/w40/rw.png', desc: 'Need-based & merit scholarships for African students studying at ALU Kigali.', deadline: 'Rolling admissions', sourceUrl: 'https://www.alueducation.com/', sourceName: 'ALU Kigali' },
     { amount: '70% Tuition', title: 'University of Rwanda Merit Award', country: 'Rwanda', flag: 'https://flagcdn.com/w40/rw.png', desc: 'Tuition support for high-achieving Rwandan and East African students.', deadline: 'Aug 31, 2026', sourceUrl: 'https://www.ur.ac.rw/', sourceName: 'University of Rwanda' },
-    { amount: 'Full Fund', title: 'Commonwealth Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'Fully funded scholarships for students from developing countries.', deadline: 'Dec 31, 2026', sourceUrl: 'https://cscuk.fcdo.gov.uk/scholarships/commonwealth-scholarships/', sourceName: 'Commonwealth Scholarships' },
-    { amount: '$25,000', title: 'Chevening Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'UK government global scholarship program.', deadline: 'Nov 15, 2026', sourceUrl: 'https://www.chevening.org/scholarships/', sourceName: 'Chevening' },
-    { amount: '$30,000', title: 'Fulbright Program', country: 'United States', flag: 'https://flagcdn.com/w40/us.png', desc: 'International exchange program sponsored by the US government.', deadline: 'Oct 15, 2026', sourceUrl: 'https://foreign.fulbrightprogram.org/', sourceName: 'Fulbright' },
+    { amount: 'Full Fund', title: 'Commonwealth Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'Fully funded scholarships for students from developing countries.', deadline: 'Dec 31, 2026', sourceUrl: 'https://cscuk.fcdo.gov.uk/scholarships/commonwealth-scholarships/', applyUrl: 'https://cscuk.fcdo.gov.uk/apply/', sourceName: 'Commonwealth Scholarships' },
+    { amount: '$25,000', title: 'Chevening Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'UK government global scholarship program.', deadline: 'Nov 15, 2026', sourceUrl: 'https://www.chevening.org/scholarships/', applyUrl: 'https://www.chevening.org/apply/', sourceName: 'Chevening' },
+    { amount: '$30,000', title: 'Fulbright Program', country: 'United States', flag: 'https://flagcdn.com/w40/us.png', desc: 'International exchange program sponsored by the US government.', deadline: 'Oct 15, 2026', sourceUrl: 'https://foreign.fulbrightprogram.org/', applyUrl: 'https://foreign.fulbrightonline.org/apply', sourceName: 'Fulbright' },
     { amount: '$20,000', title: 'Vanier Canada Graduate', country: 'Canada', flag: 'https://flagcdn.com/w40/ca.png', desc: 'For doctoral students with leadership excellence.', deadline: 'Nov 1, 2026', sourceUrl: 'https://vanier.gc.ca/en/recipients.html', sourceName: 'Vanier Canada' },
-    { amount: 'Full Fund', title: 'DAAD Scholarship', country: 'Germany', flag: 'https://flagcdn.com/w40/de.png', desc: 'German Academic Exchange Service funding.', deadline: 'Jan 31, 2027', sourceUrl: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/', sourceName: 'DAAD' },
+    { amount: 'Full Fund', title: 'DAAD Scholarship', country: 'Germany', flag: 'https://flagcdn.com/w40/de.png', desc: 'German Academic Exchange Service funding.', deadline: 'Jan 31, 2027', sourceUrl: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/', applyUrl: 'https://www2.daad.de/deutschland/stipendium/datenbank/en/21148-scholarship-database/', sourceName: 'DAAD' },
     { amount: '$15,000', title: 'Australia Awards', country: 'Australia', flag: 'https://flagcdn.com/w40/au.png', desc: 'Awards funded by the Australian government.', deadline: 'Apr 30, 2027', sourceUrl: 'https://www.dfat.gov.au/australias-awards', sourceName: 'Australia Awards' },
 ]
 
@@ -190,7 +217,7 @@ export function buildJobArticle(j) {
             id: 'how-to-apply', label: 'How to Apply', title: 'How to Apply',
             steps: [
                 'Review the requirements above and prepare your CV / resume in PDF format.',
-                j.applyUrl || j.sourceUrl
+                resolveApplyUrl(j)
                     ? 'Click "Apply on Official Site" — the official application page opens in a new tab.'
                     : 'Fill in the application form on this page — it goes directly to the Travelium Global recruitment desk.',
                 'Double-check your contact details so our officers can reach you.',

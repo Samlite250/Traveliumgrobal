@@ -22,10 +22,10 @@ const DEFAULT_IMPORT_SOURCES = {
 
 // Official scholarship programs — the institutions themselves are the source.
 const OFFICIAL_SCHOLARSHIPS = [
-  { slug: 'daad', title: 'DAAD Scholarships', institution: 'German Academic Exchange Service (DAAD)', country: 'Germany', amount: 'Full Fund', url: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/', desc: 'Scholarships for international students, graduates and researchers across all degree levels, funded by the German government.' },
-  { slug: 'chevening', title: 'Chevening Scholarship', institution: 'UK Government (FCDO)', country: 'United Kingdom', amount: 'Full Fund', url: 'https://www.chevening.org/scholarships/', desc: 'UK government global scholarship programme for future leaders — full funding for a one-year master\u2019s degree.' },
-  { slug: 'commonwealth', title: 'Commonwealth Master\u2019s Scholarship', institution: 'Commonwealth Scholarship Commission', country: 'United Kingdom', amount: 'Full Fund', url: 'https://cscuk.fcdo.gov.uk/scholarships/', desc: 'Fully funded master\u2019s study in the UK for students from low- and middle-income Commonwealth countries.' },
-  { slug: 'fulbright', title: 'Fulbright Foreign Student Program', institution: 'US Department of State', country: 'United States', amount: 'Full Fund', url: 'https://foreign.fulbrightonline.org/', desc: 'Flagship US exchange programme bringing international students to American universities for graduate study.' },
+  { slug: 'daad', title: 'DAAD Scholarships', institution: 'German Academic Exchange Service (DAAD)', country: 'Germany', amount: 'Full Fund', url: 'https://www.daad.de/en/study-and-research-in-germany/scholarships/', applyUrl: 'https://www2.daad.de/deutschland/stipendium/datenbank/en/21148-scholarship-database/', desc: 'Scholarships for international students, graduates and researchers across all degree levels, funded by the German government.' },
+  { slug: 'chevening', title: 'Chevening Scholarship', institution: 'UK Government (FCDO)', country: 'United Kingdom', amount: 'Full Fund', url: 'https://www.chevening.org/scholarships/', applyUrl: 'https://www.chevening.org/apply/', desc: 'UK government global scholarship programme for future leaders — full funding for a one-year master\u2019s degree.' },
+  { slug: 'commonwealth', title: 'Commonwealth Master\u2019s Scholarship', institution: 'Commonwealth Scholarship Commission', country: 'United Kingdom', amount: 'Full Fund', url: 'https://cscuk.fcdo.gov.uk/scholarships/', applyUrl: 'https://cscuk.fcdo.gov.uk/apply/', desc: 'Fully funded master\u2019s study in the UK for students from low- and middle-income Commonwealth countries.' },
+  { slug: 'fulbright', title: 'Fulbright Foreign Student Program', institution: 'US Department of State', country: 'United States', amount: 'Full Fund', url: 'https://foreign.fulbrightonline.org/', applyUrl: 'https://foreign.fulbrightonline.org/apply', desc: 'Flagship US exchange programme bringing international students to American universities for graduate study.' },
   { slug: 'erasmus-mundus', title: 'Erasmus Mundus Joint Master\u2019s', institution: 'European Commission', country: 'European Union', amount: 'Full Fund', url: 'https://www.eacea.ec.europa.eu/scholarships/erasmus-mundus-catalogue_en', desc: 'EU-funded scholarships for joint master\u2019s programmes delivered by consortia of European universities.' },
   { slug: 'mext', title: 'MEXT Scholarship', institution: 'Government of Japan (MEXT)', country: 'Japan', amount: 'Full Fund', url: 'https://www.studyinjapan.go.jp/en/planning/scholarship/', desc: 'Japanese government scholarships covering tuition, monthly allowance and travel for international students.' },
   { slug: 'australia-awards', title: 'Australia Awards Scholarships', institution: 'Australian Government (DFAT)', country: 'Australia', amount: 'Full Fund', url: 'https://www.dfat.gov.au/people-to-people/australia-awards', desc: 'Long-term development awards for study in Australia, with a focus on partner countries in the Indo-Pacific and Africa.' },
@@ -310,6 +310,7 @@ async function importOfficialScholarships(db, cfg) {
       source: 'official',
       sourceName: `${prog.institution} (official)`,
       sourceUrl: prog.url,
+      applyUrl: prog.applyUrl || '',
       sourceId: prog.slug,
       flags: scam.flags,
       flagged: scam.flagged,
@@ -365,6 +366,7 @@ async function publishListing(db, docId, data) {
       source: data.source || '',
       sourceName: data.sourceName || '',
       sourceUrl: data.sourceUrl || '',
+      applyUrl: data.applyUrl || '',
       auto: true,
       status: 'active',
       created_at: admin.firestore.FieldValue.serverTimestamp(),
@@ -382,6 +384,7 @@ async function publishListing(db, docId, data) {
       source: data.source || '',
       sourceName: data.sourceName || '',
       sourceUrl: data.sourceUrl || '',
+      applyUrl: data.applyUrl || '',
       auto: true,
       active: true,
       created_at: admin.firestore.FieldValue.serverTimestamp(),

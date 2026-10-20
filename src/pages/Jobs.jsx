@@ -9,7 +9,7 @@ import {
     CheckCircle, ArrowRight, ShieldCheck, Star, Send, X, Globe, UserCheck, Gem, Award, UploadCloud, FileText, ExternalLink
 } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
-import { jobSlug } from '../lib/listings'
+import { jobSlug, resolveApplyUrl } from '../lib/listings'
 
 // Comprehensive Countries Data with 5 High Payable Jobs & 5 Part Time Jobs per Country
 export const JOBS_DATA = [
@@ -1182,8 +1182,8 @@ export function mergeLiveJobs(curated, live) {
             requirements: toRequirements(lj.description),
             auto: true,
             sourceName: lj.sourceName || lj.source || '',
-            sourceUrl: lj.sourceUrl || lj.applyUrl || '',
-            applyUrl: lj.applyUrl || lj.sourceUrl || '',
+            applyUrl: lj.applyUrl || '',
+            sourceUrl: lj.sourceUrl || '',
         }
         if (/part/i.test(lj.jobType || '')) group.partTimeJobs.push(job)
         else group.highPayableJobs.push(job)
@@ -1529,9 +1529,9 @@ export default function Jobs() {
 
                                             <div className="job-card-footer">
                                                 <span className="exp-badge">{job.experience}</span>
-                                                {(job.applyUrl || job.sourceUrl) && (
-                                                    <a className="job-source-link" href={job.applyUrl || job.sourceUrl} target="_blank" rel="noopener noreferrer" title={`Original posting — ${job.sourceName || 'Official'}`}>
-                                                        Official posting <ExternalLink size={12} />
+                                                {resolveApplyUrl(job) && (
+                                                    <a className="job-source-link" href={resolveApplyUrl(job)} target="_blank" rel="noopener noreferrer" title={`Application page — ${job.sourceName || 'Official'}`}>
+                                                        Apply on official site <ExternalLink size={12} />
                                                     </a>
                                                 )}
                                                 <Link

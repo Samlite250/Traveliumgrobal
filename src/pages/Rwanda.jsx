@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
-import { fallbackScholarships, scholarshipSlug, trackOutbound } from '../lib/listings'
+import { fallbackScholarships, scholarshipSlug, trackOutbound, resolveApplyUrl } from '../lib/listings'
 import { useToast } from '../context/ToastContext'
 import { fetchMifotraJobs, isMifotraJobExpired, MIFOTRA_PORTAL_URL } from '../lib/mifotraJobs'
 import {
@@ -594,17 +594,17 @@ export default function Rwanda() {
                                                 View &amp; Apply <ArrowRight size={14} />
                                             </Link>
                                         </div>
-                                        {s.sourceUrl && (
+                                        {resolveApplyUrl(s) && (
                                             <div className="scholarship-source">
                                                 <ShieldCheck size={12} />
                                                 {s.sourceName ? `${s.sourceName} — ` : ''}
                                                 <a
-                                                    href={s.sourceUrl}
+                                                    href={resolveApplyUrl(s)}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    onClick={() => trackOutbound({ type: 'scholarship', id: displayTitle, title: displayTitle, url: s.sourceUrl })}
+                                                    onClick={() => trackOutbound({ type: 'scholarship', id: displayTitle, title: displayTitle, url: resolveApplyUrl(s) })}
                                                 >
-                                                    Official program page <ExternalLink size={11} />
+                                                    Apply on official site <ExternalLink size={11} />
                                                 </a>
                                             </div>
                                         )}
