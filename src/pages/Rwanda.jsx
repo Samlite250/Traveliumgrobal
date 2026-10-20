@@ -312,9 +312,14 @@ export default function Rwanda() {
                                 <div className="no-jobs-card">
                                     <Landmark size={40} />
                                     <p>{mifotraStatus.error}</p>
-                                    <button className="mifotra-refresh-btn" onClick={() => loadMifotraJobs(true)}>
-                                        <RefreshCw size={14} /> Try again
-                                    </button>
+                                    <div className="mifotra-error-actions">
+                                        <button className="mifotra-refresh-btn" onClick={() => loadMifotraJobs(true)}>
+                                            <RefreshCw size={14} /> Try again
+                                        </button>
+                                        <a className="mifotra-refresh-btn" href={MIFOTRA_PORTAL_URL} target="_blank" rel="noreferrer">
+                                            Browse vacancies on MIFOTRA <ExternalLink size={14} />
+                                        </a>
+                                    </div>
                                 </div>
                             ) : mifotraJobs.length === 0 ? (
                                 <div className="no-jobs-card">

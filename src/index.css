@@ -13442,3 +13442,13 @@ textarea:focus,
     align-items: stretch;
   }
 }
+/* MIFOTRA error-state actions (no-Blaze / offline fallback) */
+.mifotra-error-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.mifotra-error-actions a.mifotra-refresh-btn {
+  text-decoration: none;
+}

@@ -12,12 +12,52 @@ export const MIFOTRA_TAB_ID = 'mifotra'
 const CACHE_KEY = 'travelium_mifotra_jobs_cache'
 const CACHE_TTL_MS = 30 * 60 * 1000 // 30 minutes
 
-async function inflateToText(arrayBuffer) {
-    if (typeof DecompressionStream === 'undefined') {
-        throw new Error('This browser cannot decompress MIFOTRA feeds.')
-    }
-    const stream = new Blob([arrayBuffer]).stream().pipeThrough(new DecompressionStream('deflate'))
+async function bytesToText(bytes, format) {
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream(format))
     return await new Response(stream).text()
+}
+
+async function inflateToText(bytes) {
+    const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)
+    const attempts = []
+    if (typeof DecompressionStream !== 'undefined') {
+        for (const format of ['deflate', 'deflate-raw']) {
+            attempts.push(() => bytesToText(u8, format))
+        }
+    }
+    attempts.push(async () => {
+        const pako = await import('pako')
+        return new TextDecoder().decode(pako.inflate(u8))
+    })
+    attempts.push(async () => {
+        const pako = await import('pako')
+        return new TextDecoder().decode(pako.inflateRaw(u8))
+    })
+
+    let lastErr = null
+    for (const attempt of attempts) {
+        try {
+            return await attempt()
+        } catch (err) {
+            lastErr = err
+        }
+    }
+    throw lastErr || new Error('Unable to decode the MIFOTRA feed.')
+}
+
+function bytesFromByteMap(map) {
+    if (Array.isArray(map)) return Uint8Array.from(map.map(Number))
+    const keys = Object.keys(map)
+    keys.sort((a, b) => (Number(a) - Number(b)) || a.localeCompare(b))
+    return Uint8Array.from(keys.map(k => Number(map[k]) & 0xff))
+}
+
+async function decodeMifotraPayload(payload) {
+    if (!payload || !payload._data_) return payload
+    const bytes = bytesFromByteMap(payload._data_)
+    const text = await inflateToText(bytes)
+    const decoded = JSON.parse(text)
+    return decoded && decoded._data_ ? await decodeMifotraPayload(decoded) : decoded
 }
 
 export function normalizeMifotraJob(raw) {
@@ -79,10 +119,11 @@ function normalizeList(payload) {
 }
 
 /**
- * Fetch MIFOTRA vacancies.
+ * Fetch MIFOTRA vacancies (client-only, no server/Blaze plan required).
  * 1. Fresh localStorage cache (unless force)
- * 2. Live request to the MIFOTRA portal
- * 3. Firestore cache written by the `syncMifotraJobs` Cloud Function
+ * 2. Live request to the MIFOTRA portal (public CORS-enabled API)
+ * 3. Stale localStorage cache, then the optional Firestore cache
+ *    (`settings/mifotra_jobs`) — only present if the admin sync ran.
  */
 export async function fetchMifotraJobs({ force = false } = {}) {
     const cached = readCache()
@@ -98,33 +139,32 @@ export async function fetchMifotraJobs({ force = false } = {}) {
         if (!res.ok) throw new Error(`MIFOTRA responded ${res.status}`)
 
         const buffer = await res.arrayBuffer()
-        let payload = null
+        let payload
         try {
             payload = JSON.parse(new TextDecoder().decode(buffer))
         } catch {
             payload = JSON.parse(await inflateToText(buffer))
         }
-        if (payload && payload._data_) {
-            payload = JSON.parse(await inflateToText(buffer))
-        }
+        payload = await decodeMifotraPayload(payload)
+
+        if (!Array.isArray(payload)) throw new Error('MIFOTRA returned an unexpected response')
         const jobs = normalizeList(payload)
 
-        if (!jobs.length) throw new Error('MIFOTRA returned no vacancies')
         writeCache(jobs)
         return { jobs, source: 'live', fetched_at: new Date().toISOString() }
     } catch (liveErr) {
+        if (cached?.jobs?.length) {
+            return { jobs: cached.jobs, source: 'stale-cache', fetched_at: cached.fetched_at }
+        }
         const serverJobs = await fetchMifotraJobsFromFirestore()
         if (serverJobs?.jobs?.length) {
             return { jobs: serverJobs.jobs, source: 'server-cache', fetched_at: serverJobs.fetched_at }
-        }
-        if (cached?.jobs?.length) {
-            return { jobs: cached.jobs, source: 'stale-cache', fetched_at: cached.fetched_at }
         }
         throw liveErr
     }
 }
 
-/** Server-side cache maintained by the scheduled `syncMifotraJobs` Cloud Function. */
+/** Optional server-side cache (written when the Cloud Function is deployed). */
 export async function fetchMifotraJobsFromFirestore() {
     if (!db) return null
     try {
