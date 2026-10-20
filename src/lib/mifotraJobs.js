@@ -10,7 +10,9 @@ export const MIFOTRA_PORTAL_URL = 'https://recruitment.mifotra.gov.rw/'
 export const MIFOTRA_TAB_ID = 'mifotra'
 
 const CACHE_KEY = 'travelium_mifotra_jobs_cache'
-const CACHE_TTL_MS = 30 * 60 * 1000 // 30 minutes
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000 // 6 hours
+const LIVE_TIMEOUT_MS = 8000 // per attempt — the portal regularly stalls
+const LIVE_DELAY_MS = 1500 // stagger before the backup attempt
 
 async function bytesToText(bytes, format) {
     const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream(format))
@@ -121,20 +123,39 @@ function normalizeList(payload) {
 /**
  * Fetch MIFOTRA vacancies (client-only, no server/Blaze plan required).
  * 1. Fresh localStorage cache (unless force)
- * 2. Live request to the MIFOTRA portal (public CORS-enabled API)
+ * 2. Live requests with timeout + retries (the portal intermittently 502s/stalls)
  * 3. Stale localStorage cache, then the optional Firestore cache
  *    (`settings/mifotra_jobs`) — only present if the admin sync ran.
  */
-export async function fetchMifotraJobs({ force = false } = {}) {
-    const cached = readCache()
-    if (!force && cached && Date.now() - new Date(cached.fetched_at).getTime() < CACHE_TTL_MS) {
-        return { jobs: cached.jobs, source: 'cache', fetched_at: cached.fetched_at }
-    }
+function firstSuccess(promises) {
+    return new Promise((resolve, reject) => {
+        let remaining = promises.length
+        let lastErr = null
+        promises.forEach(p => {
+            Promise.resolve(p).then(resolve).catch(err => {
+                lastErr = err
+                remaining -= 1
+                if (remaining === 0) {
+                    reject(lastErr && lastErr.name === 'AbortError'
+                        ? new Error('The MIFOTRA portal is taking too long to respond. Please try again.')
+                        : (lastErr || new Error('Unable to reach the MIFOTRA portal.')))
+                }
+            })
+        })
+    })
+}
 
+async function fetchOnce({ bust = false, delay = 0 } = {}) {
+    if (delay) await new Promise(r => setTimeout(r, delay))
+
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), LIVE_TIMEOUT_MS)
     try {
-        const res = await fetch(MIFOTRA_API_URL, {
+        const url = bust ? `${MIFOTRA_API_URL}?_=${Date.now()}` : MIFOTRA_API_URL
+        const res = await fetch(url, {
             headers: { Accept: 'application/json' },
-            cache: force ? 'reload' : 'default'
+            cache: 'reload',
+            signal: controller.signal
         })
         if (!res.ok) throw new Error(`MIFOTRA responded ${res.status}`)
 
@@ -148,8 +169,28 @@ export async function fetchMifotraJobs({ force = false } = {}) {
         payload = await decodeMifotraPayload(payload)
 
         if (!Array.isArray(payload)) throw new Error('MIFOTRA returned an unexpected response')
-        const jobs = normalizeList(payload)
+        return normalizeList(payload)
+    } finally {
+        clearTimeout(timer)
+    }
+}
 
+async function fetchLiveJobs() {
+    return firstSuccess([
+        fetchOnce(),
+        fetchOnce({ bust: true }),
+        fetchOnce({ bust: true, delay: LIVE_DELAY_MS })
+    ])
+}
+
+export async function fetchMifotraJobs({ force = false } = {}) {
+    const cached = readCache()
+    if (!force && cached && Date.now() - new Date(cached.fetched_at).getTime() < CACHE_TTL_MS) {
+        return { jobs: cached.jobs, source: 'cache', fetched_at: cached.fetched_at }
+    }
+
+    try {
+        const jobs = await fetchLiveJobs()
         writeCache(jobs)
         return { jobs, source: 'live', fetched_at: new Date().toISOString() }
     } catch (liveErr) {

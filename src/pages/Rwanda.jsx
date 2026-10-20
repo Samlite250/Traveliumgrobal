@@ -258,7 +258,7 @@ export default function Rwanda() {
                         <button
                             role="tab"
                             aria-selected={jobTab === 'mifotra'}
-                            className={`rwanda-tab ${jobTab === 'mifotra' ? 'active' : ''}`}
+                            className={`rwanda-tab rwanda-tab-mifotra ${jobTab === 'mifotra' ? 'active' : ''}`}
                             onClick={() => setJobTab('mifotra')}
                         >
                             <Landmark size={16} /> MIFOTRA Hot Jobs
