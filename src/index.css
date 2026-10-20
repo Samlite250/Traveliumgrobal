@@ -13808,10 +13808,10 @@ textarea:focus,
 .rwanda-service-btn.scholarships:hover { background: #a0760a; box-shadow: 0 10px 26px rgba(184, 134, 11, 0.32); }
 .rwanda-service-btn.scholarships:focus-visible { outline-color: #b8860b; }
 
-/* Top Universities — purple */
-.rwanda-service-btn.universities { background: #6d28d9; }
-.rwanda-service-btn.universities:hover { background: #5b21b6; box-shadow: 0 10px 26px rgba(109, 40, 217, 0.32); }
-.rwanda-service-btn.universities:focus-visible { outline-color: #6d28d9; }
+/* Top Universities — teal */
+.rwanda-service-btn.universities { background: #0f766e; }
+.rwanda-service-btn.universities:hover { background: #0d5f59; box-shadow: 0 10px 26px rgba(15, 118, 110, 0.32); }
+.rwanda-service-btn.universities:focus-visible { outline-color: #0f766e; }
 
 .rwanda-service-live {
   display: inline-flex;
