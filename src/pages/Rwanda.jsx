@@ -117,8 +117,6 @@ export default function Rwanda() {
         const next = Math.min(Math.max(1, page), mifotraTotalPages)
         setMifotraPage(next)
         setExpandedDesc(null)
-        const section = document.getElementById('rwanda-jobs')
-        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
 
     const loadMifotraJobs = async (force = false) => {
