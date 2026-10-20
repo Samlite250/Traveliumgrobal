@@ -283,15 +283,13 @@ export default function Rwanda() {
             </div>
 
             {/* ── Service quick-nav ── */}
-            <div className="rwanda-service-nav">
+            <nav className="rwanda-service-nav" aria-label="Rwanda services">
                 <div className="container">
                     <div className="rwanda-service-nav-inner">
-                        <span className="rwanda-service-nav-label">
-                            <Star size={15} /> Jump to what you need
-                        </span>
+                        <span className="rwanda-service-nav-label">Explore Rwanda services</span>
                         <div className="rwanda-service-buttons">
                             <button className="rwanda-service-btn mifotra" onClick={() => goToService('mifotra')}>
-                                <Landmark size={17} />
+                                <Landmark size={22} />
                                 <span className="rsb-text">
                                     <strong>MIFOTRA Jobs</strong>
                                     <small>Live government vacancies</small>
@@ -299,21 +297,21 @@ export default function Rwanda() {
                                 <span className="rwanda-service-live"><span className="live-dot" aria-hidden="true"></span> Live</span>
                             </button>
                             <button className="rwanda-service-btn featured" onClick={() => goToService('featured')}>
-                                <Star size={17} />
+                                <Star size={22} />
                                 <span className="rsb-text">
                                     <strong>Featured Jobs</strong>
                                     <small>Top Kigali employers</small>
                                 </span>
                             </button>
                             <button className="rwanda-service-btn scholarships" onClick={() => goToService('scholarships')}>
-                                <GraduationCap size={17} />
+                                <GraduationCap size={22} />
                                 <span className="rsb-text">
                                     <strong>Rwandan Scholarships</strong>
                                     <small>Fund your studies</small>
                                 </span>
                             </button>
                             <button className="rwanda-service-btn universities" onClick={() => goToService('universities')}>
-                                <BookOpen size={17} />
+                                <BookOpen size={22} />
                                 <span className="rsb-text">
                                     <strong>Top Universities</strong>
                                     <small>Study in Rwanda</small>
@@ -322,7 +320,7 @@ export default function Rwanda() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </nav>
 
             {/* ── Rwanda Jobs (tabs: MIFOTRA Hot Jobs + Featured) ── */}
             <section className="content-section" id="rwanda-jobs">

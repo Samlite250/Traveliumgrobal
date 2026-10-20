@@ -13704,15 +13704,15 @@ textarea:focus,
 }
 /* ===== RWANDA SERVICE QUICK-NAV ===== */
 .rwanda-service-nav {
-  background: #f1f5f9;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 2rem 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 1.75rem 0;
 }
 
 .rwanda-service-nav-inner {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1rem;
 }
 
 .rwanda-service-nav-label {
@@ -13720,11 +13720,10 @@ textarea:focus,
   align-items: center;
   gap: 0.5rem;
   align-self: center;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-light);
 }
 
 .rwanda-service-buttons {
@@ -13734,114 +13733,106 @@ textarea:focus,
 }
 
 .rwanda-service-btn {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 1.1rem 1.2rem;
-  min-height: 84px;
-  border-radius: 16px;
-  border: none;
-  background: #ffffff;
-  color: #0f172a;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem;
+  min-height: 72px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  color: var(--text);
+  font-family: var(--font);
   cursor: pointer;
   text-align: left;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
-  overflow: hidden;
-}
-
-.rwanda-service-btn::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  background: #4285f4;
+  transition: var(--transition);
 }
 
 .rwanda-service-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.2);
+  border-color: var(--navy);
+  background: var(--off-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .rwanda-service-btn:active {
-  transform: translateY(-1px);
+  transform: translateY(0);
+}
+
+.rwanda-service-btn:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
 }
 
 .rwanda-service-btn > svg {
   flex: none;
-  padding: 0.6rem;
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: #eff6ff;
-  color: #4285f4;
-  transition: all 0.25s ease;
-}
-
-.rwanda-service-btn:hover > svg {
-  transform: scale(1.06);
+  width: 22px;
+  height: 22px;
+  color: var(--navy);
 }
 
 .rwanda-service-btn .rsb-text {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
-  line-height: 1.25;
+  gap: 0.1rem;
+  line-height: 1.3;
   min-width: 0;
 }
 
 .rwanda-service-btn .rsb-text strong {
-  font-size: 1.05rem;
-  font-weight: 900;
-  letter-spacing: -0.01em;
-  color: #0f172a;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text);
   white-space: nowrap;
 }
 
 .rwanda-service-btn .rsb-text small {
   font-size: 0.8rem;
-  color: #64748b;
-  font-weight: 600;
+  color: var(--text-light);
+  font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Per-service accent colors */
-.rwanda-service-btn.mifotra::before { background: #4285f4; }
-.rwanda-service-btn.mifotra > svg { background: #e8f0fe; color: #1a73e8; }
-.rwanda-service-btn.mifotra:hover { box-shadow: 0 18px 38px rgba(66, 133, 244, 0.32); }
+.rwanda-service-btn.mifotra {
+  border-color: var(--navy);
+  background: var(--navy);
+}
 
-.rwanda-service-btn.featured::before { background: #f59e0b; }
-.rwanda-service-btn.featured > svg { background: #fef3c7; color: #b45309; }
-.rwanda-service-btn.featured:hover { box-shadow: 0 18px 38px rgba(245, 158, 11, 0.32); }
+.rwanda-service-btn.mifotra > svg,
+.rwanda-service-btn.mifotra .rsb-text strong {
+  color: var(--white);
+}
 
-.rwanda-service-btn.scholarships::before { background: #059669; }
-.rwanda-service-btn.scholarships > svg { background: #d1fae5; color: #047857; }
-.rwanda-service-btn.scholarships:hover { box-shadow: 0 18px 38px rgba(5, 150, 105, 0.32); }
+.rwanda-service-btn.mifotra .rsb-text small {
+  color: rgba(255, 255, 255, 0.75);
+}
 
-.rwanda-service-btn.universities::before { background: #7c3aed; }
-.rwanda-service-btn.universities > svg { background: #ede9fe; color: #6d28d9; }
-.rwanda-service-btn.universities:hover { box-shadow: 0 18px 38px rgba(124, 58, 237, 0.32); }
+.rwanda-service-btn.mifotra:hover {
+  background: var(--navy-dark);
+  border-color: var(--navy-dark);
+  box-shadow: 0 8px 24px rgba(26, 43, 94, 0.25);
+}
 
 .rwanda-service-live {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   margin-left: auto;
-  padding: 0.22rem 0.55rem;
-  border-radius: 999px;
-  background: #dcfce7;
-  border: 1px solid #86efac;
-  color: #15803d;
-  font-size: 0.64rem;
-  font-weight: 900;
-  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--white);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   flex: none;
+}
+
+.rwanda-service-btn.mifotra .live-dot {
+  background: var(--gold);
 }
 
 @media (max-width: 1024px) {
