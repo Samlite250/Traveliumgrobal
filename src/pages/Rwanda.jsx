@@ -6,7 +6,7 @@ import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
 import { fallbackScholarships, scholarshipSlug, trackOutbound } from '../lib/listings'
 import { useToast } from '../context/ToastContext'
-import { fetchMifotraJobs, MIFOTRA_PORTAL_URL } from '../lib/mifotraJobs'
+import { fetchMifotraJobs, isMifotraJobExpired, MIFOTRA_PORTAL_URL } from '../lib/mifotraJobs'
 import {
     ShieldCheck, TrendingUp, Cpu, Stamp, Plane,
     CalendarDays, ArrowRight, ExternalLink, GraduationCap, MapPin, Briefcase, Star,
@@ -109,9 +109,27 @@ export default function Rwanda() {
         if (tab === 'mifotra' || tab === 'featured') setJobTab(tab)
     }, [searchParams])
 
-    const mifotraTotalPages = Math.max(1, Math.ceil(mifotraJobs.length / MIFOTRA_PAGE_SIZE))
+    // Drop vacancies the moment their closing day ends, even while the tab is open.
+    useEffect(() => {
+        const id = setInterval(() => {
+            setMifotraJobs(prev => {
+                const next = prev.filter(job => !isMifotraJobExpired(job))
+                return next.length === prev.length ? prev : next
+            })
+        }, 60000)
+        return () => clearInterval(id)
+    }, [])
+
+    // Final safety net: never render an expired vacancy, regardless of its source.
+    const liveMifotraJobs = mifotraJobs.filter(job => !isMifotraJobExpired(job))
+
+    const mifotraTotalPages = Math.max(1, Math.ceil(liveMifotraJobs.length / MIFOTRA_PAGE_SIZE))
     const mifotraStart = (mifotraPage - 1) * MIFOTRA_PAGE_SIZE
-    const mifotraPageJobs = mifotraJobs.slice(mifotraStart, mifotraStart + MIFOTRA_PAGE_SIZE)
+    const mifotraPageJobs = liveMifotraJobs.slice(mifotraStart, mifotraStart + MIFOTRA_PAGE_SIZE)
+
+    useEffect(() => {
+        if (mifotraPage > mifotraTotalPages) setMifotraPage(mifotraTotalPages)
+    }, [mifotraTotalPages, mifotraPage])
 
     const goToMifotraPage = (page) => {
         const next = Math.min(Math.max(1, page), mifotraTotalPages)
@@ -294,7 +312,7 @@ export default function Rwanda() {
                                 <span className="mifotra-count">
                                     <Users size={15} /> {mifotraStatus.loading && !mifotraJobs.length
                                         ? 'Loading live vacancies…'
-                                        : `${mifotraJobs.length} open ${mifotraJobs.length === 1 ? 'vacancy' : 'vacancies'}`}
+                                        : `${liveMifotraJobs.length} open ${liveMifotraJobs.length === 1 ? 'vacancy' : 'vacancies'}`}
                                 </span>
                                 <div className="mifotra-toolbar-right">
                                     {mifotraStatus.fetchedAt && (
@@ -334,7 +352,7 @@ export default function Rwanda() {
                                         </a>
                                     </div>
                                 </div>
-                            ) : mifotraJobs.length === 0 ? (
+                            ) : liveMifotraJobs.length === 0 ? (
                                 <div className="no-jobs-card">
                                     <Search size={40} />
                                     <p>No MIFOTRA vacancies are open right now. Check back soon.</p>
@@ -439,7 +457,7 @@ export default function Rwanda() {
                                     )}
 
                                     <p className="mifotra-page-note">
-                                        Showing {mifotraStart + 1}–{Math.min(mifotraStart + MIFOTRA_PAGE_SIZE, mifotraJobs.length)} of {mifotraJobs.length} open vacancies
+                                        Showing {mifotraStart + 1}–{Math.min(mifotraStart + MIFOTRA_PAGE_SIZE, liveMifotraJobs.length)} of {liveMifotraJobs.length} open vacancies
                                     </p>
                                 </>
                             )}

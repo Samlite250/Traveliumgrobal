@@ -94,13 +94,36 @@ export function getDaysLeft(closingDate) {
     return Math.ceil(diff / 86400000)
 }
 
+/**
+ * A vacancy is expired once its closing date/time has passed.
+ * Closing dates are end-of-day timestamps from MIFOTRA, so we treat the
+ * whole closing day as still open and drop the job the moment it's over.
+ */
+export function isMifotraJobExpired(job) {
+    if (!job || !job.closingDate) return false
+    const close = new Date(job.closingDate).getTime()
+    if (Number.isNaN(close)) return false
+    const endOfClosingDay = new Date(close)
+    endOfClosingDay.setHours(23, 59, 59, 999)
+    return Date.now() > endOfClosingDay.getTime()
+}
+
+function dropExpired(jobs) {
+    return (Array.isArray(jobs) ? jobs : []).filter(job => !isMifotraJobExpired(job))
+}
+
 function readCache() {
     try {
         const raw = localStorage.getItem(CACHE_KEY)
         if (!raw) return null
         const parsed = JSON.parse(raw)
         if (!parsed || !Array.isArray(parsed.jobs)) return null
-        return parsed
+        const jobs = dropExpired(parsed.jobs)
+        if (!jobs.length) {
+            localStorage.removeItem(CACHE_KEY)
+            return null
+        }
+        return { ...parsed, jobs }
     } catch {
         return null
     }
@@ -114,10 +137,11 @@ function writeCache(jobs) {
 
 function normalizeList(payload) {
     const list = Array.isArray(payload) ? payload : []
-    return list
-        .map(normalizeMifotraJob)
-        .filter(job => job.id && job.title)
-        .sort((a, b) => new Date(b.openingDate || 0) - new Date(a.openingDate || 0))
+    return dropExpired(
+        list
+            .map(normalizeMifotraJob)
+            .filter(job => job.id && job.title)
+    ).sort((a, b) => new Date(b.openingDate || 0) - new Date(a.openingDate || 0))
 }
 
 /**
@@ -212,8 +236,9 @@ export async function fetchMifotraJobsFromFirestore() {
         const snap = await getDoc(doc(db, 'settings', 'mifotra_jobs'))
         if (!snap.exists()) return null
         const data = snap.data()
-        if (!Array.isArray(data.jobs) || !data.jobs.length) return null
-        return { ...data, fetched_at: data.updated_at || null }
+        const jobs = dropExpired(data.jobs)
+        if (!jobs.length) return null
+        return { ...data, jobs, fetched_at: data.updated_at || null }
     } catch {
         return null
     }
