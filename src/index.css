@@ -13112,7 +13112,7 @@ textarea:focus,
 
 /* Compact MIFOTRA cards — keep the section short so other services stay visible */
 .mifotra-grid {
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1.15rem;
   align-items: stretch;
 }
