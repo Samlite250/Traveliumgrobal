@@ -137,6 +137,18 @@ export default function Rwanda() {
         setExpandedDesc(null)
     }
 
+    const scrollToSection = (id) => {
+        const el = document.getElementById(id)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    const goToService = (key) => {
+        if (key === 'mifotra') setJobTab('mifotra')
+        else if (key === 'featured') setJobTab('featured')
+        const targetId = key === 'scholarships' ? 'rwanda-scholarships' : key === 'universities' ? 'rwanda-universities' : 'rwanda-jobs'
+        setTimeout(() => scrollToSection(targetId), 60)
+    }
+
     const loadMifotraJobs = async (force = false) => {
         setMifotraStatus(prev => ({ ...prev, loading: true, error: '' }))
         try {
@@ -266,6 +278,48 @@ export default function Rwanda() {
                         <Link to="/contact" className="btn btn-outline">
                             <ShieldCheck size={16} /> Free Consultation
                         </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Service quick-nav ── */}
+            <div className="rwanda-service-nav">
+                <div className="container">
+                    <div className="rwanda-service-nav-inner">
+                        <span className="rwanda-service-nav-label">
+                            <Star size={15} /> Jump to what you need
+                        </span>
+                        <div className="rwanda-service-buttons">
+                            <button className="rwanda-service-btn mifotra" onClick={() => goToService('mifotra')}>
+                                <Landmark size={17} />
+                                <span className="rsb-text">
+                                    <strong>MIFOTRA Jobs</strong>
+                                    <small>Live government vacancies</small>
+                                </span>
+                                <span className="rwanda-service-live"><span className="live-dot" aria-hidden="true"></span> Live</span>
+                            </button>
+                            <button className="rwanda-service-btn featured" onClick={() => goToService('featured')}>
+                                <Star size={17} />
+                                <span className="rsb-text">
+                                    <strong>Featured Jobs</strong>
+                                    <small>Top Kigali employers</small>
+                                </span>
+                            </button>
+                            <button className="rwanda-service-btn scholarships" onClick={() => goToService('scholarships')}>
+                                <GraduationCap size={17} />
+                                <span className="rsb-text">
+                                    <strong>Rwandan Scholarships</strong>
+                                    <small>Fund your studies</small>
+                                </span>
+                            </button>
+                            <button className="rwanda-service-btn universities" onClick={() => goToService('universities')}>
+                                <BookOpen size={17} />
+                                <span className="rsb-text">
+                                    <strong>Top Universities</strong>
+                                    <small>Study in Rwanda</small>
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -512,7 +566,7 @@ export default function Rwanda() {
             </section>
 
             {/* ── Rwanda Scholarships ── */}
-            <section className="content-section" style={{ background: 'var(--bg-light, #f7f9fc)' }}>
+            <section className="content-section" id="rwanda-scholarships" style={{ background: 'var(--bg-light, #f7f9fc)' }}>
                 <div className="container">
                     <div className="section-header">
                         <div className="section-label"><GraduationCap size={16} /> Fund Your Future</div>
@@ -570,7 +624,7 @@ export default function Rwanda() {
             </section>
 
             {/* ── Universities ── */}
-            <section className="content-section">
+            <section className="content-section" id="rwanda-universities">
                 <div className="container">
                     <div className="section-header">
                         <div className="section-label"><GraduationCap size={16} /> Study in Rwanda</div>
