@@ -20,7 +20,13 @@ service cloud.firestore {
 
     // ── Applications ──
     match /applications/{docId} {
-      allow create: if request.auth != null;
+      // Signed-in users may always submit. Guests may submit public forms
+      // (jobs, MIFOTRA vacancies, flight bookings) with the basic fields.
+      allow create: if request.auth != null || (
+        request.resource.data.keys().hasAll(['email', 'status', 'created_at']) &&
+        request.resource.data.email is string &&
+        request.resource.data.status is string
+      );
       allow read: if request.auth != null && (resource.data.user_id == request.auth.uid || isAdmin());
       allow update, delete: if isAdmin();
     }
