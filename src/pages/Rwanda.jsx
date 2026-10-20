@@ -80,7 +80,7 @@ const formatMifotraDate = (iso) => {
     return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-const MIFOTRA_PAGE_SIZE = 6
+const MIFOTRA_PAGE_SIZE = 8
 
 export default function Rwanda() {
     const toast = useToast()
@@ -305,8 +305,7 @@ export default function Rwanda() {
 
                             {mifotraStatus.loading && !mifotraJobs.length ? (
                                 <div className="jobs-grid mifotra-grid">
-                                    {[0, 1, 2, 3, 4, 5].map(i => (
-                                        <div key={i} className="job-card mifotra-card mifotra-skeleton">
+                                    {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (                                        <div key={i} className="job-card mifotra-card mifotra-skeleton">
                                             <Loader2 size={26} className="mif-spin" />
                                             <p>Loading live MIFOTRA vacancies…</p>
                                         </div>
