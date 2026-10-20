@@ -13704,47 +13704,50 @@ textarea:focus,
 }
 /* ===== RWANDA SERVICE QUICK-NAV ===== */
 .rwanda-service-nav {
-  background: linear-gradient(180deg, rgba(11, 25, 44, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
-  padding: 1.75rem 0 0.5rem;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 2rem 0;
 }
 
 .rwanda-service-nav-inner {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1.1rem;
 }
 
 .rwanda-service-nav-label {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   align-self: center;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #64748b;
+  color: #475569;
 }
 
 .rwanda-service-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.9rem;
+  gap: 1rem;
 }
 
 .rwanda-service-btn {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.85rem 1rem;
+  gap: 0.9rem;
+  padding: 1.1rem 1.2rem;
+  min-height: 84px;
   border-radius: 16px;
-  border: 1.5px solid #e2e8f0;
+  border: none;
   background: #ffffff;
+  color: #0f172a;
   cursor: pointer;
   text-align: left;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
   overflow: hidden;
 }
 
@@ -13754,49 +13757,52 @@ textarea:focus,
   left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
+  width: 6px;
   background: #4285f4;
-  transform: scaleY(0);
-  transform-origin: bottom;
-  transition: transform 0.25s ease;
 }
 
 .rwanda-service-btn:hover {
-  transform: translateY(-3px);
-  border-color: #4285f4;
-  box-shadow: 0 12px 26px rgba(66, 133, 244, 0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.2);
 }
 
-.rwanda-service-btn:hover::before {
-  transform: scaleY(1);
+.rwanda-service-btn:active {
+  transform: translateY(-1px);
 }
 
 .rwanda-service-btn > svg {
   flex: none;
-  padding: 0.5rem;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  padding: 0.6rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   background: #eff6ff;
   color: #4285f4;
+  transition: all 0.25s ease;
+}
+
+.rwanda-service-btn:hover > svg {
+  transform: scale(1.06);
 }
 
 .rwanda-service-btn .rsb-text {
   display: flex;
   flex-direction: column;
+  gap: 0.15rem;
   line-height: 1.25;
   min-width: 0;
 }
 
 .rwanda-service-btn .rsb-text strong {
-  font-size: 0.92rem;
-  font-weight: 800;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
   color: #0f172a;
   white-space: nowrap;
 }
 
 .rwanda-service-btn .rsb-text small {
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   color: #64748b;
   font-weight: 600;
   white-space: nowrap;
@@ -13805,40 +13811,40 @@ textarea:focus,
 }
 
 /* Per-service accent colors */
-.rwanda-service-btn.mifotra > svg { background: #eff6ff; color: #4285f4; }
 .rwanda-service-btn.mifotra::before { background: #4285f4; }
-.rwanda-service-btn.mifotra:hover { border-color: #4285f4; box-shadow: 0 12px 26px rgba(66, 133, 244, 0.18); }
+.rwanda-service-btn.mifotra > svg { background: #e8f0fe; color: #1a73e8; }
+.rwanda-service-btn.mifotra:hover { box-shadow: 0 18px 38px rgba(66, 133, 244, 0.32); }
 
-.rwanda-service-btn.featured > svg { background: #fffbeb; color: #d97706; }
 .rwanda-service-btn.featured::before { background: #f59e0b; }
-.rwanda-service-btn.featured:hover { border-color: #f59e0b; box-shadow: 0 12px 26px rgba(245, 158, 11, 0.2); }
+.rwanda-service-btn.featured > svg { background: #fef3c7; color: #b45309; }
+.rwanda-service-btn.featured:hover { box-shadow: 0 18px 38px rgba(245, 158, 11, 0.32); }
 
-.rwanda-service-btn.scholarships > svg { background: #ecfdf5; color: #059669; }
 .rwanda-service-btn.scholarships::before { background: #059669; }
-.rwanda-service-btn.scholarships:hover { border-color: #059669; box-shadow: 0 12px 26px rgba(5, 150, 105, 0.2); }
+.rwanda-service-btn.scholarships > svg { background: #d1fae5; color: #047857; }
+.rwanda-service-btn.scholarships:hover { box-shadow: 0 18px 38px rgba(5, 150, 105, 0.32); }
 
-.rwanda-service-btn.universities > svg { background: #f5f3ff; color: #7c3aed; }
 .rwanda-service-btn.universities::before { background: #7c3aed; }
-.rwanda-service-btn.universities:hover { border-color: #7c3aed; box-shadow: 0 12px 26px rgba(124, 58, 237, 0.2); }
+.rwanda-service-btn.universities > svg { background: #ede9fe; color: #6d28d9; }
+.rwanda-service-btn.universities:hover { box-shadow: 0 18px 38px rgba(124, 58, 237, 0.32); }
 
 .rwanda-service-live {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
   margin-left: auto;
-  padding: 0.18rem 0.5rem;
+  padding: 0.22rem 0.55rem;
   border-radius: 999px;
   background: #dcfce7;
   border: 1px solid #86efac;
   color: #15803d;
-  font-size: 0.62rem;
+  font-size: 0.64rem;
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   flex: none;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1024px) {
   .rwanda-service-buttons {
     grid-template-columns: repeat(2, 1fr);
   }
