@@ -13476,3 +13476,46 @@ textarea:focus,
   background: #ffffff;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
 }
+/* MIFOTRA "Load More" (keeps the page short so other services stay visible) */
+.mifotra-load-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.mifotra-load-note {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.btn-load-more-jobs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.9rem;
+  border-radius: 999px;
+  border: 2px solid #4285f4;
+  background: #ffffff;
+  color: #4285f4;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 10px rgba(66, 133, 244, 0.14);
+}
+
+.btn-load-more-jobs:hover {
+  background: #4285f4;
+  border-color: #4285f4;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(66, 133, 244, 0.32);
+}
+
+.btn-load-more-jobs:active {
+  transform: translateY(0);
+}

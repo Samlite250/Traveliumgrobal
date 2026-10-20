@@ -80,6 +80,8 @@ const formatMifotraDate = (iso) => {
     return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+const MIFOTRA_PAGE_SIZE = 6
+
 export default function Rwanda() {
     const toast = useToast()
     const [searchParams] = useSearchParams()
@@ -87,6 +89,7 @@ export default function Rwanda() {
     // ── Jobs tabs: live MIFOTRA vacancies + curated featured jobs ──
     const [jobTab, setJobTab] = useState('mifotra') // 'mifotra' | 'featured'
     const [mifotraJobs, setMifotraJobs] = useState([])
+    const [mifotraVisible, setMifotraVisible] = useState(MIFOTRA_PAGE_SIZE)
     const [mifotraStatus, setMifotraStatus] = useState({ loading: false, error: '', source: '', fetchedAt: '' })
     const [expandedDesc, setExpandedDesc] = useState(null)
     const mifotraLoadedRef = useRef(false)
@@ -111,6 +114,7 @@ export default function Rwanda() {
         try {
             const res = await fetchMifotraJobs({ force })
             setMifotraJobs(res.jobs)
+            setMifotraVisible(MIFOTRA_PAGE_SIZE)
             setMifotraStatus({ loading: false, error: '', source: res.source, fetchedAt: res.fetched_at })
             mifotraLoadedRef.current = true
         } catch (err) {
@@ -327,69 +331,85 @@ export default function Rwanda() {
                                     <p>No MIFOTRA vacancies are open right now. Check back soon.</p>
                                 </div>
                             ) : (
-                                <div className="jobs-grid">
-                                    {mifotraJobs.map(job => (
-                                        <div key={job.id} className="job-card mifotra-card">
-                                            <div className="job-card-top">
-                                                <div className="job-badge mifotra-badge"><Landmark size={13} /> MIFOTRA Hot Job</div>
-                                                <span className="job-country-tag">🇷🇼 Rwanda</span>
-                                            </div>
+                                <>
+                                    <div className="jobs-grid">
+                                        {mifotraJobs.slice(0, mifotraVisible).map(job => (
+                                            <div key={job.id} className="job-card mifotra-card">
+                                                <div className="job-card-top">
+                                                    <div className="job-badge mifotra-badge"><Landmark size={13} /> MIFOTRA Hot Job</div>
+                                                    <span className="job-country-tag">🇷🇼 Rwanda</span>
+                                                </div>
 
-                                            <h4 className="job-title">{job.title}</h4>
+                                                <h4 className="job-title">{job.title}</h4>
 
-                                            <div className="job-meta-row">
-                                                <span className="job-company"><Briefcase size={14} /> {job.company}</span>
-                                                <span className="job-location"><MapPin size={14} /> Rwanda • Public Service</span>
-                                            </div>
+                                                <div className="job-meta-row">
+                                                    <span className="job-company"><Briefcase size={14} /> {job.company}</span>
+                                                    <span className="job-location"><MapPin size={14} /> Rwanda • Public Service</span>
+                                                </div>
 
-                                            <div className="mifotra-chips">
-                                                {job.grade && <span className="mif-chip">Grade {job.grade}</span>}
-                                                <span className="mif-chip"><Users size={12} /> {job.posts} {job.posts === 1 ? 'post' : 'posts'}</span>
-                                                <span className="mif-chip">{job.type}</span>
-                                            </div>
+                                                <div className="mifotra-chips">
+                                                    {job.grade && <span className="mif-chip">Grade {job.grade}</span>}
+                                                    <span className="mif-chip"><Users size={12} /> {job.posts} {job.posts === 1 ? 'post' : 'posts'}</span>
+                                                    <span className="mif-chip">{job.type}</span>
+                                                </div>
 
-                                            <div className="job-salary-box mifotra-deadline">
-                                                <CalendarDays size={18} />
-                                                <span className="salary-text">Closes {formatMifotraDate(job.closingDate)}</span>
-                                                <span className="hours-sub">
-                                                    {job.daysLeft === null ? '' :
-                                                        job.daysLeft > 1 ? `${job.daysLeft} days left` :
-                                                            job.daysLeft === 1 ? 'Last day' : 'Closing today'}
-                                                </span>
-                                            </div>
+                                                <div className="job-salary-box mifotra-deadline">
+                                                    <CalendarDays size={18} />
+                                                    <span className="salary-text">Closes {formatMifotraDate(job.closingDate)}</span>
+                                                    <span className="hours-sub">
+                                                        {job.daysLeft === null ? '' :
+                                                            job.daysLeft > 1 ? `${job.daysLeft} days left` :
+                                                                job.daysLeft === 1 ? 'Last day' : 'Closing today'}
+                                                    </span>
+                                                </div>
 
-                                            <div className="mifotra-desc">
-                                                <p className={expandedDesc === job.id ? 'expanded' : ''}>
-                                                    {job.description || 'No further description was published for this vacancy.'}
-                                                </p>
-                                                {job.description && job.description.length > 180 && (
-                                                    <button
-                                                        className="desc-toggle"
-                                                        onClick={() => setExpandedDesc(expandedDesc === job.id ? null : job.id)}
+                                                <div className="mifotra-desc">
+                                                    <p className={expandedDesc === job.id ? 'expanded' : ''}>
+                                                        {job.description || 'No further description was published for this vacancy.'}
+                                                    </p>
+                                                    {job.description && job.description.length > 180 && (
+                                                        <button
+                                                            className="desc-toggle"
+                                                            onClick={() => setExpandedDesc(expandedDesc === job.id ? null : job.id)}
+                                                        >
+                                                            {expandedDesc === job.id ? 'Show less' : 'Read full job description'}
+                                                            <ChevronDown size={14} className={expandedDesc === job.id ? 'rotated' : ''} />
+                                                        </button>
+                                                    )}
+                                                </div>
+
+                                                <div className="job-card-footer mifotra-footer">
+                                                    <a
+                                                        className="btn-apply-job portal"
+                                                        href={MIFOTRA_PORTAL_URL}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        title="Complete your application on the official MIFOTRA e-recruitment portal"
                                                     >
-                                                        {expandedDesc === job.id ? 'Show less' : 'Read full job description'}
-                                                        <ChevronDown size={14} className={expandedDesc === job.id ? 'rotated' : ''} />
+                                                        Official Portal <ExternalLink size={14} />
+                                                    </a>
+                                                    <button className="btn-apply-job primary" onClick={() => handleApplyClick(job)}>
+                                                        Apply Now <ArrowRight size={16} />
                                                     </button>
-                                                )}
+                                                </div>
                                             </div>
+                                        ))}
+                                    </div>
 
-                                            <div className="job-card-footer mifotra-footer">
-                                                <a
-                                                    className="btn-apply-job portal"
-                                                    href={MIFOTRA_PORTAL_URL}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    title="Complete your application on the official MIFOTRA e-recruitment portal"
-                                                >
-                                                    Official Portal <ExternalLink size={14} />
-                                                </a>
-                                                <button className="btn-apply-job primary" onClick={() => handleApplyClick(job)}>
-                                                    Apply Now <ArrowRight size={16} />
-                                                </button>
-                                            </div>
+                                    {mifotraVisible < mifotraJobs.length && (
+                                        <div className="mifotra-load-more">
+                                            <p className="mifotra-load-note">
+                                                Showing {Math.min(mifotraVisible, mifotraJobs.length)} of {mifotraJobs.length} open vacancies
+                                            </p>
+                                            <button
+                                                className="btn-load-more-jobs"
+                                                onClick={() => setMifotraVisible(v => v + MIFOTRA_PAGE_SIZE)}
+                                            >
+                                                Load More MIFOTRA Jobs <ChevronDown size={16} />
+                                            </button>
                                         </div>
-                                    ))}
-                                </div>
+                                    )}
+                                </>
                             )}
 
                             <div className="mifotra-disclaimer">
