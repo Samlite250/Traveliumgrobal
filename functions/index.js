@@ -148,3 +148,130 @@ exports.runImports = functions.https.onCall(async (_data, context) => {
   }
   return runAllImports()
 })
+
+
+/* --------------------------------------------------------------
+ * MIFOTRA Hot Jobs (Rwanda) sync
+ *
+ * Pulls open vacancies published by Rwanda's Ministry of Public
+ * Service and Labour (MIFOTRA) and caches them in
+ * Firestore at settings/mifotra_jobs, which the public Jobs page
+ * reads as a fallback when the live portal is unreachable.
+ * -------------------------------------------------------------- */
+const zlib = require('zlib')
+
+const MIFOTRA_API_URL = 'https://recruitment.mifotra.gov.rw/api/recruitment/open-advertisements'
+const MIFOTRA_PORTAL_URL = 'https://recruitment.mifotra.gov.rw/'
+const MIFOTRA_SYNC_DOC = 'settings/mifotra_jobs'
+const MIN_SYNC_INTERVAL_MS = 60 * 1000
+
+function normalizeMifotraJob(raw) {
+  const closingDate = raw.closingDate || ''
+  const closing = closingDate ? new Date(closingDate).getTime() : NaN
+  const daysLeft = Number.isNaN(closing) ? null : Math.ceil((closing - Date.now()) / 86400000)
+  return {
+    id: String(raw.id || raw.requisitionId || ''),
+    title: raw.positionName || 'Open Vacancy',
+    company: raw.entityName || 'Rwanda Public Service',
+    institutionShort: raw.entityAcronym || '',
+    location: 'Rwanda',
+    grade: [raw.levelName, raw.scaleName].filter(Boolean).join('.') || '',
+    scale: raw.scaleName || '',
+    posts: Number(raw.numberOfPosts || 1),
+    type: raw.employeeGroupName || 'Public Service',
+    isInternal: !!raw.isInternal,
+    openingDate: raw.openingDate || '',
+    closingDate,
+    daysLeft,
+    description: String(raw.jobDescriptions || '').trim(),
+    salary: (raw.levelName || raw.scaleName)
+      ? `Grade ${[raw.levelName, raw.scaleName].filter(Boolean).join('.')}`
+      : 'Rwanda Civil Service',
+    countryName: 'Rwanda',
+    flag: '\u{1F1F7}\u{1F1FC}',
+    mifotra: true,
+    portalUrl: MIFOTRA_PORTAL_URL,
+  }
+}
+
+async function fetchMifotraJobs() {
+  const res = await fetch(MIFOTRA_API_URL, {
+    headers: { Accept: 'application/json', 'User-Agent': 'TraveliumGlobal/1.0 (+https://traveliumglobal.com)' },
+  })
+  if (!res.ok) throw new Error(`MIFOTRA responded with ${res.status}`)
+
+  const buffer = Buffer.from(await res.arrayBuffer())
+  let payload = null
+  try {
+    payload = JSON.parse(buffer.toString('utf8'))
+  } catch (err) {
+    payload = JSON.parse(zlib.inflateSync(buffer).toString('utf8'))
+  }
+  if (payload && payload._data_) {
+    payload = JSON.parse(zlib.inflateSync(Buffer.from(Object.values(payload._data_))).toString('utf8'))
+  }
+  if (!Array.isArray(payload)) throw new Error('Unexpected MIFOTRA payload')
+
+  return payload
+    .map(normalizeMifotraJob)
+    .filter((job) => job.id && job.title)
+    .sort((a, b) => new Date(b.openingDate || 0) - new Date(a.openingDate || 0))
+}
+
+async function syncMifotraJobsToFirestore({ force = false } = {}) {
+  const db = admin.firestore()
+  const docRef = db.doc(MIFOTRA_SYNC_DOC)
+
+  const existing = await docRef.get()
+  const lastSync = existing.exists ? existing.data().updated_at_ms || 0 : 0
+  if (!force && Date.now() - lastSync < MIN_SYNC_INTERVAL_MS) {
+    return { skipped: true, count: existing.exists ? (existing.data().jobs || []).length : 0 }
+  }
+
+  const jobs = await fetchMifotraJobs()
+  const updated_at_ms = Date.now()
+  await docRef.set(
+    {
+      jobs,
+      count: jobs.length,
+      source: MIFOTRA_PORTAL_URL,
+      updated_at_ms,
+      updated_at: new Date(updated_at_ms).toISOString(),
+    },
+    { merge: true },
+  )
+  return { skipped: false, count: jobs.length }
+}
+
+/**
+ * Callable: syncMifotraJobs
+ * Refreshes the cached MIFOTRA vacancy list in Firestore.
+ * Publicly callable (rate-limited to once a minute) so the Jobs page
+ * can force a refresh when the live portal is unreachable.
+ */
+exports.syncMifotraJobs = functions.https.onCall(async (data) => {
+  try {
+    const result = await syncMifotraJobsToFirestore({ force: !!(data && data.force) })
+    return { success: true, ...result, message: 'MIFOTRA vacancies synced.' }
+  } catch (err) {
+    console.error('syncMifotraJobs failed:', err)
+    throw new functions.https.HttpsError('unavailable', 'Could not reach the MIFOTRA portal: ' + err.message)
+  }
+})
+
+/**
+ * Scheduled: scheduledMifotraSync
+ * Keeps the MIFOTRA vacancy cache fresh every 6 hours.
+ */
+exports.scheduledMifotraSync = functions.pubsub
+  .schedule('every 6 hours')
+  .timeZone('Africa/Kigali')
+  .onRun(async () => {
+    try {
+      const result = await syncMifotraJobsToFirestore({ force: true })
+      console.log('scheduledMifotraSync:', result)
+    } catch (err) {
+      console.error('scheduledMifotraSync failed:', err)
+    }
+    return null
+  })

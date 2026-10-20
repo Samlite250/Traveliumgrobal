@@ -5,6 +5,7 @@ import {
     limit, serverTimestamp, onSnapshot
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { fetchMifotraJobs } from '../lib/mifotraJobs'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -112,6 +113,30 @@ export default function AdminDashboard() {
     const [syncing, setSyncing] = useState(false)
     const [syncingAuth, setSyncingAuth] = useState(false)
     const [syncMsg, setSyncMsg] = useState('')
+    const [syncingMifotra, setSyncingMifotra] = useState(false)
+
+    const refreshMifotraCache = async () => {
+        if (!db || syncingMifotra) return
+        setSyncingMifotra(true)
+        setSyncMsg('Fetching MIFOTRA vacancies...')
+        try {
+            const result = await fetchMifotraJobs({ force: true })
+            await setDoc(doc(db, 'settings', 'mifotra_jobs'), {
+                jobs: result.jobs,
+                source: result.source,
+                count: result.jobs.length,
+                updated_at: new Date().toISOString(),
+                updated_by: 'admin'
+            })
+            setSyncMsg(`MIFOTRA cache refreshed with ${result.jobs.length} vacancies.`)
+            toast(`MIFOTRA cache refreshed (${result.jobs.length} vacancies).`, 'success')
+        } catch (err) {
+            setSyncMsg(err?.message || 'MIFOTRA refresh failed.')
+            toast(err?.message || 'MIFOTRA refresh failed.', 'error')
+        }
+        setTimeout(() => setSyncMsg(''), 5000)
+        setSyncingMifotra(false)
+    }
     const [adminsList, setAdminsList] = useState([])
     const [adminForm, setAdminForm] = useState({ email: '', role: 'agent' })
     const [adminsPermissionError, setAdminsPermissionError] = useState(false)
@@ -1250,6 +1275,9 @@ export default function AdminDashboard() {
                     </button>
                     <button onClick={syncUsersFromApplications} disabled={syncing || !db} className="filter-btn" title="Sync users from applications data">
                         <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
+                    </button>
+                    <button onClick={refreshMifotraCache} disabled={syncingMifotra || !db} className="filter-btn" title="Refresh the MIFOTRA Hot Jobs cache stored in Firestore (runs in-app, no Cloud Function needed)">
+                        <ClipboardList size={16} className={syncingMifotra ? 'animate-spin' : ''} />
                     </button>
                     <span className="card-badge">{stats.uniqueUsers} unique</span>
                 </div>
