@@ -13223,6 +13223,11 @@ textarea:focus,
   border-radius: 10px;
   gap: 0.35rem;
   letter-spacing: 0.01em;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 34px;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .jobs-grid.mifotra-grid .mifotra-footer .btn-apply-job svg {
