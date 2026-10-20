@@ -13840,12 +13840,23 @@ textarea:focus,
 }
 
 @media (max-width: 560px) {
-  .rwanda-service-buttons {
-    grid-template-columns: 1fr;
+  .rwanda-service-btn {
+    flex-wrap: wrap;
+    padding: 0.85rem 0.9rem;
+    min-height: 0;
+    gap: 0.55rem;
   }
 
   .rwanda-service-btn .rsb-text strong,
   .rwanda-service-btn .rsb-text small {
     white-space: normal;
+  }
+
+  .rwanda-service-btn .rsb-text strong {
+    font-size: 0.9rem;
+  }
+
+  .rwanda-service-btn .rsb-text small {
+    font-size: 0.72rem;
   }
 }
