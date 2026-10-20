@@ -10,7 +10,7 @@ import { fetchMifotraJobs, MIFOTRA_PORTAL_URL } from '../lib/mifotraJobs'
 import {
     ShieldCheck, TrendingUp, Cpu, Stamp, Plane,
     CalendarDays, ArrowRight, ExternalLink, GraduationCap, MapPin, Briefcase, Star,
-    BookOpen, DollarSign, Globe, Landmark, Users, RefreshCw, ChevronDown, Loader2,
+    BookOpen, DollarSign, Globe, Landmark, Users, RefreshCw, ChevronDown, ChevronLeft, ChevronRight, Loader2,
     X, Send, UploadCloud, CheckCircle, Search
 } from 'lucide-react'
 
@@ -89,7 +89,7 @@ export default function Rwanda() {
     // ── Jobs tabs: live MIFOTRA vacancies + curated featured jobs ──
     const [jobTab, setJobTab] = useState('mifotra') // 'mifotra' | 'featured'
     const [mifotraJobs, setMifotraJobs] = useState([])
-    const [mifotraVisible, setMifotraVisible] = useState(MIFOTRA_PAGE_SIZE)
+    const [mifotraPage, setMifotraPage] = useState(1)
     const [mifotraStatus, setMifotraStatus] = useState({ loading: false, error: '', source: '', fetchedAt: '' })
     const [expandedDesc, setExpandedDesc] = useState(null)
     const mifotraLoadedRef = useRef(false)
@@ -109,12 +109,24 @@ export default function Rwanda() {
         if (tab === 'mifotra' || tab === 'featured') setJobTab(tab)
     }, [searchParams])
 
+    const mifotraTotalPages = Math.max(1, Math.ceil(mifotraJobs.length / MIFOTRA_PAGE_SIZE))
+    const mifotraStart = (mifotraPage - 1) * MIFOTRA_PAGE_SIZE
+    const mifotraPageJobs = mifotraJobs.slice(mifotraStart, mifotraStart + MIFOTRA_PAGE_SIZE)
+
+    const goToMifotraPage = (page) => {
+        const next = Math.min(Math.max(1, page), mifotraTotalPages)
+        setMifotraPage(next)
+        setExpandedDesc(null)
+        const section = document.getElementById('rwanda-jobs')
+        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
     const loadMifotraJobs = async (force = false) => {
         setMifotraStatus(prev => ({ ...prev, loading: true, error: '' }))
         try {
             const res = await fetchMifotraJobs({ force })
             setMifotraJobs(res.jobs)
-            setMifotraVisible(MIFOTRA_PAGE_SIZE)
+            setMifotraPage(1)
             setMifotraStatus({ loading: false, error: '', source: res.source, fetchedAt: res.fetched_at })
             mifotraLoadedRef.current = true
         } catch (err) {
@@ -332,7 +344,7 @@ export default function Rwanda() {
                             ) : (
                                 <>
                                     <div className="jobs-grid mifotra-grid">
-                                        {mifotraJobs.slice(0, mifotraVisible).map(job => (
+                                        {mifotraPageJobs.map(job => (
                                             <div key={job.id} className="job-card mifotra-card">
                                                 <div className="job-card-top">
                                                     <div className="job-badge mifotra-badge"><Landmark size={13} /> MIFOTRA Hot Job</div>
@@ -395,19 +407,42 @@ export default function Rwanda() {
                                         ))}
                                     </div>
 
-                                    {mifotraVisible < mifotraJobs.length && (
-                                        <div className="mifotra-load-more">
-                                            <p className="mifotra-load-note">
-                                                Showing {Math.min(mifotraVisible, mifotraJobs.length)} of {mifotraJobs.length} open vacancies
-                                            </p>
+                                    {mifotraTotalPages > 1 && (
+                                        <nav className="mifotra-pagination" aria-label="MIFOTRA jobs pages">
                                             <button
-                                                className="btn-load-more-jobs"
-                                                onClick={() => setMifotraVisible(v => v + MIFOTRA_PAGE_SIZE)}
+                                                className="page-nav"
+                                                onClick={() => goToMifotraPage(mifotraPage - 1)}
+                                                disabled={mifotraPage === 1}
+                                                aria-label="Previous page"
                                             >
-                                                Load More MIFOTRA Jobs <ChevronDown size={16} />
+                                                <ChevronLeft size={18} />
                                             </button>
-                                        </div>
+
+                                            {Array.from({ length: mifotraTotalPages }, (_, i) => i + 1).map(page => (
+                                                <button
+                                                    key={page}
+                                                    className={`page-num ${page === mifotraPage ? 'active' : ''}`}
+                                                    onClick={() => goToMifotraPage(page)}
+                                                    aria-current={page === mifotraPage ? 'page' : undefined}
+                                                >
+                                                    {page}
+                                                </button>
+                                            ))}
+
+                                            <button
+                                                className="page-nav"
+                                                onClick={() => goToMifotraPage(mifotraPage + 1)}
+                                                disabled={mifotraPage === mifotraTotalPages}
+                                                aria-label="Next page"
+                                            >
+                                                <ChevronRight size={18} />
+                                            </button>
+                                        </nav>
                                     )}
+
+                                    <p className="mifotra-page-note">
+                                        Showing {mifotraStart + 1}–{Math.min(mifotraStart + MIFOTRA_PAGE_SIZE, mifotraJobs.length)} of {mifotraJobs.length} open vacancies
+                                    </p>
                                 </>
                             )}
 

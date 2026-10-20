@@ -13628,46 +13628,77 @@ textarea:focus,
   background: #ffffff;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
 }
-/* MIFOTRA "Load More" (keeps the page short so other services stay visible) */
-.mifotra-load-more {
+/* MIFOTRA pagination — circular page numbers with prev/next (keeps the page short) */
+.mifotra-pagination {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  margin-top: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 2.25rem;
 }
 
-.mifotra-load-note {
-  margin: 0;
+.mifotra-pagination .page-num,
+.mifotra-pagination .page-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.mifotra-pagination .page-num:hover,
+.mifotra-pagination .page-nav:hover:not(:disabled) {
+  border-color: #4285f4;
+  color: #4285f4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(66, 133, 244, 0.2);
+}
+
+.mifotra-pagination .page-num.active {
+  background: #4285f4;
+  border-color: #4285f4;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(66, 133, 244, 0.35);
+}
+
+.mifotra-pagination .page-num.active:hover {
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.mifotra-pagination .page-nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.mifotra-page-note {
+  margin: 1rem 0 0;
+  text-align: center;
   font-size: 0.85rem;
   font-weight: 600;
   color: #475569;
 }
 
-.btn-load-more-jobs {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.9rem;
-  border-radius: 999px;
-  border: 2px solid #4285f4;
-  background: #ffffff;
-  color: #4285f4;
-  font-weight: 800;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 3px 10px rgba(66, 133, 244, 0.14);
-}
+@media (max-width: 480px) {
+  .mifotra-pagination {
+    gap: 0.4rem;
+  }
 
-.btn-load-more-jobs:hover {
-  background: #4285f4;
-  border-color: #4285f4;
-  color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(66, 133, 244, 0.32);
-}
-
-.btn-load-more-jobs:active {
-  transform: translateY(0);
+  .mifotra-pagination .page-num,
+  .mifotra-pagination .page-nav {
+    width: 38px;
+    height: 38px;
+    font-size: 0.82rem;
+  }
 }
