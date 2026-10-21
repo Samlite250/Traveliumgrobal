@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Lock, Mail, CheckCircle, Sparkles, Bell, CalendarClock, FileCheck } from 'lucide-react'
+import { useState } from 'react'
+import { Lock, Mail, CheckCircle } from 'lucide-react'
 import { saveSubscriber } from '../lib/listings'
 
 const STORAGE_KEY = 'travelium_subscriber_unlocked'
@@ -21,73 +21,70 @@ export default function EmailGate({ count, source, children }) {
         e.preventDefault()
         setError('')
         const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-        if (!valid) { setError('Please enter a valid email address'); return }
+        if (!valid) { setError('Enter a valid email address'); return }
         setSubmitting(true)
         try {
             await saveSubscriber(email.trim(), source)
             try { localStorage.setItem(STORAGE_KEY, '1') } catch { }
             setDone(true)
-            setTimeout(() => setUnlocked(true), 1400)
+            setTimeout(() => setUnlocked(true), 1200)
         } catch {
-            setError('Something went wrong. Please try again.')
+            setError('Something went wrong. Try again.')
         } finally {
             setSubmitting(false)
         }
     }
 
     return (
-        <>
-            <div className="email-gate">
-                <div className="email-gate-card">
-                    <div className="email-gate-icon">
-                        <Lock size={26} />
-                    </div>
-                    <h3>{count}+ more {source === 'scholarships' ? 'scholarships' : 'jobs'} waiting</h3>
-                    <p>Unlock all listings free — plus weekly alerts so you never miss a deadline.</p>
-
-                    {done ? (
-                        <div className="email-gate-success">
-                            <CheckCircle size={22} />
-                            <span>Unlocked! Loading your results…</span>
-                        </div>
-                    ) : (
-                        <form className="email-gate-form" onSubmit={handleSubmit}>
-                            <div className="email-gate-input-row">
-                                <Mail size={17} className="email-gate-input-icon" />
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email address"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    aria-label="Email address"
-                                    required
-                                />
-                                <button type="submit" disabled={submitting}>
-                                    {submitting ? 'Unlocking…' : 'Unlock Free'}
-                                </button>
-                            </div>
-                            {error && <p className="email-gate-error">{error}</p>}
-                        </form>
-                    )}
-
-                    <ul className="email-gate-perks">
-                        <li><Bell size={13} /> Weekly new-job alerts</li>
-                        <li><CalendarClock size={13} /> Scholarship deadline reminders</li>
-                        <li><FileCheck size={13} /> Application tips & guides</li>
-                        <li><Sparkles size={13} /> Free forever, no spam</li>
-                    </ul>
+        <div className="email-gate">
+            <div className="email-gate-card">
+                <div className="eg-header">
+                    <span className="eg-badge"><Lock size={13} /> Premium</span>
+                    <h3>Unlock {count}+ more {source === 'scholarships' ? 'scholarships' : 'jobs'}</h3>
+                    <p>Free access + weekly opportunity alerts. No spam, unsubscribe anytime.</p>
                 </div>
 
-                <div className="email-gate-locked">
-                    <div className="email-gate-blur" aria-hidden="true">
-                        {children}
+                {done ? (
+                    <div className="email-gate-success">
+                        <CheckCircle size={18} />
+                        <span>Unlocked — loading…</span>
                     </div>
-                    <div className="email-gate-overlay">
-                        <Lock size={32} />
-                        <p>Sign up above to view these listings</p>
-                    </div>
+                ) : (
+                    <form className="eg-form" onSubmit={handleSubmit}>
+                        <div className="eg-input">
+                            <Mail size={15} />
+                            <input
+                                type="email"
+                                placeholder="your@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                aria-label="Email address"
+                                required
+                            />
+                        </div>
+                        <button type="submit" disabled={submitting}>
+                            {submitting ? '…' : 'Subscribe'}
+                        </button>
+                        {error && <span className="eg-error">{error}</span>}
+                    </form>
+                )}
+
+                <div className="eg-trust">
+                    <span>✓ Free forever</span>
+                    <span>✓ No spam</span>
+                    <span>✓ One-click unsubscribe</span>
                 </div>
             </div>
-        </>
+
+            <div className="email-gate-locked">
+                <div className="email-gate-blur" aria-hidden="true">
+                    {children}
+                </div>
+                <div className="email-gate-overlay">
+                    <Lock size={28} />
+                    <p>Subscribe above to view</p>
+                </div>
+            </div>
+        </div>
     )
 }
