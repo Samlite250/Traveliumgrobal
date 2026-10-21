@@ -13762,13 +13762,13 @@ textarea:focus,
 
 .rwanda-service-btn:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 14px 32px rgba(26, 43, 94, 0.28);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #ffffff;
+  color: #1a1a1a;
   border-radius: 2px 20px 2px 20px;
 }
 
 .rwanda-service-btn:hover::before {
-  opacity: 1;
+  opacity: 0;
 }
 
 .rwanda-service-btn:active {
@@ -13785,7 +13785,7 @@ textarea:focus,
   width: 22px;
   height: 22px;
   color: var(--white);
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, color 0.25s ease;
 }
 
 .rwanda-service-btn:hover > svg {
@@ -13805,6 +13805,11 @@ textarea:focus,
   font-weight: 700;
   color: var(--white);
   white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.rwanda-service-btn:hover .rsb-text strong {
+  color: #1a1a1a;
 }
 
 .rwanda-service-btn .rsb-text small {
@@ -13814,26 +13819,35 @@ textarea:focus,
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.25s ease;
+}
+
+.rwanda-service-btn:hover .rsb-text small {
+  color: #555;
 }
 
 /* MIFOTRA — Google blue */
 .rwanda-service-btn.mifotra { background: #1a73e8; }
-.rwanda-service-btn.mifotra:hover { background: #1566d6; box-shadow: 0 14px 32px rgba(26, 115, 232, 0.4), 0 0 0 1px rgba(26, 115, 232, 0.15); }
+.rwanda-service-btn.mifotra:hover { background: #fff; border-color: #1a73e8; box-shadow: 0 14px 32px rgba(26, 115, 232, 0.25); }
+.rwanda-service-btn.mifotra:hover > svg { color: #1a73e8; }
 .rwanda-service-btn.mifotra:focus-visible { outline-color: #1a73e8; }
 
 /* Featured Jobs — green */
 .rwanda-service-btn.featured { background: #188038; }
-.rwanda-service-btn.featured:hover { background: #147130; box-shadow: 0 14px 32px rgba(24, 128, 56, 0.4), 0 0 0 1px rgba(24, 128, 56, 0.15); }
+.rwanda-service-btn.featured:hover { background: #fff; border-color: #188038; box-shadow: 0 14px 32px rgba(24, 128, 56, 0.25); }
+.rwanda-service-btn.featured:hover > svg { color: #188038; }
 .rwanda-service-btn.featured:focus-visible { outline-color: #188038; }
 
 /* Rwandan Scholarships — gold (brand) */
 .rwanda-service-btn.scholarships { background: #b8860b; }
-.rwanda-service-btn.scholarships:hover { background: #a87a09; box-shadow: 0 14px 32px rgba(184, 134, 11, 0.4), 0 0 0 1px rgba(184, 134, 11, 0.15); }
+.rwanda-service-btn.scholarships:hover { background: #fff; border-color: #b8860b; box-shadow: 0 14px 32px rgba(184, 134, 11, 0.25); }
+.rwanda-service-btn.scholarships:hover > svg { color: #b8860b; }
 .rwanda-service-btn.scholarships:focus-visible { outline-color: #b8860b; }
 
 /* Top Universities — teal */
 .rwanda-service-btn.universities { background: #0f766e; }
-.rwanda-service-btn.universities:hover { background: #0d6860; box-shadow: 0 14px 32px rgba(15, 118, 110, 0.4), 0 0 0 1px rgba(15, 118, 110, 0.15); }
+.rwanda-service-btn.universities:hover { background: #fff; border-color: #0f766e; box-shadow: 0 14px 32px rgba(15, 118, 110, 0.25); }
+.rwanda-service-btn.universities:hover > svg { color: #0f766e; }
 .rwanda-service-btn.universities:focus-visible { outline-color: #0f766e; }
 
 .rwanda-service-live {
@@ -13850,6 +13864,12 @@ textarea:focus,
   letter-spacing: 0.04em;
   text-transform: uppercase;
   flex: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.rwanda-service-btn:hover .rwanda-service-live {
+  background: #1a73e8;
+  color: #ffffff;
 }
 
 .rwanda-service-btn.mifotra .live-dot {
