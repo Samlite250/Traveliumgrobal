@@ -23,6 +23,15 @@ const heroFacts = [
 ]
 
 // ── Featured jobs are loaded live from Firestore (verified listings only) ──
+// Fallback used when Firestore is empty — real vacancies with official apply routes.
+const fallbackFeaturedJobs = [
+    { id: 'rwandair-swe', title: 'Software and Application Engineer', company: 'RwandAir', location: 'Kigali, Rwanda', salary: 'Competitive', type: 'Full-Time', tag: 'Aviation', tagClass: 'hp-badge', applyUrl: 'https://erecruitment.rwandair.com/' },
+    { id: 'kayko-backend', title: 'Senior Backend Engineer', company: 'Kayko', location: 'Kigali, Rwanda (Hybrid)', salary: 'Competitive', type: 'Full-Time', tag: 'Fintech', tagClass: 'verified-badge', applyUrl: 'https://kayko.rw/careers' },
+    { id: 'kayko-designer', title: 'Product Designer', company: 'Kayko', location: 'Kigali, Rwanda (Hybrid)', salary: 'Competitive', type: 'Full-Time', tag: 'Product', tagClass: 'verified-badge', applyUrl: 'https://kayko.rw/careers' },
+    { id: 'mtn-bi', title: 'Business Intelligence Analyst – Channel Performance', company: 'MTN Rwanda', location: 'Kigali, Rwanda', salary: 'Competitive', type: 'Full-Time', tag: 'Fintech', tagClass: 'hp-badge', applyUrl: 'https://careers.mtn.co.rw/career' },
+    { id: 'mtn-ds', title: 'Manager – Data Science, Advanced Analytics & AI', company: 'MTN Rwanda', location: 'Kigali, Rwanda', salary: 'Competitive', type: 'Full-Time', tag: 'AI & Data', tagClass: 'hp-badge', applyUrl: 'https://careers.mtn.co.rw/career' },
+    { id: 'pinnacle-fc', title: 'Financial Controller', company: 'The Pinnacle Hotel Kigali', location: 'Kigali, Rwanda', salary: 'Competitive', type: 'Full-Time', tag: 'Hospitality', tagClass: 'verified-badge', applyUrl: 'https://thepinnaclekigali.applytojob.com/apply/FjVZ4rWdtj/Financial-Controller' },
+]
 
 // ── Top universities & schools in Rwanda ──
 const rwandaUniversities = [
@@ -104,7 +113,7 @@ export default function Rwanda() {
 
     // Load featured Rwanda jobs from Firestore (verified listings only)
     useEffect(() => {
-        if (!db) return
+        if (!db) { setFeaturedJobs(fallbackFeaturedJobs); return }
         const q = query(collection(db, 'jobs'), where('country', '==', 'Rwanda'))
         const unsub = onSnapshot(q, (snap) => {
             const now = Date.now()
@@ -119,8 +128,8 @@ export default function Rwanda() {
                     return !j.auto || isVerifiedListing(j)
                 })
                 .slice(0, 6)
-            setFeaturedJobs(jobs)
-        }, () => setFeaturedJobs([]))
+            setFeaturedJobs(jobs.length ? jobs : fallbackFeaturedJobs)
+        }, () => setFeaturedJobs(fallbackFeaturedJobs))
         return unsub
     }, [])
 
@@ -571,9 +580,21 @@ export default function Rwanda() {
 
                                             <div className="job-card-footer">
                                                 {job.type && <span className="exp-badge">{job.type}</span>}
-                                                <Link to={`/jobs/${job.id}`} className="btn-apply-job primary">
-                                                    View &amp; Apply <ArrowRight size={16} />
-                                                </Link>
+                                                {job.applyUrl ? (
+                                                    <a
+                                                        href={job.applyUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="btn-apply-job primary"
+                                                        onClick={() => trackOutbound({ type: 'job', id: job.id, title: job.title, url: job.applyUrl })}
+                                                    >
+                                                        Apply Now <ExternalLink size={14} />
+                                                    </a>
+                                                ) : (
+                                                    <Link to={`/jobs/${job.id}`} className="btn-apply-job primary">
+                                                        View &amp; Apply <ArrowRight size={16} />
+                                                    </Link>
+                                                )}
                                             </div>
                                         </div>
                                     ))}
