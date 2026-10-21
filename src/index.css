@@ -13826,27 +13826,41 @@ textarea:focus,
   color: #555;
 }
 
-/* MIFOTRA — Google blue */
+/* MIFOTRA — Google blue (stays solid) */
 .rwanda-service-btn.mifotra { background: #1a73e8; }
+.rwanda-service-btn.mifotra > svg { color: #ffffff; }
+.rwanda-service-btn.mifotra .rsb-text strong { color: #ffffff; }
+.rwanda-service-btn.mifotra .rsb-text small { color: rgba(255, 255, 255, 0.82); }
 .rwanda-service-btn.mifotra:hover { background: #fff; border-color: #1a73e8; box-shadow: 0 14px 32px rgba(26, 115, 232, 0.25); }
 .rwanda-service-btn.mifotra:hover > svg { color: #1a73e8; }
+.rwanda-service-btn.mifotra:hover .rsb-text strong { color: #1a1a1a; }
+.rwanda-service-btn.mifotra:hover .rsb-text small { color: #555; }
 .rwanda-service-btn.mifotra:focus-visible { outline-color: #1a73e8; }
 
-/* Featured Jobs — green */
-.rwanda-service-btn.featured { background: #188038; }
-.rwanda-service-btn.featured:hover { background: #fff; border-color: #188038; box-shadow: 0 14px 32px rgba(24, 128, 56, 0.25); }
-.rwanda-service-btn.featured:hover > svg { color: #188038; }
-.rwanda-service-btn.featured:focus-visible { outline-color: #188038; }
+/* Featured Jobs — soft green */
+.rwanda-service-btn.featured { background: #e8f5e9; border-color: #a5d6a7; }
+.rwanda-service-btn.featured > svg { color: #2e7d32; }
+.rwanda-service-btn.featured .rsb-text strong { color: #1b5e20; }
+.rwanda-service-btn.featured .rsb-text small { color: #558b2f; }
+.rwanda-service-btn.featured:hover { background: #fff; border-color: #2e7d32; box-shadow: 0 14px 32px rgba(46, 125, 50, 0.2); }
+.rwanda-service-btn.featured:hover > svg { color: #2e7d32; }
+.rwanda-service-btn.featured:focus-visible { outline-color: #2e7d32; }
 
-/* Rwandan Scholarships — gold (brand) */
-.rwanda-service-btn.scholarships { background: #b8860b; }
-.rwanda-service-btn.scholarships:hover { background: #fff; border-color: #b8860b; box-shadow: 0 14px 32px rgba(184, 134, 11, 0.25); }
+/* Rwandan Scholarships — soft gold */
+.rwanda-service-btn.scholarships { background: #fff8e1; border-color: #ffe082; }
+.rwanda-service-btn.scholarships > svg { color: #b8860b; }
+.rwanda-service-btn.scholarships .rsb-text strong { color: #795548; }
+.rwanda-service-btn.scholarships .rsb-text small { color: #8d6e63; }
+.rwanda-service-btn.scholarships:hover { background: #fff; border-color: #b8860b; box-shadow: 0 14px 32px rgba(184, 134, 11, 0.2); }
 .rwanda-service-btn.scholarships:hover > svg { color: #b8860b; }
 .rwanda-service-btn.scholarships:focus-visible { outline-color: #b8860b; }
 
-/* Top Universities — teal */
-.rwanda-service-btn.universities { background: #0f766e; }
-.rwanda-service-btn.universities:hover { background: #fff; border-color: #0f766e; box-shadow: 0 14px 32px rgba(15, 118, 110, 0.25); }
+/* Top Universities — soft teal */
+.rwanda-service-btn.universities { background: #e0f2f1; border-color: #80cbc4; }
+.rwanda-service-btn.universities > svg { color: #0f766e; }
+.rwanda-service-btn.universities .rsb-text strong { color: #004d40; }
+.rwanda-service-btn.universities .rsb-text small { color: #00695c; }
+.rwanda-service-btn.universities:hover { background: #fff; border-color: #0f766e; box-shadow: 0 14px 32px rgba(15, 118, 110, 0.2); }
 .rwanda-service-btn.universities:hover > svg { color: #0f766e; }
 .rwanda-service-btn.universities:focus-visible { outline-color: #0f766e; }
 
