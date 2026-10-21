@@ -93,6 +93,23 @@ export async function saveLead(lead) {
     return false
 }
 
+// ─── Email-gate subscriber (unlocks full jobs/scholarships lists) ───
+export async function saveSubscriber(email, source = 'jobs') {
+    const payload = { email, source, created_at: new Date().toISOString() }
+    if (db) {
+        try {
+            await addDoc(collection(db, 'subscribers'), { ...payload, created_at: serverTimestamp() })
+            return true
+        } catch { /* fall through to offline */ }
+    }
+    try {
+        const subs = JSON.parse(localStorage.getItem('travelium_subscribers') || '[]')
+        if (!subs.some(s => s.email === email)) subs.unshift({ ...payload, id: 'sub_' + Date.now() })
+        localStorage.setItem('travelium_subscribers', JSON.stringify(subs.slice(0, 1000)))
+    } catch { }
+    return false
+}
+
 // ─── Article content builders ───
 export function buildScholarshipArticle(s) {
     const title = s.title || s.name || 'This Scholarship'

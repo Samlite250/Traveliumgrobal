@@ -6,6 +6,7 @@ import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { fallbackScholarships, scholarshipSlug, slugify, isVerifiedListing } from '../lib/listings'
+import EmailGate from '../components/EmailGate'
 import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe, Award } from 'lucide-react'
 
 // Emoji flags for country filter tabs (case-insensitive lookup)
@@ -139,6 +140,46 @@ export default function Scholarships() {
         return list
     }, [display, activeTab, searchParams])
 
+    // Email-gate: first 3 scholarships free, rest require free signup
+    const FREE_SCHOLARSHIP_LIMIT = 3
+    const freeScholarships = filtered.slice(0, FREE_SCHOLARSHIP_LIMIT)
+    const gatedScholarships = filtered.slice(FREE_SCHOLARSHIP_LIMIT)
+
+    const renderScholarshipCard = (s) => {
+        const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'Contact us')
+        const displayTitle = s.title || s.name || 'Scholarship'
+        const detailPath = `/scholarships/${scholarshipSlug(s)}`
+        return (
+            <div key={s.id || displayTitle} className="scholarship-card">
+                <div className={`scholarship-amount${amount === 'Full Fund' ? ' full-fund' : ''}`}>{amount}</div>
+                <div className="scholarship-body">
+                    <h3><Link to={detailPath} className="scholarship-title-link">{displayTitle}</Link></h3>
+                    {s.country && <div className="scholarship-country">
+                        {s.flag && <img src={s.flag} alt={s.country} />}
+                        {s.country}
+                    </div>}
+                    <p>{s.description || s.desc || ''}</p>
+                    <div className="scholarship-footer">
+                        {s.deadline && <span className="scholarship-deadline">
+                            <CalendarDays size={14} />
+                            Deadline: <strong>{s.deadline}</strong>
+                        </span>}
+                        <Link to={detailPath} className="btn btn-navy scholarship-apply-btn">
+                            View &amp; Apply <ArrowRight size={14} />
+                        </Link>
+                    </div>
+                    {(s.sourceUrl || s.applyUrl) && (
+                        <div className="scholarship-source">
+                            <ShieldCheck size={12} />
+                            {s.sourceName ? `${s.sourceName} — ` : ''}
+                            <a href={s.sourceUrl || s.applyUrl} target="_blank" rel="noopener noreferrer">Official program page <ExternalLink size={11} /></a>
+                        </div>
+                    )}
+                </div>
+            </div>
+        )
+    }
+
     return (
         <main>
             <SEOHead
@@ -205,41 +246,16 @@ export default function Scholarships() {
                         </p>
                     )}
                     <div className="scholarships-grid">
-                        {filtered.map(s => {
-                            const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'Contact us')
-                            const displayTitle = s.title || s.name || 'Scholarship'
-                            const detailPath = `/scholarships/${scholarshipSlug(s)}`
-                            return (
-                                <div key={s.id || displayTitle} className="scholarship-card">
-                                    <div className={`scholarship-amount${amount === 'Full Fund' ? ' full-fund' : ''}`}>{amount}</div>
-                                    <div className="scholarship-body">
-                                        <h3><Link to={detailPath} className="scholarship-title-link">{displayTitle}</Link></h3>
-                                        {s.country && <div className="scholarship-country">
-                                            {s.flag && <img src={s.flag} alt={s.country} />}
-                                            {s.country}
-                                        </div>}
-                                        <p>{s.description || s.desc || ''}</p>
-                                        <div className="scholarship-footer">
-                                            {s.deadline && <span className="scholarship-deadline">
-                                                <CalendarDays size={14} />
-                                                Deadline: <strong>{s.deadline}</strong>
-                                            </span>}
-                                            <Link to={detailPath} className="btn btn-navy scholarship-apply-btn">
-                                                View &amp; Apply <ArrowRight size={14} />
-                                            </Link>
-                                        </div>
-                                        {(s.sourceUrl || s.applyUrl) && (
-                                            <div className="scholarship-source">
-                                                <ShieldCheck size={12} />
-                                                {s.sourceName ? `${s.sourceName} — ` : ''}
-                                                <a href={s.sourceUrl || s.applyUrl} target="_blank" rel="noopener noreferrer">Official program page <ExternalLink size={11} /></a>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )
-                        })}
+                        {freeScholarships.map(renderScholarshipCard)}
                     </div>
+
+                    {gatedScholarships.length > 0 && (
+                        <EmailGate count={gatedScholarships.length} source="scholarships">
+                            <div className="scholarships-grid">
+                                {gatedScholarships.map(renderScholarshipCard)}
+                            </div>
+                        </EmailGate>
+                    )}
                 </div>
             </section>
 

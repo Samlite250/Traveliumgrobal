@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
 import { jobSlug, isVerifiedListing } from '../lib/listings'
+import EmailGate from '../components/EmailGate'
 
 // Country metadata for the job board. Actual listings are loaded live from the
 // admin-approved Firestore pipeline (jobs collection). No hardcoded demo jobs.
@@ -314,6 +315,13 @@ export default function Jobs() {
     const filteredHighPayable = filterType === 'partTime' ? [] : filterJobList(currentCountryData.highPayableJobs)
     const filteredPartTime = filterType === 'highPayable' ? [] : filterJobList(currentCountryData.partTimeJobs)
 
+    // Email-gate: first 5 jobs free, everything after requires free signup
+    const FREE_JOB_LIMIT = 5
+    const freeHighPayable = filteredHighPayable.slice(0, FREE_JOB_LIMIT)
+    const gatedHighPayable = filteredHighPayable.slice(FREE_JOB_LIMIT)
+    const gatedCount = gatedHighPayable.length + filteredPartTime.length
+    const showGate = gatedCount > 0
+
     const handleApplyClick = (job, categoryLabel) => {
         setSelectedJob({ ...job, countryName: currentCountryData.country, flag: currentCountryData.flag, categoryLabel })
         setIsApplying(true)
@@ -481,7 +489,7 @@ export default function Jobs() {
                         </div>
                     </div>
 
-                    {/* ── SECTION 1: HIGH PAYABLE JOBS ── */}
+                    {/* ── SECTION 1: HIGH PAYABLE JOBS (first 5 free) ── */}
                     {filterType !== 'partTime' && (
                         <div className="job-category-section">
                             <div className="category-header hp-header">
@@ -495,14 +503,14 @@ export default function Jobs() {
                                 <span className="cat-pill hp">Full-Time / Executive</span>
                             </div>
 
-                            {filteredHighPayable.length === 0 ? (
+                            {freeHighPayable.length === 0 ? (
                                 <div className="no-jobs-card">
                                     <Briefcase size={40} />
                                     <p>No high payable jobs matching your search in {currentCountryData.country}.</p>
                                 </div>
                             ) : (
                                 <div className="jobs-grid">
-                                    {filteredHighPayable.map((job) => (
+                                    {freeHighPayable.map((job) => (
                                         <div key={job.id} className="job-card hp-card">
                                             <div className="job-card-top">
                                                 <div className="job-badge hp-badge"><Gem size={13} /> High Salary</div>
@@ -552,71 +560,128 @@ export default function Jobs() {
                         </div>
                     )}
 
-                    {/* ── SECTION 2: PART TIME JOBS ── */}
-                    {filterType !== 'highPayable' && (
-                        <div className="job-category-section" style={{ marginTop: '3.5rem' }}>
-                            <div className="category-header pt-header">
-                                <div className="cat-title">
-                                    <span className="cat-icon-badge pt"><Clock size={20} /></span>
-                                    <div>
-                                        <h3>Part-Time Jobs ({filteredPartTime.length})</h3>
-                                        <p>Student-friendly, shift &amp; hourly flexible opportunities</p>
+                    {/* ── EMAIL GATE: remaining high-payable + all part-time jobs ── */}
+                    {showGate && (
+                        <EmailGate count={gatedCount} source="jobs">
+                            {gatedHighPayable.length > 0 && (
+                                <div className="job-category-section">
+                                    <div className="jobs-grid">
+                                        {gatedHighPayable.map((job) => (
+                                            <div key={job.id} className="job-card hp-card">
+                                                <div className="job-card-top">
+                                                    <div className="job-badge hp-badge"><Gem size={13} /> High Salary</div>
+                                                    {job.auto && <div className="job-badge verified-badge"><ShieldCheck size={13} /> Verified Source</div>}
+                                                    <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
+                                                </div>
+
+                                                <h4 className="job-title"><Link to={`/jobs/${jobSlug(job, currentCountryData.country)}`} className="job-title-link">{job.title}</Link></h4>
+
+                                                <div className="job-meta-row">
+                                                    <span className="job-company"><Building size={14} /> {job.company}</span>
+                                                    <span className="job-location"><MapPin size={14} /> {job.location}</span>
+                                                </div>
+
+                                                <div className="job-salary-box">
+                                                    <DollarSign size={18} />
+                                                    <span className="salary-text">{job.salary}</span>
+                                                </div>
+
+                                                <div className="job-req-list">
+                                                    <span className="req-label">Requirements:</span>
+                                                    <ul>
+                                                        {job.requirements.map((req, idx) => (
+                                                            <li key={idx}><CheckCircle size={12} /> {req}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+
+                                                <div className="job-card-footer">
+                                                    <span className="exp-badge">{job.experience}</span>
+                                                    {(job.applyUrl || job.sourceUrl) && (
+                                                        <a className="job-source-link" href={job.applyUrl || job.sourceUrl} target="_blank" rel="noopener noreferrer" title={`Original posting — ${job.sourceName || 'Official'}`}>
+                                                            Official posting <ExternalLink size={12} />
+                                                        </a>
+                                                    )}
+                                                    <Link
+                                                        to={`/jobs/${jobSlug(job, currentCountryData.country)}`}
+                                                        className="btn-apply-job primary"
+                                                    >
+                                                        View &amp; Apply <ArrowRight size={16} />
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                                <span className="cat-pill pt">Part-Time / Hourly</span>
-                            </div>
+                            )}
 
-                            {filteredPartTime.length === 0 ? (
-                                <div className="no-jobs-card">
-                                    <Clock size={40} />
-                                    <p>No part-time jobs matching your search in {currentCountryData.country}.</p>
-                                </div>
-                            ) : (
-                                <div className="jobs-grid">
-                                    {filteredPartTime.map((job) => (
-                                        <div key={job.id} className="job-card pt-card">
-                                            <div className="job-card-top">
-                                                <div className="job-badge pt-badge"><Clock size={13} /> Flexible Hours</div>
-                                                {job.auto && <div className="job-badge verified-badge"><ShieldCheck size={13} /> Verified Source</div>}
-                                                <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
-                                            </div>
-
-                                            <h4 className="job-title"><Link to={`/jobs/${jobSlug(job, currentCountryData.country)}`} className="job-title-link">{job.title}</Link></h4>
-
-                                            <div className="job-meta-row">
-                                                <span className="job-company"><Building size={14} /> {job.company}</span>
-                                                <span className="job-location"><MapPin size={14} /> {job.location}</span>
-                                            </div>
-
-                                            <div className="job-salary-box pt-salary">
-                                                <Clock size={18} />
-                                                <span className="salary-text">{job.salary}</span>
-                                                {job.hours && <span className="hours-sub">({job.hours})</span>}
-                                            </div>
-
-                                            <div className="job-req-list">
-                                                <span className="req-label">Requirements:</span>
-                                                <ul>
-                                                    {job.requirements.map((req, idx) => (
-                                                        <li key={idx}><CheckCircle size={12} /> {req}</li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-
-                                            <div className="job-card-footer">
-                                                <span className="exp-badge pt-exp">{job.type}</span>
-                                                <Link
-                                                    to={`/jobs/${jobSlug(job, currentCountryData.country)}`}
-                                                    className="btn-apply-job secondary"
-                                                >
-                                                    View &amp; Apply <ArrowRight size={16} />
-                                                </Link>
+                            {/* ── SECTION 2: PART TIME JOBS ── */}
+                            {filterType !== 'highPayable' && (
+                                <div className="job-category-section" style={{ marginTop: '3.5rem' }}>
+                                    <div className="category-header pt-header">
+                                        <div className="cat-title">
+                                            <span className="cat-icon-badge pt"><Clock size={20} /></span>
+                                            <div>
+                                                <h3>Part-Time Jobs ({filteredPartTime.length})</h3>
+                                                <p>Student-friendly, shift &amp; hourly flexible opportunities</p>
                                             </div>
                                         </div>
-                                    ))}
+                                        <span className="cat-pill pt">Part-Time / Hourly</span>
+                                    </div>
+
+                                    {filteredPartTime.length === 0 ? (
+                                        <div className="no-jobs-card">
+                                            <Clock size={40} />
+                                            <p>No part-time jobs matching your search in {currentCountryData.country}.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="jobs-grid">
+                                            {filteredPartTime.map((job) => (
+                                                <div key={job.id} className="job-card pt-card">
+                                                    <div className="job-card-top">
+                                                        <div className="job-badge pt-badge"><Clock size={13} /> Flexible Hours</div>
+                                                        {job.auto && <div className="job-badge verified-badge"><ShieldCheck size={13} /> Verified Source</div>}
+                                                        <span className="job-country-tag"><MapPin size={13} /> {currentCountryData.country}</span>
+                                                    </div>
+
+                                                    <h4 className="job-title"><Link to={`/jobs/${jobSlug(job, currentCountryData.country)}`} className="job-title-link">{job.title}</Link></h4>
+
+                                                    <div className="job-meta-row">
+                                                        <span className="job-company"><Building size={14} /> {job.company}</span>
+                                                        <span className="job-location"><MapPin size={14} /> {job.location}</span>
+                                                    </div>
+
+                                                    <div className="job-salary-box pt-salary">
+                                                        <Clock size={18} />
+                                                        <span className="salary-text">{job.salary}</span>
+                                                        {job.hours && <span className="hours-sub">({job.hours})</span>}
+                                                    </div>
+
+                                                    <div className="job-req-list">
+                                                        <span className="req-label">Requirements:</span>
+                                                        <ul>
+                                                            {job.requirements.map((req, idx) => (
+                                                                <li key={idx}><CheckCircle size={12} /> {req}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+
+                                                    <div className="job-card-footer">
+                                                        <span className="exp-badge pt-exp">{job.type}</span>
+                                                        <Link
+                                                            to={`/jobs/${jobSlug(job, currentCountryData.country)}`}
+                                                            className="btn-apply-job secondary"
+                                                        >
+                                                            View &amp; Apply <ArrowRight size={16} />
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             )}
-                        </div>
+                        </EmailGate>
                     )}
                 </div>
             </section>
