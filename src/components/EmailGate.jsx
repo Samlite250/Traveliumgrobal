@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Lock, Mail, CheckCircle } from 'lucide-react'
+import { Lock, CheckCircle, ArrowRight, Loader2 } from 'lucide-react'
 import { saveSubscriber } from '../lib/listings'
 
 const STORAGE_KEY = 'travelium_subscriber_unlocked'
@@ -11,8 +11,7 @@ export function isUnlocked() {
 export default function EmailGate({ count, source, children }) {
     const [unlocked, setUnlocked] = useState(isUnlocked)
     const [email, setEmail] = useState('')
-    const [submitting, setSubmitting] = useState(false)
-    const [done, setDone] = useState(false)
+    const [status, setStatus] = useState('idle') // idle | saving | done
     const [error, setError] = useState('')
 
     if (unlocked) return children
@@ -20,69 +19,86 @@ export default function EmailGate({ count, source, children }) {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
-        const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-        if (!valid) { setError('Enter a valid email address'); return }
-        setSubmitting(true)
-        try {
-            await saveSubscriber(email.trim(), source)
-            try { localStorage.setItem(STORAGE_KEY, '1') } catch { }
-            setDone(true)
-            setTimeout(() => setUnlocked(true), 1200)
-        } catch {
-            setError('Something went wrong. Try again.')
-        } finally {
-            setSubmitting(false)
+        const value = email.trim()
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            setError('Please enter a valid email address')
+            return
         }
+        setStatus('saving')
+        try {
+            await saveSubscriber(value, source)
+            try { localStorage.setItem(STORAGE_KEY, '1') } catch { }
+            setStatus('done')
+            setTimeout(() => setUnlocked(true), 1300)
+        } catch {
+            setStatus('idle')
+            setError('Something went wrong. Please try again.')
+        }
+    }
+
+    const label = source === 'scholarships' ? 'scholarships' : 'jobs'
+
+    if (status === 'done') {
+        return (
+            <div className="email-gate">
+                <div className="eg-card eg-done">
+                    <CheckCircle size={38} />
+                    <h4>You're in!</h4>
+                    <p>Full access unlocked. Loading {count}+ more {label}…</p>
+                </div>
+                <div className="email-gate-locked">
+                    <div className="email-gate-blur" aria-hidden="true">{children}</div>
+                </div>
+            </div>
+        )
     }
 
     return (
         <div className="email-gate">
-            <div className="email-gate-card">
-                <div className="eg-header">
-                    <span className="eg-badge"><Lock size={13} /> Premium</span>
-                    <h3>Unlock {count}+ more {source === 'scholarships' ? 'scholarships' : 'jobs'}</h3>
-                    <p>Free access + weekly opportunity alerts. No spam, unsubscribe anytime.</p>
-                </div>
+            <div className="eg-card">
+                <div className="eg-badge"><Lock size={12} /> Members only</div>
 
-                {done ? (
-                    <div className="email-gate-success">
-                        <CheckCircle size={18} />
-                        <span>Unlocked — loading…</span>
+                <h4>Unlock {count}+ more {label}</h4>
+                <p className="eg-sub">
+                    Join thousands of job seekers getting weekly opportunity alerts, deadline reminders and application tips.
+                </p>
+
+                <form className="eg-form" onSubmit={handleSubmit}>
+                    <div className="eg-field">
+                        <input
+                            type="email"
+                            placeholder="Enter your email address"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            aria-label="Email address"
+                            disabled={status === 'saving'}
+                            required
+                        />
                     </div>
-                ) : (
-                    <form className="eg-form" onSubmit={handleSubmit}>
-                        <div className="eg-input">
-                            <Mail size={15} />
-                            <input
-                                type="email"
-                                placeholder="your@email.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                aria-label="Email address"
-                                required
-                            />
-                        </div>
-                        <button type="submit" disabled={submitting}>
-                            {submitting ? '…' : 'Subscribe'}
-                        </button>
-                        {error && <span className="eg-error">{error}</span>}
-                    </form>
-                )}
+                    <button type="submit" className="btn btn-navy" disabled={status === 'saving'}>
+                        {status === 'saving'
+                            ? <><Loader2 size={15} className="animate-spin" /> Subscribing…</>
+                            : <>Unlock Free <ArrowRight size={15} /></>
+                        }
+                    </button>
+                </form>
 
-                <div className="eg-trust">
-                    <span>✓ Free forever</span>
-                    <span>✓ No spam</span>
-                    <span>✓ One-click unsubscribe</span>
+                {error && <p className="eg-error">{error}</p>}
+
+                <div className="eg-meta">
+                    <span>Free forever</span>
+                    <span className="eg-dot">·</span>
+                    <span>No spam</span>
+                    <span className="eg-dot">·</span>
+                    <span>Unsubscribe anytime</span>
                 </div>
             </div>
 
             <div className="email-gate-locked">
-                <div className="email-gate-blur" aria-hidden="true">
-                    {children}
-                </div>
+                <div className="email-gate-blur" aria-hidden="true">{children}</div>
                 <div className="email-gate-overlay">
-                    <Lock size={28} />
-                    <p>Subscribe above to view</p>
+                    <Lock size={26} />
+                    <p>Subscribe to unlock the rest</p>
                 </div>
             </div>
         </div>
