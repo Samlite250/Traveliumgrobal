@@ -6,6 +6,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { fetchMifotraJobs } from '../lib/mifotraJobs'
+import { matchScholarshipProfile } from '../lib/scholarshipProfiles'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -32,6 +33,16 @@ const SERVICE_OPTIONS = [
     { value: 'flight_booking', label: 'Flight Booking' },
     { value: 'residency', label: 'Permanent Residency' },
 ]
+
+// Scholarship listings carry their own real program data (levels, benefits,
+// eligibility, documents) so the public detail page never shows generic copy.
+const EMPTY_SERVICE_FORM = {
+    name: '', type: 'visa', description: '', price: '', amount: '', features: '',
+    active: true, featured: false, country: '', flag: '', deadline: '', img: '',
+    applyUrl: '', levels: '', benefits: '', eligibility: '', documents: '',
+}
+
+const splitLines = (v) => String(v || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean)
 
 const statusConfig = {
     pending: { class: 'st-pending', label: 'Pending', icon: <Clock size={14} /> },
@@ -166,7 +177,7 @@ export default function AdminDashboard() {
 
     // Service editor state
     const [editingService, setEditingService] = useState(null)
-    const [serviceForm, setServiceForm] = useState({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '', applyUrl: '' })
+    const [serviceForm, setServiceForm] = useState({ ...EMPTY_SERVICE_FORM })
     const [showServiceEditor, setShowServiceEditor] = useState(false)
 
     // Auto Imports state
@@ -302,6 +313,20 @@ export default function AdminDashboard() {
                             if (!data.title && data.name) patch.title = data.name
                             if (data.active === undefined) patch.active = true
                             updateDoc(doc(db, 'services', dd.id), patch).catch(() => { })
+                        }
+                        // ── Backfill the real program data (levels / benefits / eligibility /
+                        // documents) from the curated program profiles so the public detail
+                        // page stops showing generic copy. Admin edits always win.
+                        const profile = matchScholarshipProfile({ ...data, id: dd.id })
+                        if (profile) {
+                            const dataPatch = {}
+                            if (!(data.levels || []).length && profile.levels?.length) dataPatch.levels = profile.levels
+                            if (!(data.benefits || []).length && profile.benefits?.length) dataPatch.benefits = profile.benefits
+                            if (!(data.eligibility || []).length && profile.eligibility?.length) dataPatch.eligibility = profile.eligibility
+                            if (!(data.documents || []).length && profile.documents?.length) dataPatch.documents = profile.documents
+                            if (Object.keys(dataPatch).length) {
+                                updateDoc(doc(db, 'services', dd.id), dataPatch).catch(() => { })
+                            }
                         }
                     }
                 })
@@ -577,17 +602,24 @@ export default function AdminDashboard() {
 
     // ── Service CRUD ──
     const saveService = async () => {
+        const { levels, benefits, eligibility, documents, ...rest } = serviceForm
+        const isScholarship = serviceForm.type === 'scholarship'
         const data = {
-            ...serviceForm,
+            ...rest,
             price: parseFloat(serviceForm.price) || 0,
             features: serviceForm.features.split('\n').filter(Boolean),
             updated_at: serverTimestamp(),
             // For scholarship type, also write `title` so the public /scholarships page
             // (which reads s.title) can display manually-added scholarships.
-            ...(serviceForm.type === 'scholarship' ? {
+            ...(isScholarship ? {
                 title: serviceForm.name,
                 sourceUrl: serviceForm.applyUrl || serviceForm.sourceUrl || '',
-                applyUrl: serviceForm.applyUrl || serviceForm.sourceUrl || ''
+                applyUrl: serviceForm.applyUrl || serviceForm.sourceUrl || '',
+                // Real program data — one item per line, stored as arrays.
+                levels: splitLines(levels),
+                benefits: splitLines(benefits),
+                eligibility: splitLines(eligibility),
+                documents: splitLines(documents),
             } : {}),
         }
         if (db) {
@@ -598,7 +630,7 @@ export default function AdminDashboard() {
                     await addDoc(collection(db, 'services'), { ...data, created_at: serverTimestamp() })
                 }
                 setShowServiceEditor(false); setEditingService(null)
-                setServiceForm({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '', applyUrl: '' })
+                setServiceForm({ ...EMPTY_SERVICE_FORM })
                 toast(editingService ? 'Service updated.' : 'Service created.', 'success')
                 return
             } catch (err) { console.error('Service save error:', err) }
@@ -612,12 +644,31 @@ export default function AdminDashboard() {
         }
         setServices(next); saveLocal('services', next)
         setShowServiceEditor(false); setEditingService(null)
-        setServiceForm({ name: '', type: 'visa', description: '', price: '', amount: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '', applyUrl: '' })
+        setServiceForm({ ...EMPTY_SERVICE_FORM })
         toast(editingService ? 'Service updated (offline).' : 'Service created (offline).', 'success')
     }
     const editService = (s) => {
         setEditingService(s)
-        setServiceForm({ name: s.name || s.title || '', type: s.type || 'visa', description: s.description || '', price: String(s.price || ''), amount: s.amount || '', features: (s.features || []).join('\n'), active: s.active !== false, featured: s.featured || false, country: s.country || '', flag: s.flag || '', deadline: s.deadline || '', img: s.img || '', applyUrl: s.applyUrl || s.sourceUrl || '' })
+        setServiceForm({
+            ...EMPTY_SERVICE_FORM,
+            name: s.name || s.title || '',
+            type: s.type || 'visa',
+            description: s.description || '',
+            price: String(s.price || ''),
+            amount: s.amount || '',
+            features: (s.features || []).join('\n'),
+            active: s.active !== false,
+            featured: s.featured || false,
+            country: s.country || '',
+            flag: s.flag || '',
+            deadline: s.deadline || '',
+            img: s.img || '',
+            applyUrl: s.applyUrl || s.sourceUrl || '',
+            levels: (s.levels || []).join('\n'),
+            benefits: (s.benefits || []).join('\n'),
+            eligibility: (s.eligibility || []).join('\n'),
+            documents: (s.documents || []).join('\n'),
+        })
         setShowServiceEditor(true)
     }
     const deleteService = async (id) => {
@@ -1814,7 +1865,7 @@ export default function AdminDashboard() {
             <>
                 <div className="admin-filter-bar">
                     <div className="filters-group">
-                        <button className="admin-btn-primary" onClick={() => { setEditingService(null); setServiceForm({ name: '', type: 'visa', description: '', price: '', features: '', active: true, featured: false, country: '', flag: '', deadline: '', img: '', applyUrl: '' }); setShowServiceEditor(true) }}>
+                        <button className="admin-btn-primary" onClick={() => { setEditingService(null); setServiceForm({ ...EMPTY_SERVICE_FORM }); setShowServiceEditor(true) }}>
                             <Plus size={16} /> New Service
                         </button>
                         {showSeedPrompt && (
@@ -1909,6 +1960,34 @@ export default function AdminDashboard() {
                                 {serviceForm.type === 'scholarship' && (
                                     <div className="form-group"><label>Apply URL (Official Link)</label><input className="admin-note-input" value={serviceForm.applyUrl || serviceForm.sourceUrl || ''} onChange={e => setServiceForm(f => ({ ...f, applyUrl: e.target.value }))} placeholder="https://scholarships365.info/... or official URL" /></div>
                                 )}
+                                {serviceForm.type === 'scholarship' && (
+                                    <div className="form-group">
+                                        <label>Degree Levels (one per line)</label>
+                                        <textarea className="admin-note-input" rows="3" value={serviceForm.levels} onChange={e => setServiceForm(f => ({ ...f, levels: e.target.value }))} placeholder="Master's (one-year programme)&#10;PhD (research degree)" />
+                                        <small className="admin-field-hint">Shown on the scholarship card and in the &quot;At a glance&quot; panel.</small>
+                                    </div>
+                                )}
+                                {serviceForm.type === 'scholarship' && (
+                                    <div className="form-group">
+                                        <label>Scholarship Benefits (one per line)</label>
+                                        <textarea className="admin-note-input" rows="5" value={serviceForm.benefits} onChange={e => setServiceForm(f => ({ ...f, benefits: e.target.value }))} placeholder="Full tuition fees&#10;Monthly living stipend&#10;Round-trip airfare" />
+                                        <small className="admin-field-hint">What the award actually covers — leave empty to use the program&apos;s published profile.</small>
+                                    </div>
+                                )}
+                                {serviceForm.type === 'scholarship' && (
+                                    <div className="form-group">
+                                        <label>Who Can Apply (one per line)</label>
+                                        <textarea className="admin-note-input" rows="5" value={serviceForm.eligibility} onChange={e => setServiceForm(f => ({ ...f, eligibility: e.target.value }))} placeholder="Citizen of an eligible country&#10;Bachelor's degree with strong grades&#10;IELTS 6.5 or equivalent" />
+                                        <small className="admin-field-hint">The real eligibility rules for this specific award.</small>
+                                    </div>
+                                )}
+                                {serviceForm.type === 'scholarship' && (
+                                    <div className="form-group">
+                                        <label>Required Documents (one per line)</label>
+                                        <textarea className="admin-note-input" rows="5" value={serviceForm.documents} onChange={e => setServiceForm(f => ({ ...f, documents: e.target.value }))} placeholder="Passport bio page&#10;Transcripts and degree certificate&#10;Language test results" />
+                                        <small className="admin-field-hint">Exactly what the official portal asks you to upload.</small>
+                                    </div>
+                                )}
                                 <div className="form-group"><label>Features (one per line)</label><textarea className="admin-note-input" rows="4" value={serviceForm.features} onChange={e => setServiceForm(f => ({ ...f, features: e.target.value }))} placeholder="Free consultation&#10;Fast processing&#10;Online tracking" /></div>
                             </div>
                             <div className="admin-modal-footer">
@@ -1960,6 +2039,8 @@ export default function AdminDashboard() {
     }
     const publishImportedScholarship = async (item) => {
         const flagCode = COUNTRY_FLAG_CODES[item.country]
+        // Real program data: what the admin set on the import, else the curated profile.
+        const profile = matchScholarshipProfile({ ...item, sourceId: item.sourceId })
         const live = await addDoc(collection(db, 'services'), {
             type: 'scholarship',
             title: item.title,
@@ -1968,6 +2049,10 @@ export default function AdminDashboard() {
             flag: flagCode ? `https://flagcdn.com/w40/${flagCode}.png` : '',
             description: item.description || '',
             deadline: item.deadline || '',
+            levels: item.levels?.length ? item.levels : (profile?.levels || []),
+            benefits: item.benefits?.length ? item.benefits : (profile?.benefits || []),
+            eligibility: item.eligibility?.length ? item.eligibility : (profile?.eligibility || []),
+            documents: item.documents?.length ? item.documents : (profile?.documents || []),
             source: item.source || '',
             sourceName: item.sourceName || '',
             sourceUrl: item.sourceUrl || item.applyUrl || '',
@@ -2018,6 +2103,7 @@ export default function AdminDashboard() {
             for (const k of ['title', 'company', 'institution', 'country', 'salary', 'amount', 'deadline', 'description']) {
                 if (importEditForm[k] !== undefined) patch[k] = importEditForm[k]
             }
+            if (importEditForm.levels !== undefined) patch.levels = splitLines(importEditForm.levels)
             await updateDoc(doc(db, 'imported_listings', editingImport.id), patch)
             const updated = { ...editingImport, ...patch }
             setEditingImport(null)
@@ -2158,7 +2244,7 @@ export default function AdminDashboard() {
                                             <td><span className="text-muted">{formatDateShort(item.imported_at)}</span></td>
                                             <td>
                                                 <div className="admin-action-btns">
-                                                    <button className="btn-act pro" title="Edit before publishing" onClick={() => { setEditingImport(item); setImportEditForm({ title: item.title || '', company: item.company || '', institution: item.institution || '', country: item.country || '', salary: item.salary || '', amount: item.amount || '', deadline: item.deadline || '', description: item.description || '' }) }}><Edit3 size={14} /></button>
+                                                    <button className="btn-act pro" title="Edit before publishing" onClick={() => { setEditingImport(item); setImportEditForm({ title: item.title || '', company: item.company || '', institution: item.institution || '', country: item.country || '', salary: item.salary || '', amount: item.amount || '', deadline: item.deadline || '', description: item.description || '', levels: (item.levels || []).join('\n') }) }}><Edit3 size={14} /></button>
                                                     {item.status === 'pending' && (
                                                         <>
                                                             <button className="btn-act app" title="Approve & publish" onClick={() => approveImport(item)}><Check size={14} /></button>
@@ -2202,7 +2288,14 @@ export default function AdminDashboard() {
                                     )}
                                 </div>
                                 {editingImport.type === 'scholarship' && (
-                                    <div className="form-group"><label>Deadline</label><input className="admin-note-input" value={importEditForm.deadline || ''} onChange={e => setImportEditForm(f => ({ ...f, deadline: e.target.value }))} placeholder="e.g. Dec 31, 2026" /></div>
+                                    <>
+                                        <div className="form-group"><label>Deadline</label><input className="admin-note-input" value={importEditForm.deadline || ''} onChange={e => setImportEditForm(f => ({ ...f, deadline: e.target.value }))} placeholder="e.g. Dec 31, 2026" /></div>
+                                        <div className="form-group">
+                                            <label>Degree Levels (one per line)</label>
+                                            <textarea className="admin-note-input" rows="3" value={importEditForm.levels || ''} onChange={e => setImportEditForm(f => ({ ...f, levels: e.target.value }))} placeholder="Master's (one-year programme)&#10;PhD (research degree)" />
+                                            <small className="admin-field-hint">Leave empty to use the program&apos;s published profile.</small>
+                                        </div>
+                                    </>
                                 )}
                                 <div className="form-group"><label>Description</label><textarea className="admin-note-input" rows="5" value={importEditForm.description || ''} onChange={e => setImportEditForm(f => ({ ...f, description: e.target.value }))} /></div>
                                 {editingImport.sourceUrl && (

@@ -5,9 +5,9 @@ import SEOHead from '../components/SEOHead'
 import AdSenseAd from '../components/AdSenseAd'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
-import { fallbackScholarships, scholarshipSlug, slugify, isVerifiedListing } from '../lib/listings'
+import { fallbackScholarships, scholarshipSlug, scholarshipLevels, slugify, isVerifiedListing } from '../lib/listings'
 import EmailGate from '../components/EmailGate'
-import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe, Award } from 'lucide-react'
+import { CalendarDays, ArrowRight, Loader2, ShieldCheck, ExternalLink, Globe, Award, GraduationCap } from 'lucide-react'
 
 // Emoji flags for country filter tabs (case-insensitive lookup)
 const COUNTRY_FLAGS = {
@@ -158,6 +158,12 @@ export default function Scholarships() {
                         {s.flag && <img src={s.flag} alt={s.country} />}
                         {s.country}
                     </div>}
+                    {scholarshipLevels(s).length > 0 && (
+                        <div className="scholarship-levels">
+                            <GraduationCap size={13} />
+                            {scholarshipLevels(s).join(' · ')}
+                        </div>
+                    )}
                     <p>{s.description || s.desc || ''}</p>
                     <div className="scholarship-footer">
                         {s.deadline && <span className="scholarship-deadline">

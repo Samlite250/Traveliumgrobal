@@ -10877,6 +10877,25 @@ textarea:focus,
   display: inline-block;
 }
 
+/* Level pill — the degree levels each scholarship actually opens */
+.scholarship-levels {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--navy);
+  background: var(--navy-glass);
+  border-radius: 20px;
+  padding: 0.3rem 0.75rem;
+  width: fit-content;
+  margin-top: 0.5rem;
+}
+
+.scholarship-levels svg {
+  flex-shrink: 0;
+}
+
 /* Footer row: deadline + apply btn */
 .scholarship-footer {
   display: flex;

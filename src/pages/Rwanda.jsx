@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp, query, where, onSnapshot } from 'f
 import { db } from '../lib/firebase'
 import CTABanner from '../components/CTABanner'
 import SEOHead from '../components/SEOHead'
-import { fallbackScholarships, scholarshipSlug, trackOutbound, resolveApplyUrl, isVerifiedListing } from '../lib/listings'
+import { fallbackScholarships, scholarshipSlug, scholarshipLevels, trackOutbound, resolveApplyUrl, isVerifiedListing } from '../lib/listings'
 import { useToast } from '../context/ToastContext'
 import { fetchMifotraJobs, isMifotraJobExpired, MIFOTRA_PORTAL_URL } from '../lib/mifotraJobs'
 import {
@@ -631,6 +631,12 @@ export default function Rwanda() {
                                             {s.flag && <img src={s.flag} alt={s.country} />}
                                             {s.country}
                                         </div>}
+                                        {scholarshipLevels(s).length > 0 && (
+                                            <div className="scholarship-levels">
+                                                <GraduationCap size={13} />
+                                                {scholarshipLevels(s).join(' · ')}
+                                            </div>
+                                        )}
                                         <p>{s.description || s.desc || ''}</p>
                                         <div className="scholarship-footer">
                                             {s.deadline && <span className="scholarship-deadline">

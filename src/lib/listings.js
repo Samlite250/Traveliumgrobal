@@ -1,5 +1,6 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { db } from './firebase'
+import { matchScholarshipProfile } from './scholarshipProfiles'
 
 // ─── Slug helpers (shared between list pages & detail pages) ───
 export const slugify = (s) => String(s || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
@@ -37,7 +38,9 @@ export function isVerifiedListing(listing) {
 
 // ─── Fallback scholarships (offline / empty Firestore) ───
 // Verified programs only — each must expose a genuine online application route.
-export const fallbackScholarships = [
+// The detail data (levels, benefits, eligibility, documents) is filled in
+// from the curated program profiles below.
+const FALLBACK_SCHOLARSHIP_BASE = [
     { amount: 'Full Fund', title: 'Commonwealth Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'Fully funded scholarships for students from developing countries to study at UK universities.', deadline: 'Dec 31, 2026', sourceUrl: 'https://cscuk.fcdo.gov.uk/scholarships/commonwealth-scholarships/', applyUrl: 'https://cscuk.fcdo.gov.uk/apply/', sourceName: 'Commonwealth Scholarships' },
     { amount: '$25,000', title: 'Chevening Scholarship', country: 'United Kingdom', flag: 'https://flagcdn.com/w40/gb.png', desc: 'UK government global scholarship program for future leaders.', deadline: 'Nov 15, 2026', sourceUrl: 'https://www.chevening.org/scholarships/', applyUrl: 'https://www.chevening.org/apply/', sourceName: 'Chevening' },
     { amount: '$30,000', title: 'Fulbright Program', country: 'United States', flag: 'https://flagcdn.com/w40/us.png', desc: 'Flagship US exchange programme bringing international students to American universities for graduate study.', deadline: 'Oct 15, 2026', sourceUrl: 'https://foreign.fulbrightonline.org/', applyUrl: 'https://foreign.fulbrightonline.org/apply', sourceName: 'Fulbright' },
@@ -49,6 +52,67 @@ export const fallbackScholarships = [
     { amount: 'Full Fund', title: 'China-Rwanda Government Scholarship', country: 'Rwanda', flag: 'https://flagcdn.com/w40/rw.png', desc: 'Bilateral scholarship for Bachelor\'s, Master\'s and PhD studies in China. Science fields preferred with 80%+ in Senior Six.', deadline: 'Jan 17, 2026', sourceUrl: 'https://www.hec.gov.rw/updates/scholarships', applyUrl: 'https://hecmis.hec.gov.rw/', sourceName: 'Government of China & Rwanda HEC' },
     { amount: 'Full Fund', title: 'DAFI Refugee Scholarship (Rwanda)', country: 'Rwanda', flag: 'https://flagcdn.com/w40/rw.png', desc: 'UNHCR tertiary scholarship for refugee and returnee students pursuing bachelor\'s degrees at universities in Rwanda. Covers tuition, food, transport and accommodation.', deadline: 'Aug 7, 2026', sourceUrl: 'https://help.unhcr.org/rwanda/2026/07/15/call-for-application-for-dafi-scholarship-programme-for-academic-year-2026-2027/', applyUrl: 'https://help.unhcr.org/rwanda/2026/07/15/call-for-application-for-dafi-scholarship-programme-for-academic-year-2026-2027/', sourceName: 'UNHCR DAFI Programme' },
 ]
+
+export const fallbackScholarships = FALLBACK_SCHOLARSHIP_BASE.map(s => {
+    const p = matchScholarshipProfile(s)
+    if (!p) return s
+    return {
+        ...s,
+        levels: p.levels,
+        benefits: p.benefits,
+        eligibility: p.eligibility,
+        documents: p.documents,
+    }
+})
+
+// ─── Listing field helpers ───
+// Admins can store these as arrays (Firestore) or as newline-separated text.
+export function normalizeStringList(value) {
+    if (!value) return []
+    if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean)
+    return String(value)
+        .split(/\r?\n/)
+        .map(v => v.replace(/^\s*[-•*]\s*/, '').trim())
+        .filter(Boolean)
+}
+
+const firstList = (...values) => {
+    for (const v of values) {
+        const list = normalizeStringList(v)
+        if (list.length) return list
+    }
+    return []
+}
+
+const profileOf = (s) => matchScholarshipProfile(s)
+
+// ─── Real scholarship data accessors ───
+// Resolution order for every section: listing field → curated program profile
+// → generic checklist derived from the listing's own fields.
+const SECTION_FIELDS = {
+    levels: ['levels', 'level', 'studyLevels', 'degreeLevels', 'qualification', 'educationLevel'],
+    benefits: ['benefits', 'coverage', 'scholarshipBenefits'],
+    eligibility: ['eligibility', 'eligibilityCriteria', 'whoCanApply', 'requirements'],
+    documents: ['documents', 'requiredDocuments', 'documentRequirements'],
+}
+
+// Returns { items, source } — source is 'listing' | 'profile' | 'generic'.
+export function scholarshipSection(s, kind) {
+    const fields = SECTION_FIELDS[kind] || []
+    const own = firstList(...fields.map(f => s?.[f]))
+    if (own.length) return { items: own, source: 'listing' }
+    const p = profileOf(s)
+    if (p?.[kind]?.length) return { items: [...p[kind]], source: 'profile' }
+    return { items: [], source: 'generic' }
+}
+
+export const scholarshipLevels = (s) => scholarshipSection(s, 'levels').items
+export const scholarshipBenefits = (s) => scholarshipSection(s, 'benefits').items
+export const scholarshipEligibility = (s) => scholarshipSection(s, 'eligibility').items
+export const scholarshipDocuments = (s) => scholarshipSection(s, 'documents').items
+export const scholarshipDataSource = (s, kind) => scholarshipSection(s, kind).source
+
+
 
 // ─── Outbound click tracking (anonymous analytics → outbound_clicks) ───
 export function trackOutbound({ type, id, title, url }) {
@@ -111,12 +175,107 @@ export async function saveSubscriber(email, source = 'jobs') {
 }
 
 // ─── Article content builders ───
+// Generic checklists — only used when a listing has neither its own data nor a
+// curated program profile. Every item is derived from the listing's own fields.
+const genericBenefits = (s, amount, country) => [
+    `Financial award of approximately ${amount}`,
+    country ? `Toward study and living costs for programmes in ${country}` : 'Toward study and living costs',
+    'The exact package (tuition, stipend, travel, insurance) is published on the official program page',
+]
+
+const genericEligibility = (s, levels, deadline) => {
+    const level = levels[0]
+    return [
+        'Open to international applicants',
+        level ? `Applicants must hold the qualification required for the ${level} programme` : 'Applicants must hold the academic qualification required for the programme',
+        'English language proficiency is required unless the programme is taught in another language',
+        'A complete application must be submitted before the deadline — late applications are not accepted',
+        `The current application cycle closes on ${deadline}`,
+    ]
+}
+
+const genericDocuments = () => [
+    'Valid passport (bio page)',
+    'Academic transcripts and degree certificate',
+    'Curriculum vitae or resume',
+    'Language proficiency certificate where the programme requires one',
+    'Recommendation or reference letters',
+    'Passport-size photograph',
+]
+
+// Turns a list of sentences into one readable sentence for the FAQ answers.
+const asSentence = (items, max = 3) => {
+    if (!items.length) return ''
+    const picked = items.slice(0, max).map(t => String(t).trim().replace(/\s*[.;,]\s*$/, ''))
+    const last = picked.pop()
+    return `${picked.join('. ')}. ${last}.`
+}
+
 export function buildScholarshipArticle(s) {
     const title = s.title || s.name || 'This Scholarship'
     const country = s.country || 'the host country'
     const amount = s.amount || (s.price ? `$${s.price.toLocaleString()}` : 'full or partial funding')
     const isFullFund = /full/i.test(String(amount))
     const deadline = s.deadline || 'the official deadline'
+
+    // ── Real data: listing fields → curated program profile → generic fallback ──
+    const levels = scholarshipLevels(s)
+    const benefitsSec = scholarshipSection(s, 'benefits')
+    const eligibilitySec = scholarshipSection(s, 'eligibility')
+    const documentsSec = scholarshipSection(s, 'documents')
+
+    const benefits = benefitsSec.items.length ? benefitsSec.items : genericBenefits(s, amount, country)
+    const eligibility = eligibilitySec.items.length ? eligibilitySec.items : genericEligibility(s, levels, deadline)
+    const documents = documentsSec.items.length ? documentsSec.items : genericDocuments()
+
+    const benefitsNote = benefitsSec.source === 'generic'
+        ? 'General package — the exact funding breakdown for this award is confirmed on the official program page.'
+        : null
+    const eligibilityNote = eligibilitySec.source === 'generic'
+        ? 'Always read the official eligibility rules before you start an application — they override anything shown here.'
+        : null
+    const documentsNote = documentsSec.source === 'generic'
+        ? 'Generic checklist — always cross-check the official application portal before uploading.'
+        : 'Document requirements vary by programme — always cross-check the official application portal before uploading.'
+
+    const levelSentence = levels.length
+        ? `Open degree levels: ${levels.join(', ')}.`
+        : ''
+
+    const faq = [
+        {
+            q: `Is ${title} fully funded?`,
+            a: isFullFund
+                ? 'Yes — the award covers tuition, living costs and travel as listed in the benefits section. Always confirm the exact package on the official page.'
+                : `The award is valued at approximately ${amount}. Check the official page for the exact breakdown of what is covered.`,
+        },
+        {
+            q: 'Who can apply for this scholarship?',
+            a: eligibility.length
+                ? `${asSentence(eligibility)} The full list is in the "Who Can Apply" section above.`
+                : 'Check the eligibility rules published on the official program page.',
+        },
+        {
+            q: 'Which degree levels can apply?',
+            a: levels.length
+                ? `${levels.join(' · ')}. Confirm the specific programme and intake on the official page before applying.`
+                : 'The degree levels are published on the official program page — pick the programme that matches your qualification.',
+        },
+        {
+            q: 'What documents do I need to prepare?',
+            a: documents.length
+                ? `${asSentence(documents)} The complete list is in the "Required Documents" section above.`
+                : 'The official application portal lists the exact documents it accepts.',
+        },
+        {
+            q: 'What happens after I click "Apply on Official Site"?',
+            a: 'You are taken to the official scholarship website in a new tab to submit your application directly with the provider. Travelium Global never charges you for access to official application links.',
+        },
+        {
+            q: 'How do I track my application?',
+            a: 'Save your reference ID from the official portal, then create a Travelium Global account to record the application in your dashboard. Our team can also review your documents before you submit.',
+        },
+    ]
 
     return [
         {
@@ -126,48 +285,24 @@ export function buildScholarshipArticle(s) {
                 isFullFund
                     ? `This is a fully funded award: successful applicants receive comprehensive financial support to focus entirely on their studies in ${country}.`
                     : `The award is valued at approximately ${amount} and is designed to reduce the financial barrier to studying in ${country}.`,
-                `Applications for the current cycle close on ${deadline}. Travelium Global reviews every opportunity before listing it, and this guide walks you through eligibility, documents and the exact steps to apply on the official website.`,
+                levelSentence ? `${levelSentence} Applications for the current cycle close on ${deadline}.` : `Applications for the current cycle close on ${deadline}.`,
+                'Travelium Global reviews every opportunity before listing it, and this guide walks you through eligibility, documents and the exact steps to apply on the official website.',
             ],
         },
         {
             id: 'benefits', label: 'What\'s Covered', title: 'Scholarship Benefits',
-            list: isFullFund ? [
-                'Full tuition fees paid directly to the university',
-                'Monthly living / stipend allowance',
-                'Round-trip international airfare',
-                'Comprehensive health insurance coverage',
-                'Settlement & arrival allowance',
-                'Research / thesis funding where applicable',
-            ] : [
-                `Financial award of approximately ${amount}`,
-                'Tuition contribution or full waiver depending on level',
-                'Access to the university / program support network',
-                'Certificate and alumni network on completion',
-            ],
+            list: benefits,
+            note: benefitsNote,
         },
         {
             id: 'eligibility', label: 'Eligibility', title: 'Who Can Apply',
-            list: [
-                `Open to international students — applicants from Rwanda, East Africa and other developing countries are strongly encouraged`,
-                `Outstanding academic record in your previous degree (usually a strong GPA / class of degree)`,
-                'Meet the language requirement of the program (English proficiency test such as IELTS, TOEFL or Duolingo where required)',
-                `Degree level appropriate for the award (check the official page for bachelor\'s, master\'s or PhD tracks)`,
-                `Submit a complete application before the deadline — late submissions are not accepted`,
-            ],
+            list: eligibility,
+            note: eligibilityNote,
         },
         {
             id: 'documents', label: 'Documents', title: 'Required Documents',
-            list: [
-                'Valid international passport (bio page)',
-                'Academic degree certificate / diploma',
-                'Official academic transcripts / mark sheets',
-                'Curriculum Vitae (CV / resume)',
-                'Two or three recommendation letters',
-                'Motivation / personal statement letter',
-                'English language test result (if required)',
-                'Passport-sized photograph',
-            ],
-            note: 'Document requirements vary by program — always cross-check the official application portal before uploading.',
+            list: documents,
+            note: documentsNote,
         },
         {
             id: 'how-to-apply', label: 'How to Apply', title: 'How to Apply — Step by Step',
@@ -176,19 +311,13 @@ export function buildScholarshipArticle(s) {
                 'Open the official application page using the Apply button on this guide (opens in a new tab).',
                 'Create your account on the official portal and verify your email.',
                 'Complete every section of the application form — incomplete forms are rejected.',
-                'Upload your documents in the required format (usually PDF, under the size limit).',
+                'Upload the documents listed above in the required format (usually PDF, under the size limit).',
                 'Review everything, submit, and save your confirmation number / reference ID.',
             ],
         },
         {
             id: 'faq', label: 'FAQ', title: 'Frequently Asked Questions',
-            faq: [
-                { q: `Is ${title} fully funded?`, a: isFullFund ? 'Yes — the award covers tuition, living costs and travel as listed in the benefits section. Always confirm the exact package on the official page.' : `The award is valued at approximately ${amount}. Check the official page for the exact breakdown of what is covered.` },
-                { q: 'Can I apply from Rwanda or East Africa?', a: 'Yes. This opportunity is open to international applicants, and Travelium Global helps applicants from Rwanda, Uganda, Kenya, Tanzania and across Africa prepare competitive applications.' },
-                { q: 'Do I need IELTS or TOEFL?', a: 'Many programs require an English proficiency test, but some accept Medium of Instruction letters or waive the requirement for English-taught degrees. The official page states the exact requirement.' },
-                { q: 'What happens after I click "Apply on Official Site"?', a: 'You are taken to the official scholarship website in a new tab to submit your application directly with the provider. Travelium Global never charges you for access to official application links.' },
-                { q: 'How do I track my application?', a: 'Save your reference ID from the official portal, then create a Travelium Global account to record the application in your dashboard. Our team can also review your documents before you submit.' },
-            ],
+            faq,
         },
     ]
 }

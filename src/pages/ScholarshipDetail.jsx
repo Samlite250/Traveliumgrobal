@@ -5,6 +5,7 @@ import { db } from '../lib/firebase'
 import {
     fallbackScholarships,
     scholarshipSlug,
+    scholarshipLevels,
     buildScholarshipArticle,
     openOfficial,
     isVerifiedListing,
@@ -52,6 +53,7 @@ export default function ScholarshipDetail() {
 
     const s = useMemo(() => items.find(x => scholarshipSlug(x) === slug), [items, slug])
     const sections = useMemo(() => (s ? buildScholarshipArticle(s) : []), [s])
+    const levels = useMemo(() => (s ? scholarshipLevels(s) : []), [s])
 
     if (!s) return loading ? <LoadingScreen /> : <Navigate to="/scholarships" replace />
 
@@ -120,6 +122,9 @@ export default function ScholarshipDetail() {
                             </span>
                         )}
                         <span className={`listing-badge gold${amount === 'Full Fund' ? ' full' : ''}`}>{amount}</span>
+                        {levels.length > 0 && (
+                            <span className="listing-badge"><GraduationCap size={13} /> {levels[0]}</span>
+                        )}
                         {s.deadline && (
                             <span className="listing-badge deadline"><CalendarDays size={13} /> Deadline {s.deadline}</span>
                         )}
@@ -198,7 +203,7 @@ export default function ScholarshipDetail() {
                                 <div className="ac-row"><span>Value</span><strong>{amount}</strong></div>
                                 {s.country && <div className="ac-row"><span>Destination</span><strong><MapPin size={13} /> {s.country}</strong></div>}
                                 <div className="ac-row"><span>Deadline</span><strong><CalendarDays size={13} /> {s.deadline || 'TBA'}</strong></div>
-                                <div className="ac-row"><span>Level</span><strong>Bachelor's / Master's / PhD</strong></div>
+                                <div className="ac-row"><span>Level</span><strong>{levels.length ? levels.join(' · ') : 'Check official page'}</strong></div>
                                 {officialUrl && (
                                     <div className="ac-source"><ShieldCheck size={13} /> Official site: {s.sourceName || hostOf(officialUrl)}</div>
                                 )}
